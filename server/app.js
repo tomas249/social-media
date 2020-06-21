@@ -4,6 +4,7 @@ const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
+const routes = require("./routes");
 
 // Load env vars
 dotenv.config({ path: path.join(__dirname, "config", "config.env") });
@@ -30,6 +31,8 @@ app.use("/", (req, res, next) => {
   console.log("Server responding...");
   next();
 });
+
+app.use("/api", routes);
 
 // Run server
 const PORT = process.env.PORT || 3000;
