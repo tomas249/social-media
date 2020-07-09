@@ -1,0 +1,63 @@
+<div class="card">
+  <article class="card-body mx-auto" style="max-width: 400px;">
+
+    <!-- TITLE -->
+    <h4 class="card-title mt-3 text-center">Sign up</h4>
+    <!-- ERROR MESSAGE -->
+    <p class="errorMsg text-center" *ngIf="responseMessageError">{{ responseMessageError }}</p>
+
+    <!-- FORM -->
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+      <!-- EMAIL -->
+      <div class="form-group input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+        </div>
+        <input formControlName="email" class="form-control" placeholder="Email address" type="email">
+      </div> <!-- error-->
+      <span *ngIf="loginForm.controls['email'].touched">
+        <p class="errorMsg" *ngIf="loginForm.controls['email'].errors?.required">This field is required</p>
+        <p class="errorMsg" *ngIf="loginForm.controls['email'].errors?.email">Enter a valid email</p>
+        <p class="errorMsg" *ngIf="loginForm.controls['email'].errors?.maxlength">Max 50 char</p>
+      </span>
+
+      <!-- PASSWORD -->
+      <div class="form-group input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+        </div>
+        <input formControlName="password" class="form-control" placeholder="Password" type="password">
+      </div> <!-- error-->
+      <span *ngIf="loginForm.controls['password'].touched">
+        <p class="errorMsg" *ngIf="loginForm.controls['password'].errors?.required">This field is required</p>
+        <p class="errorMsg" *ngIf="loginForm.controls['password'].errors?.minlength">Min 4 char</p>
+        <p class="errorMsg" *ngIf="loginForm.controls['password'].errors?.maxlength">Max 40 char</p>
+      </span>
+      
+      <!-- SEND BUTTON -->
+      <div class="form-group">
+        <button [disabled]="loginForm.invalid" type="submit" class="btn btn-primary btn-block"> Login </button>
+      </div>
+
+      <div>
+        <span>Email: <b>test@test.com</b></span><br>
+        <span>Pass: <b>1234</b></span>
+      </div>
+      
+      
+      <!-- ------------ DIVIDER ------------ -->
+      <!-- <p class="divider-text">
+        <span class="bg-light">OR</span>
+      </p> -->
+      <!-- ------------ DIVIDER ------------ -->
+
+      <!-- FACEBOOK LOGIN -->
+      <!-- <p>
+        <button disabled class="btn btn-facebook">Login via Facebook</button>
+      </p> -->
+
+    </form> <!-- END FORM -->
+
+  </article>
+</div>

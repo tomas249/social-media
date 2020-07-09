@@ -1,0 +1,6 @@
+@import "~bootstrap/dist/css/bootstrap.css";
+
+.nav-item {
+  width: 50%;
+  text-align: center
+}
