@@ -1,38 +1,53 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const path = require("path");
-const cors = require("cors");
-const morgan = require("morgan");
-const connectDB = require("./config/db");
-const routes = require("./routes");
+const express = require('express');
+const dotenv = require('dotenv');
+const path = require('path');
+const cors = require('cors');
+const morgan = require('morgan');
+const connectDB = require('./config/db');
+const fileupload = require('express-fileupload');
 
 // Load env vars
-dotenv.config({ path: path.join(__dirname, "config", "config.env") });
+dotenv.config({ path: path.join(__dirname, 'config', 'config.env') });
 
 // Connect to database
 connectDB();
+
+// Route index
+const routes = require('./routes/index');
 
 // Load express
 const app = express();
 
 // Body parser
-app.use(express.json());
+app.use(express.json({ limit: '20MB' }));
 
 // Enable CORS
 app.use(cors());
 
+// File upload (testing...)
+app.use(fileupload());
+
 // Dev logging middleware
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+if (process.env.NODE_ENV === 'development') {
+  app.use((req, res, next) => {
+    console.dir(req.ip);
+    next();
+  }, morgan('dev'));
 }
 
-// Mount routers
-app.use("/", (req, res, next) => {
-  console.log("Server responding...");
-  next();
-});
+// Set Static Folder
+// To access angular code we need to do this
+app.use(express.static(path.join(__dirname, '..', 'dist', 'social-media')));
 
-app.use("/api", routes);
+// Mount routes
+app.use('/api', routes);
+
+// Index route
+app.get('*', (req, res) => {
+  const pathAngular = path.join(__dirname, '..', 'dist', 'social-media', 'index.html');
+  console.log(pathAngular)
+  res.sendFile(pathAngular);
+});
 
 // Run server
 const PORT = process.env.PORT || 3000;
@@ -43,7 +58,7 @@ const server = app.listen(
 );
 
 // Handle unhandled promise rejections
-process.on("unhandledRejection", (err, promise) => {
+process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`);
   // Close server & exit process
   server.close(() => process.exit(1));
