@@ -1,0 +1,130 @@
+article {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.route {
+  /* background-color: tomato; */
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.replyRef {
+  margin-bottom: 0.3rem;
+  color: var(--secondary-color);
+  font-size: 0.8rem;
+}
+
+.notify {
+  position: absolute;
+}
+
+.arobas {
+  display: inline-block;
+}
+
+.aroba {
+  color: rgb(6, 184, 255);
+  cursor: pointer;
+}
+.aroba:hover {
+  color: var(--primary-color);
+}
+
+.post {
+  display: flex;
+  padding: 1rem 1rem 0;
+  /* border-bottom: 0.15rem solid var(--primary-color); */
+}
+
+.a-acc {
+  display: flex;
+}
+
+.a-name {
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: bold;
+  margin-right: 0.3rem;
+}
+
+.a-username {
+  color: rgb(136, 153, 166);
+  font-size: 1rem;
+}
+
+.a-profile {
+  display: flex;
+  flex-direction: column;
+}
+
+.a-profile img {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius:50%;
+  background-color: var(--hover-color);
+  margin-right: 0.8rem;
+  padding: 0.2rem;
+  position: relative;
+}
+
+.a-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.a-buttons {
+  display: flex;
+  flex-direction: row;
+  margin: 0.3rem 0;
+}
+
+.upper {
+  z-index: 1;
+}
+
+.a-bttn-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: auto;
+}
+
+.a-bttn-icon-box {
+  display: flex;
+  align-items: center;
+  padding: 0.7rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.a-bttn-icon, .a-bttn-count {
+  color: var(--secondary-color);
+}
+
+.a-bttn-icon-box:hover {
+  background-color: var(--hover-color);
+}
+
+.a-bttn-icon-box:hover svg,
+.a-bttn-icon-box:hover ~ .a-bttn-count {
+  color: var(--primary-color);
+}
+
+.comment {
+  padding: 1rem 1rem 0;
+  /* border-bottom: 0.15rem solid var(--primary-color); */
+}
+
+.thread-line {
+  border-left: 3px solid rgb(136, 153, 166);
+  margin-left: 30px;
+  height: 90%;
+  margin-top: 2rem;
+  position: absolute;
+  z-index: -2;
+}

@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  --primary-color: rgb(23, 191, 99);
+  --secondary-color: rgb(136, 153, 166);
+  --hover-color: rgba(0, 255, 0, 0.1);
+  --background-color: rgb(23, 37, 51);
+  --text-color: #ffffff;
+}
+  
+body {
+  margin: 0px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+div:focus {
+  outline: 0;
+}
+
+a:focus {
+  outline: 0;
+}
+
+.primary {
+  color: var(--primary-color);
+}

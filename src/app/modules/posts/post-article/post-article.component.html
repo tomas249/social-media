@@ -1,0 +1,28 @@
+<div class="container" *ngIf="parentPost">
+  <div class="post-list">
+    <!-- Main Post -->
+    <div class="main-post" >
+      <app-post [postData]="parentPost" (replied)="addPost($event)"></app-post>
+    </div>
+    <!-- Comments -->
+    <div class="reply-container" *ngFor="let reply of parentPost.child">
+      <app-post
+        [show]="reply.child.length !== 0"
+        [postData]="reply" 
+        (replied)="addReply($event)" (deleted)="deletePost($event)">
+      </app-post>
+
+      <div *ngFor="let childReply of reply.child; let i=index">
+        <div class="thread-line"></div>
+        <div class="reply">
+          <app-post 
+            [show]="i !== reply.child.length-1"
+            [postData]="childReply" 
+            (replied)="addReply($event)" 
+            (deleted)="deleteReply($event)">
+          </app-post>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

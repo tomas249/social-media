@@ -1,0 +1,16 @@
+<div class="auth-container">
+  <form class="auth" [formGroup]="registerForm" (ngSubmit)="onRegister()">
+    <span class="title">Sign up</span>
+    <input formControlName="name" class="input" type="text" placeholder="Name (can be changed)">
+    <input formControlName="email" class="input" type="text" placeholder="Email">
+    <input formControlName="password" class="input" type="password" placeholder="Password">
+    <input formControlName="confirmPassword" class="input" type="password" placeholder="Confirm Password">
+    <button class="input button btn" type="submit">Create account</button>
+    <div class="message" *ngIf="messageList.length !== 0">
+      <p [ngClass]="success ? 'success' : 'error'" 
+        *ngFor="let message of messageList">
+        {{ message }}
+      </p>
+    </div>
+  </form>
+</div>

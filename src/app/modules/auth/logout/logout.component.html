@@ -1,0 +1,20 @@
+<div class="container" *ngIf="user">
+  <div class="acc">
+    <table>
+      <tr><th colspan="2">Actual account</th></tr>
+      <tr>
+        <td>Id:</td>
+        <td>{{ user.id }}</td>
+      </tr>
+      <tr>
+        <td>Name:</td>
+        <td>{{ user.name }}</td>
+      </tr>
+      <tr>
+        <td>Username:</td>
+        <td>{{ user.username }}</td>
+      </tr>
+      <tr><td colspan="2"><button (click)="logout()">Logout</button></td></tr>
+    </table>
+  </div>
+</div>

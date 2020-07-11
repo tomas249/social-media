@@ -1,0 +1,14 @@
+.container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.acc {
+  width: 70%;
+  padding: 0 5rem;
+  display: flex;
+  flex-direction: column;
+}
