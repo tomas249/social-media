@@ -5,9 +5,9 @@
       <app-post [postData]="parentPost" (replied)="addPost($event)"></app-post>
     </div>
     <!-- Comments -->
-    <div class="reply-container" *ngFor="let reply of parentPost.child">
+    <div class="reply-container" *ngFor="let reply of replies">
       <app-post
-        [show]="reply.child.length !== 0"
+        [show]="reply.child?.length !== 0"
         [postData]="reply" 
         (replied)="addReply($event)" (deleted)="deletePost($event)">
       </app-post>

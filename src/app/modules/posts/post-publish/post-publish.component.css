@@ -10,6 +10,20 @@ article {
   border-bottom: 0.15rem solid var(--primary-color);
 } */
 
+.replyRef {
+  margin-bottom: 0.3rem;
+  color: var(--secondary-color);
+  font-size: 0.8rem;
+}
+
+.aroba {
+  color: rgb(6, 184, 255);
+  cursor: pointer;
+}
+.aroba:hover {
+  color: var(--primary-color);
+}
+
 .a-profile img {
   width: 3.4rem;
   height: 3.4rem;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PostsService } from '../posts.service';
 import { LocationService } from 'src/app/services/location.service';
 
@@ -7,9 +7,10 @@ import { LocationService } from 'src/app/services/location.service';
   templateUrl: './posts-list.component.html',
   styleUrls: ['./posts-list.component.css']
 })
-export class PostsListComponent implements OnInit {
+export class PostsListComponent implements OnInit, OnDestroy {
 
-  postsList = [];
+  postsListSub;
+  postsList;
 
   constructor(
     private postsService: PostsService,
@@ -17,22 +18,14 @@ export class PostsListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.locationService.changeLocation('Explore', []);
-
-    this.postsService.subscribeToNewPosts().subscribe(
-      res => {
-        this.postsService.getAllPosts().subscribe(
-          res => {
-            this.postsList = res.data.data;
-          }
-        )
-      }
-    )
+    this.locationService.changeRootLoc('Explore');
+    this.postsListSub = this.postsService.updatedPosts.subscribe(res => {
+      this.postsList = res;
+    });
+    this.postsService.getAllPosts();
   }
 
-  deletePost(out) {
-    const postId = out.postId;
-    this.postsList = this.postsList.filter(post => post._id !== postId);
+  ngOnDestroy(): void {
+    this.postsListSub.unsubscribe();
   }
-
 }

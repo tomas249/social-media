@@ -6,7 +6,6 @@
 }
 
 .auth {
-  margin-top: 2rem;
   display: flex;
   flex-direction: column;
 }
@@ -48,7 +47,7 @@
 }
 
 .message {
-  margin-top: 3rem;
+  margin-top: 2rem;
   text-align: center;
   font-size: 1.2rem;
 }

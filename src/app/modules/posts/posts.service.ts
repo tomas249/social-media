@@ -10,58 +10,112 @@ import { HttpEvent } from '@angular/common/http';
 })
 export class PostsService {
 
-  getNewPosts = new BehaviorSubject([]);
-  allPosts = [];
+  postsList = [];
+  postsSubject = new BehaviorSubject(this.postsList);
+  updatedPosts = this.postsSubject.asObservable();
+
+  selectedPost;
 
   constructor(
     private api: ApiService,
-    private token: TokenService
+    private token: TokenService,
   ) { }
 
-  subscribeToNewPosts() {
-    // if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
-    return this.getNewPosts;
+  selectPost(postId) {
+    this.selectPost = postId;
   }
 
   getAllPosts() {
-    return this.api.get('/posts?parent[size]=0').pipe(
-      catchError(err => throwError('cannot get list'))
-    );
+    const uid = this.token.getUserId();
+    this.api.get('/posts?parent[size]=0').subscribe(
+      res => {
+        this.postsList = res.data.data;
+        if (uid) {
+          this.postsList.forEach((post, i) => {
+            // for unique or authorized actions
+            this.postsList[i].confirm = {
+              owner: post.owner._id === uid,
+              liked: post.whoLiked.includes(uid)
+              // add report
+            }
+          });
+        }
+        this.postsSubject.next([...this.postsList]);
+      }
+    )
   }
 
-  getPost(postId) {
+  getPostById(postId) {
     return this.api.get(`/posts?_id=${postId}&childLevel=3`).pipe(
       // Filter always returns array and we are searching only 1 post
       map(res => res.data.data[0])
     );
   }
 
-  publishPost(post) {
+  sendPostsList(postsList) {
+    this.postsList = postsList;
+    this.postsSubject.next(this.postsList);
+  }
+
+  deletePostById(postId) {
     if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
-    this.api.post('/posts', {text: post}).subscribe(
+    this.api.delete(`/posts/${postId}`).subscribe(
       res => {
-        this.allPosts = res.data.data;
-        this.getNewPosts.next(this.allPosts);
+        this.postsList = this.postsList.filter(post => post._id !== postId);
+        this.postsSubject.next(this.postsList);
+      }
+    )
+  }
+
+  publishPost(post, postId?) {
+    if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
+
+    return;
+    const path = postId ? `/posts/${postId}/reply` : '/posts'; 
+    this.api.post(path, {text: post}).subscribe(
+      res => {
+        this.postsList = res.data.data;
+        console.log('published and returned:', this.postsList)
+        this.postsSubject.next(this.postsList)
       }
     );
   }
 
+  // getPostById(postId) {
+  //   return this.api.get(`/posts?_id=${postId}&childLevel=3`).pipe(
+  //     // Filter always returns array and we are searching only 1 post
+  //     map(res => res.data.data[0])
+  //   );
+  // }
+
+
   replyPost(post, postIdReply) {
     if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
-    return this.api.post(`/posts/${postIdReply}/reply`, {text: post}).pipe(
-      map(res => res.data)
-    );
+    return this.api.post(`/posts/${postIdReply}/reply`, {text: post});
   }
 
-  likePost(postId) {
-    if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
-    return this.api.get(`/posts/${postId}/like`).pipe(
-      map(res => res.data)
-    );
-  }
+  // likePost(postId) {
+  //   if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
+  //   return this.api.get(`/posts/${postId}/like`);
+  // }
 
-  deletePost(postId) {
-    if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
-    return this.api.delete(`/posts/${postId}`);
+  // deletePost(postId) {
+  //   if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
+  //   return this.api.delete(`/posts/${postId}`);
+  // }
+
+
+
+
+  getPop(obj) {
+    if (!obj.child) {
+      return ' null '
+    }
+    else if (obj.child.length === 0) {
+      return ' empty';
+    }
+    else {
+      return ` pop(${obj.child.length}) >` + this.getPop(obj.child[0])
+    }
   }
 }

@@ -17,7 +17,7 @@ export class LoggedInGuard implements CanActivate {
 		if (this.token.isLogged()) {
       return true;
     } else {
-      this.router.navigate(['/auth']);
+      // this.router.navigate(['/auth']);
       return false;
 		}
 

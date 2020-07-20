@@ -1,0 +1,14 @@
+<!-- The Modal -->
+<div #modalContainer class="modal" [style.display]="displayModal ? 'block' : 'none'">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close" (click)="close()">&times;</span>
+    <!-- MODAL NG CONTENT -->
+    <div>
+      <div #contentWrapper></div>
+      <hr>
+      <ng-container #secondaryData></ng-container>
+      <ng-container [ngComponentOutlet]="componentLoad"></ng-container>
+    </div>
+  </div>
+</div>

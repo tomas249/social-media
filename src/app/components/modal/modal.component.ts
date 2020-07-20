@@ -1,30 +1,50 @@
-import { Component, OnInit, ViewChild, Input, HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, HostListener, Output, EventEmitter, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 
 @Component({
-  selector: 'app-modal',
+  selector: 'modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css']
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('contentWrapper') content: ElementRef;
+
   @ViewChild('modal') modal;
+  @Input('name') modalName;
 
-  @Output() close = new EventEmitter()
+  displayModal = false;
 
-
-  constructor() { }
+  constructor(
+  ) { }
 
   ngOnInit(): void {
+
   }
 
+  ngAfterViewInit(): void {
+    // Create modal
+    console.log('Modal created, with name:', this.modalName);
+  }
+
+  addContent(template) {
+    // this.content.nativeElement.insertAdjacentHTML('beforeend', message)
+    this.content.nativeElement.innerHTML = template;
+  }
+
+  openModal() {
+    this.displayModal = true;
+  }
+
+  closeModal() {
+    this.displayModal = false;
+  }
+
+
+  // On click outside modal
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (event.target === this.modal.nativeElement) {
       this.closeModal();
     }
   }
-
-  closeModal() {
-    this.close.emit();
-  }
-
 }

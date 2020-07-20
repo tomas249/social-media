@@ -43,14 +43,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   ngOnInit() {
-    this.locationService.addChildLocation('Register');
+    this.locationService.addChildLoc('Register', 'Auth');
   }
 
   ngOnDestroy() {
-    this.locationService.removeChildLocation();
+    this.locationService.removeChildLoc();
   }
 
   private noEmail(control: FormControl) {

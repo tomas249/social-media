@@ -1,8 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocationService } from 'src/app/services/location.service';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { TokenService } from 'src/app/services/token.service';
-
 
 @Component({
   selector: 'app-auth',
@@ -11,28 +8,22 @@ import { TokenService } from 'src/app/services/token.service';
 })
 export class AuthComponent implements OnInit {
 
-  location = 'Auth';
-  navItems = [
-    {
-      name: 'Login',
-      path: 'login'
-    },
-    {
-      name: 'Register',
-      path: 'register'
-    }
-  ];
-
   constructor(
-    private locationService: LocationService,
-    private token: TokenService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
+    private locationService: LocationService
   ) { }
 
-  ngOnInit() {
-    const items = this.token.isLogged() ? [] : this.navItems;
-    this.locationService.changeLocation(this.location, items);
+  ngOnInit(): void {
+    console.log('auth component started')
+    this.loadNav();
+  }
+
+  loadNav() {
+    const navItems = [
+      { name: 'Login', path: '/auth/login' },
+      { name: 'Register', path: '/auth/register' }
+    ]
+    this.locationService.changeNavItems(navItems);
+    this.locationService.changeRootLoc('Auth');
   }
 
 }

@@ -13,6 +13,7 @@ import { MainModule } from './layouts/main/main.module';
 // Services
 import { ApiHttpInterceptor } from './services/api-http.interceptor';
 
+
 @NgModule({
   declarations: [
     AppComponent
@@ -20,8 +21,8 @@ import { ApiHttpInterceptor } from './services/api-http.interceptor';
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule,
-    MainModule
+    MainModule,
+    AppRoutingModule
   ],
   providers: [
     {

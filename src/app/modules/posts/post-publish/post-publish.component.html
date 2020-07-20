@@ -4,6 +4,10 @@
   </div>
   <div class="a-content">
 
+    <div class="replyRef upper" *ngIf="replyOwnerInfo">
+      <span>Replying to&nbsp;</span>
+      <span class="aroba">@{{ replyOwnerInfo.username }}</span>
+    </div>
 
     <!-- <textarea class="text-area" placeholder="What's happening?"></textarea> -->
     <div #postInput contenteditable="true" id="text-box" placeholder="What's happening?"></div>

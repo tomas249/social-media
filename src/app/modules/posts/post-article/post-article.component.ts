@@ -10,6 +10,7 @@ import { LocationService } from 'src/app/services/location.service';
 })
 export class PostArticleComponent implements OnInit {
   parentPost;
+  replies;
 
   constructor(
     private route: ActivatedRoute,
@@ -23,21 +24,23 @@ export class PostArticleComponent implements OnInit {
 
 
   getPostIdAndQuery() {
-    this.route.params.subscribe(params => {
-      const postId = params['postId'];
-      this.postsService.getPost(postId).subscribe(
-        res => {
-          this.parentPost = res;
-          const locPath = res.replyRef.length !== 0 ? 'Reply' : 'Post';
-          this.locationService.changeLocation(locPath, []);
-        },
-        err => console.log(err)
-      )
-    });
+    // this.route.params.subscribe(params => {
+    //   const postId = params['postId'];
+    //   this.postsService.getPost(postId).subscribe(
+    //     res => {
+    //       this.parentPost = res;
+    //       this.replies = res.child.length !== 0 ? res.child : [];
+    //       const locPath = res.replyRef.length !== 0 ? 'Reply' : 'Post';
+    //       this.locationService.changeLocation(locPath, []);
+    //     },
+    //     err => console.log(err)
+    //   )
+    // });
   }
 
   addPost(newPost) {
-    this.parentPost = newPost;
+    this.replies.push(newPost.child);
+    // console.log(this.)
   }
   
   addReply(newReply) {
@@ -47,7 +50,7 @@ export class PostArticleComponent implements OnInit {
     // this.parentPost.child = this.parentPost.child.map(
     //   childObj => childObj._id === newReply._id ? newReply : childObj
     // );
-    this.parentPost.child.forEach(childObj => {
+    this.replies.forEach(childObj => {
       if (childObj._id === newReply._id) {
         childObj.child = newReply.child;
       }
@@ -56,13 +59,13 @@ export class PostArticleComponent implements OnInit {
 
   deletePost(out) {
     const postId = out.postId;
-    this.parentPost.child = this.parentPost.child.filter(post => post._id !== postId);
+    this.replies = this.replies.filter(post => post._id !== postId);
   }
 
   deleteReply({postId, parent}) {
-    this.parentPost.child.forEach((post, i) => {
+    this.replies.forEach((post, i) => {
       if (post._id === parent[parent.length-1]) {
-        this.parentPost.child[i].child = post.child.filter(reply => reply._id !== postId);
+        this.replies[i].child = post.child.filter(reply => reply._id !== postId);
       }
     });
   }

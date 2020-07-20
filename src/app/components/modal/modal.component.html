@@ -1,9 +1,11 @@
 <!-- The Modal -->
-<div #modal class="modal">
+<div #modal class="modal" [style.display]="displayModal ? 'block' : 'none'">
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close" (click)="closeModal()">&times;</span>
     <!-- MODAL NG CONTENT -->
-    <ng-content></ng-content>
+    <div #contentWrapper>
+      <ng-content></ng-content>
+    </div>
   </div>
 </div>

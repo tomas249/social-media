@@ -42,7 +42,11 @@ export class TokenService {
   }
 
   getUserData() {
-    return JSON.parse(localStorage.getItem('userData'));
+    if (this.isLogged()) {
+      return JSON.parse(localStorage.getItem('userData'));
+    } else {
+      return null;
+    }
   }
 
   getRefreshToken() {
@@ -55,6 +59,14 @@ export class TokenService {
 
   isLogged() {
     return !!this.getRefreshToken();
+  }
+
+  getUserId() {
+    if (this.isLogged()) {
+      return this.getUserData().id;
+    } else {
+      return null;
+    }
   }
 
   isPublisher() {

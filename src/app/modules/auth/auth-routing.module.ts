@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-// import { AuthGuard } from 'src/app/guards/auth.guard';
-// import { NoAuthGuard } from 'src/app/guards/no-auth.guard';
-
+// Components
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthComponent } from './auth.component';
@@ -14,27 +12,20 @@ import { LoggedInGuard } from 'src/app/guards/logged-in.guard'
 import { LoggedOutGuard } from 'src/app/guards/logged-out.guard'
 
 const routes: Routes = [
+  { 
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [LoggedOutGuard],
+  },
   {
-    path: '',
-    component: AuthComponent,
-    children: [
-      { 
-        path: 'login',
-        component: LoginComponent,
-        canActivate: [LoggedOutGuard]
-      },
-      {
-        path: 'register',
-        component: RegisterComponent,
-        canActivate: [LoggedOutGuard]
-      },
-      {
-        path: 'accounts', 
-        component: LogoutComponent,
-        canActivate: [LoggedInGuard]
-      },
-      { path: '', redirectTo: 'login', pathMatch: 'full' }
-    ]
+    path: 'register',
+    component: RegisterComponent,
+    canActivate: [LoggedOutGuard],
+  },
+  {
+    path: 'accounts', 
+    component: LogoutComponent,
+    canActivate: [LoggedInGuard],
   }
 ];
 

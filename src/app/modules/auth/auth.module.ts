@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ComponentFactoryResolver, ComponentFactory } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -10,19 +10,27 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { LogoutComponent } from './logout/logout.component';
 
+import { ModalModule } from 'src/app/shared/modal/modal.module';
 
 @NgModule({
   declarations: [
-    AuthComponent,
     LoginComponent,
     RegisterComponent,
-    LogoutComponent
+    LogoutComponent,
+    AuthComponent
   ],
   imports: [
     CommonModule,
     AuthRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ModalModule
   ]
 })
-export class AuthModule { }
+export class AuthModule {
+  static components = {
+    AuthComponent,
+    LoginComponent,
+    RegisterComponent
+  };
+}
