@@ -9,7 +9,6 @@ import { MainComponent } from './main.component';
 import { LocationService } from 'src/app/services/location.service';
 
 // Modules
-
 import { ModalModule } from 'src/app/shared/modal/modal.module';
 
 // import { AuthModule } from 'src/app/modules/auth/auth.module';

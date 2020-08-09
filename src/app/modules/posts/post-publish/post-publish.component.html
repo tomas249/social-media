@@ -1,12 +1,15 @@
+<div *ngIf="postReply" class="toReply">
+  <app-post [inputConfig]="{showOpt:false, thread:true}" [post]="postReply"></app-post>
+</div>
 <article>
   <div class="a-profile">
     <img src="assets/avatar.png">
   </div>
   <div class="a-content">
 
-    <div class="replyRef upper" *ngIf="replyOwnerInfo">
+    <div class="replyRef upper" *ngIf="postReply">
       <span>Replying to&nbsp;</span>
-      <span class="aroba">@{{ replyOwnerInfo.username }}</span>
+      <span class="aroba">@{{ postReply.owner.username }}</span>
     </div>
 
     <!-- <textarea class="text-area" placeholder="What's happening?"></textarea> -->
@@ -69,7 +72,7 @@
 
 
       <div class="bttn-post">
-        <div class="post-bttn" (click)="publishPost(postInput.innerText)">
+        <div class="post-bttn" (click)="publishPost()">
           Post
         </div>
       </div>
@@ -78,5 +81,6 @@
     </div>
 
 
+    <!-- <span *ngIf="destinationConfig">destination: {{ destinationConfig.destination }}</span> -->
   </div>
 </article>

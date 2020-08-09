@@ -8,10 +8,10 @@
     </div>
   
     <div class="a-content">
-      <div class="a-acc">
+      <div class="a-acc upper">
         <span class="a-name">{{ post.owner.name }}</span>
-        <span class="a-username">@{{ post.owner.username }} - {{ post.createdAt}}</span>
-        <span class="upper" style="margin-left: auto" *ngIf="config.owner">
+        <span class="a-username">@{{ post.owner.username }} - {{ post.createdAt | dateAgo}}</span>
+        <span class="upper" style="margin-left: auto" *ngIf="config.owner && config.showOpt">
           <button (click)="onDelete()">delete</button>
         </span>
       </div>
@@ -21,14 +21,14 @@
       <div class="replyRef upper" *ngIf="post.replyRef.length !== 0">
         <span>Replying to&nbsp;</span>
         <div class="arobas" *ngFor="let user of post.replyRef; let i=index">
-          <span class="aroba">{{ user }}</span>
+          <span class="aroba">{{ user | user }}</span>
           <span *ngIf="i !== post.replyRef.length-1">&nbsp;>&nbsp;</span>
         </div>
       </div>
       <div>
         {{ post.text }}
       </div>
-      <div class="a-buttons">
+      <div class="a-buttons" *ngIf="config.showOpt">
   
         <div class="a-bttn-group" (click)="onReply()">
           <div class="a-bttn-icon-box">
@@ -41,6 +41,7 @@
           <span class="a-bttn-count upper">
             {{ count.replies }} 
             <span class="primary notify" *ngIf="config.replied">&nbsp;~ published</span>
+            <!-- <span class="primary notify" *ngIf="config.deleted">&nbsp;~ deleted</span> -->
           </span>
         </div>
   

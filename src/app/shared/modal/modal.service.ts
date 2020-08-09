@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { LocationService } from 'src/app/services/location.service'; 
+import { Subject, zip } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModalService {
   private modal;
-  public changeFn;
+  private opened = false;
+  response$;
 
   constructor(
     private locationService: LocationService
@@ -16,42 +18,44 @@ export class ModalService {
     this.modal = modal;
   }
 
-  async open(moduleName, componentName) {
+  async open(moduleName, componentName, params?) {
     this.locationService.freeze();
+    await this.modal.loadModule(moduleName, componentName);
+    if (params) this.modal.addParams(params);
     this.modal.open();
-    this.changeFn = await this.modal.loadModule(moduleName, componentName);
+    this.opened = true;
   }
 
+  addMessage(message) {
+    this.modal.addMessage(message);
+  }
+
+  close() {
+    if (!this.opened) return;
+    this.modal.close();
+  }
+  
   onClosed() {
     this.locationService.restore();
+    this.opened = false;
+    if (!this.response$) return;
+    this.response$.next(false);
+    this.response$.complete();
+    this.response$ = null;
   }
 
-  change(component) {
-    console.log(this.changeFn);
-    this.changeFn.change(component);
+  change(component, extra) {
+    this.modal.changeComponent(component);
   }
 
-  // close(name) {
-  //   const modal = this.find(name);
-  //   modal.close();
-  // }
+  waitForResponse() {
+    this.response$ = new Subject();
+    return this.response$.asObservable(); 
+  }
 
-  // emitContentAndOpen(name, content) {
-  //   const modal = this.find(name);
-  //   modal.emitContentAndOpen(content);
-  //   modal.open();
-  // }
-
-  // emitParamsAndOpen(name, params) {
-  //   const modal = this.find(name);
-  //   modal.emitParamsAndOpen(params);
-  //   modal.open(params);
-  // }
-
-  // loadComp(name, component) {
-  //   const modal = this.find(name);
-  //   modal.addEditor(component);    
-  //   modal.open();
-  // }
+  emitResponse(res) {
+    if (!this.response$) return;
+    this.response$.next(res);
+  }
 
 }

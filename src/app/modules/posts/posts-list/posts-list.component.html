@@ -1,18 +1,39 @@
 <div class="container">
   <div class="post-list">
 
-    <app-post-publish></app-post-publish>
+    <div *ngIf="isLogged; else notLogged">
+      <app-post-publish [destinationConfig]="{destination: 1}"></app-post-publish>
+    </div>
+    <ng-template #notLogged>
+      <div class="border auth-container">
+        <div class="notLogged">
+          <span class="auth-text">Auth in order to post</span>
+          <div>
+            <button class="bttn" (click)="auth('LoginComponent')">Login</button>
+            &nbsp;or&nbsp;
+            <button class="bttn" (click)="auth('RegisterComponent')">Register</button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
 
     <div *ngIf="postsList && postsList.length !== 0">
-      <div class="border" *ngFor="let post of postsList">
-        <app-post [post]="post"></app-post>
+      <div class="border" *ngFor="let post of postsList; let i=index">
+        <app-post
+          [post]="post"
+          [publishConfig]="{destination: 0}"
+          [deleteConfig]="{destination: 1, parentIndex: i}">
+        </app-post>
       </div>
     </div>
 
+    <div *ngIf="loading" style="padding: 2rem; text-align: center;">
+      <h3>Loading posts...</h3>
+    </div>
 
-    <!-- <div style="padding: 2rem; text-align: center;">
-      Loading...
-    </div> -->
+    <div *ngIf="!loading && postsList.length === 0" style="padding: 2rem; text-align: center;">
+      <h3>No posts published yet</h3>   
+    </div>
 
   </div>
 </div>

@@ -96,10 +96,11 @@ svg {
 
 .h-acc {
   text-decoration: none;
+  width: 15rem;
 }
 
 .acc-container {
-  display: inline-flex;
+  display: flex;
   align-items: center;
 }
 

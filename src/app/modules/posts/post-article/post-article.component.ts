@@ -1,72 +1,69 @@
-import { Component, OnInit, HostListener, ViewChildren, ViewChild } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChildren, ViewChild, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostsService } from '../posts.service';
 import { LocationService } from 'src/app/services/location.service';
+import { map } from 'rxjs/operators';
+import { Subscription, Observable, BehaviorSubject, Subject } from 'rxjs';
+import { TokenService } from 'src/app/services/token.service';
+import { ModalService } from 'src/app/shared/modal/modal.service';
 
 @Component({
   selector: 'app-post-article',
   templateUrl: './post-article.component.html',
   styleUrls: ['./post-article.component.css']
 })
-export class PostArticleComponent implements OnInit {
+export class PostArticleComponent implements OnInit, OnDestroy {
+
+  parentPost$;
   parentPost;
-  replies;
+
+  isLogged = false;
+
+  reloadPost = false;
 
   constructor(
     private route: ActivatedRoute,
     private postsService: PostsService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private cd: ChangeDetectorRef,
+    private token: TokenService,
+    private modal: ModalService
   ) { }
 
   ngOnInit(): void {
-    this.getPostIdAndQuery();
-  }
-
-
-  getPostIdAndQuery() {
-    // this.route.params.subscribe(params => {
-    //   const postId = params['postId'];
-    //   this.postsService.getPost(postId).subscribe(
-    //     res => {
-    //       this.parentPost = res;
-    //       this.replies = res.child.length !== 0 ? res.child : [];
-    //       const locPath = res.replyRef.length !== 0 ? 'Reply' : 'Post';
-    //       this.locationService.changeLocation(locPath, []);
-    //     },
-    //     err => console.log(err)
-    //   )
-    // });
-  }
-
-  addPost(newPost) {
-    this.replies.push(newPost.child);
-    // console.log(this.)
-  }
-  
-  addReply(newReply) {
-    // const newArr = myArr.map(
-    //   obj => obj.id === newObj.id ? newObj : obj
-    // )
-    // this.parentPost.child = this.parentPost.child.map(
-    //   childObj => childObj._id === newReply._id ? newReply : childObj
-    // );
-    this.replies.forEach(childObj => {
-      if (childObj._id === newReply._id) {
-        childObj.child = newReply.child;
+    this.token.subscribeAcc().subscribe(
+      res => {
+        if (res && this.parentPost) {
+          this.modal.close();
+          this.reloadPost = true;
+          this.parentPost = Object.assign({}, this.parentPost);
+          this.postsService.changePostsList(this.parentPost.child.reverse());
+        }
       }
+    );
+    this.route.params.subscribe(params => {
+      const postId = params['postId'];
+      this.postsService.getPostById(postId).subscribe(
+        res => {
+          this.parentPost = res;
+          this.postsService.changePostsList(res.child);
+          this.parentPost$ = this.postsService.updatedPosts$.subscribe(
+            res => {
+              const child = res.map(c => Object.assign({}, c));
+              this.parentPost = Object.assign({}, this.parentPost);
+              this.parentPost = Object.assign(this.parentPost, {child});
+            }
+          );
+        }
+      )
     });
+    this.locationService.addChildLoc('Post', {extend: false});
   }
 
-  deletePost(out) {
-    const postId = out.postId;
-    this.replies = this.replies.filter(post => post._id !== postId);
+  ngOnDestroy(): void {
+    this.locationService.removeChildLoc(true);
+    this.parentPost$.unsubscribe();
+    this.parentPost = null;
   }
 
-  deleteReply({postId, parent}) {
-    this.replies.forEach((post, i) => {
-      if (post._id === parent[parent.length-1]) {
-        this.replies[i].child = post.child.filter(reply => reply._id !== postId);
-      }
-    });
-  }
 }

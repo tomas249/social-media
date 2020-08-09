@@ -4,6 +4,7 @@ import { AuthService } from '../auth.service';
 import { TokenService } from 'src/app/services/token.service';
 import { FormGroup, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
+import { ModalService } from 'src/app/shared/modal/modal.service';
 
 @Component({
   selector: 'app-login',
@@ -18,13 +19,15 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   messageList = [];
   success = false;
+  navigateEnd = true;
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private token: TokenService,
     private router: Router,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private modal: ModalService
   ) {
 
     this.loginForm = this.fb.group({
@@ -42,14 +45,12 @@ export class LoginComponent implements OnInit {
     
   }
 
-
-
   ngOnInit() {
-    this.locationService.addChildLoc('Login', 'Auth');
+    this.locationService.addChildLoc('Login', {extend:false, parentLoc:'Auth', useNav:true});
   }
 
   ngOnDestroy() {
-    this.locationService.removeChildLoc();
+    this.locationService.removeChildLoc(true);
   }
 
 
@@ -83,18 +84,20 @@ export class LoginComponent implements OnInit {
     this.getFormValidationErrors();
     if (this.loginForm.invalid) return;
 
-    const email = this.loginForm.get('email').value.toLowerCase();
     let payload = {
-      email: email,
+      email: this.loginForm.get('email').value.toLowerCase(),
       password: this.loginForm.get('password').value
     };
 
     // Send request to API
     this.auth.login(payload).subscribe(
-    res => this.router.navigate(['/']),
+    res => {
+      this.modal.emitResponse(true);
+      if (this.navigateEnd) this.router.navigate(['/']);
+    },
     err => {
       this.success = false;
-      this.messageList.push(err.error.message);
+      this.messageList.push(err);
     });
     
   }

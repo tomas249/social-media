@@ -1,25 +1,30 @@
 <div class="container" *ngIf="parentPost">
   <div class="post-list">
     <!-- Main Post -->
-    <div class="main-post" >
-      <app-post [postData]="parentPost" (replied)="addPost($event)"></app-post>
+    <div class="main-post">
+      <app-post
+      [reload]="reloadPost"
+      [publishConfig]="{destination: 1}"
+      [post]="parentPost"
+      [inputConfig]="{owner:false}">
+      </app-post>
     </div>
     <!-- Comments -->
-    <div class="reply-container" *ngFor="let reply of replies">
+    <div class="reply-container" *ngFor="let reply of parentPost.child; index as pIndex">
       <app-post
-        [show]="reply.child?.length !== 0"
-        [postData]="reply" 
-        (replied)="addReply($event)" (deleted)="deletePost($event)">
+      [publishConfig]="{destination:2, parentIndex: pIndex, end: true}"
+      [deleteConfig]="{destination:1, parentIndex: pIndex}"
+      [post]="reply"
+      [inputConfig]="{thread: (reply.child?.length !== 0)}">
       </app-post>
 
-      <div *ngFor="let childReply of reply.child; let i=index">
-        <div class="thread-line"></div>
+      <div *ngFor="let childReply of reply.child; index as cIndex; last as isLast">
         <div class="reply">
-          <app-post 
-            [show]="i !== reply.child.length-1"
-            [postData]="childReply" 
-            (replied)="addReply($event)" 
-            (deleted)="deleteReply($event)">
+          <app-post
+          [publishConfig]="{destination:0}"
+          [deleteConfig]="{destination:2, parentIndex: pIndex, childIndex: cIndex}"
+          [post]="childReply"
+          [inputConfig]="{thread: !isLast}">
           </app-post>
         </div>
       </div>

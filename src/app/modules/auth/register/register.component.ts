@@ -2,6 +2,7 @@ import { Component, OnInit, ɵConsole, OnDestroy } from '@angular/core';
 import { AuthService} from '../auth.service';
 import { FormGroup, FormControl, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
+import { ModalService } from 'src/app/shared/modal/modal.service';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +18,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   constructor(
     private auth: AuthService,
     private fb: FormBuilder,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private modal: ModalService
   ) {
     this.registerForm = this.fb.group({
       name: ['', [
@@ -44,11 +46,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.locationService.addChildLoc('Register', 'Auth');
+    this.locationService.addChildLoc('Register', {extend:false, parentLoc:'Auth', useNav:true});
   }
 
   ngOnDestroy() {
-    this.locationService.removeChildLoc();
+    this.locationService.removeChildLoc(true);
   }
 
   private noEmail(control: FormControl) {
@@ -84,7 +86,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   getFormValidationErrors() {
     this.messageList = [];
     Object.keys(this.registerForm.controls).forEach(key => {
-      console.log(key)
       const controlErrors: ValidationErrors = this.registerForm.get(key).errors;
       if (controlErrors !== null) {
         Object.keys(controlErrors).forEach(keyError => {
@@ -115,9 +116,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.registerForm.reset();
       },
       err => {
-        console.log(err)
         this.success = false;
-        this.messageList.push(err.error.message);
+        this.messageList.push(err);
       })
   }
 }

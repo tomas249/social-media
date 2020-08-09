@@ -41,3 +41,9 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.message {
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.3rem;
+}

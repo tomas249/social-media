@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { ModalService } from '../shared/modal/modal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +19,16 @@ export class LocationService {
 
   location$ = new BehaviorSubject<string>('Main');
   location: string[] = [];
-  navItems$ = new BehaviorSubject<any>([]);
+  navItems$ = new Subject<any>();
   navItems: any[] = [];
 
   frozenData;
 
-  constructor( ) { }
+  parentLoc;
+
+  constructor(
+    // private modal: ModalService
+  ) { }
 
   subscribeLocation() {
     return this.location$.asObservable();
@@ -35,47 +41,73 @@ export class LocationService {
   changeRootLoc(location) {
     this.location = [location];
     this.location$.next(location);
-    this.changeNavItems([]);
-  }
-
-  addChildLoc(location, parentLoc) {
-    if (parentLoc) {
-      this.changeRootLoc(parentLoc);
-      this.changeNavItems(this.paths[parentLoc].navItems, location);
-    }
-    this.location.push(location);
-    const newLoc = this.location.join(' > ');
-    this.location$.next(newLoc);
-  }
-
-  removeChildLoc() {
-    const last = this.location.pop();
-    if (last === this.navItems[0].selected) {
-      this.navItems.shift();
-    }
-    this.navItems$.next(this.navItems);
-    const newLoc = this.location.join(' > ');
-    this.location$.next(newLoc);
+    this.parentLoc = location;
+    // this.modal.close();
   }
 
   changeNavItems(navItems, selected?) {
     this.navItems = navItems;
-    if (navItems.length !== 0 && !navItems[0].selected && selected) this.navItems.unshift({ selected });
-    this.navItems$.next(navItems);
+    this.navItems$.next({
+      navItems: this.navItems,
+      modal: !!this.frozenData,
+      selected
+    });
+  }
+
+  addChildLoc(location, opt:{extend:boolean, parentLoc?:string, useNav?:boolean}) {
+    const checkSameParent = this.parentLoc && opt.parentLoc === this.parentLoc;
+    
+    if (opt.useNav && !checkSameParent) {
+      this.changeNavItems(this.paths[opt.parentLoc].navItems, location);
+    } else if (!opt.useNav && !checkSameParent) {
+      this.changeNavItems([]);
+    }
+
+    if (checkSameParent) {
+      opt.extend = true;
+    }
+
+    if (!opt.extend && !opt.parentLoc) {
+      this.changeRootLoc(location);
+    }
+    else if (!opt.extend && opt.parentLoc) {
+      this.changeRootLoc(opt.parentLoc);
+      this.location.push(location);
+      const newLoc = this.location.join(' > ');
+      this.location$.next(newLoc);
+    }
+    else if (opt.extend) {
+      this.location.push(location);
+      const newLoc = this.location.join(' > ');
+      this.location$.next(newLoc);
+    }
+  }
+
+  removeChildLoc(skip) {
+    this.location.pop();
+    if (skip) return;
+    const newLoc = this.location.join(' > ');
+    this.location$.next(newLoc);
   }
 
   freeze() {
     this.frozenData = {
       location: this.location,
-      navItems: this.navItems
+      navItems: this.navItems,
+      parentLoc: this.parentLoc
     };
   }
 
   restore() {
     this.location = this.frozenData.location;
-    this.navItems = this.frozenData.navItems;
     this.location$.next(this.location.join(' > '));
-    this.navItems$.next(this.navItems);
+    this.changeNavItems(this.frozenData.navItems);
+    this.parentLoc = this.frozenData.parentLoc;
+    this.frozenData = null;
+  }
+
+  getLocation() {
+    return this.location;
   }
 
 }

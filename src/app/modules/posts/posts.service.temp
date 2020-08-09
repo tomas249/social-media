@@ -1,0 +1,145 @@
+import { Injectable } from '@angular/core';
+import { ApiService } from 'src/app/services/api.service';
+import { catchError, map, tap } from 'rxjs/operators';
+import { throwError, BehaviorSubject, Observable } from 'rxjs';
+import { TokenService } from 'src/app/services/token.service';
+import { HttpEvent } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PostsService {
+
+  postsList = [];
+  updatedPosts$ = new BehaviorSubject(this.postsList);
+  updatedPosts = this.updatedPosts$.asObservable();
+
+  selectedPost;
+  uid;
+
+  constructor(
+    private api: ApiService,
+    private token: TokenService,
+  ) {
+    this.uid = this.token.getUserId();
+  }
+
+  private auth(post) {
+    if (this.uid) {
+      post.confirm = {
+        owner: post.owner._id === this.uid,
+        liked: post.whoLiked.includes(this.uid)
+      }
+    }
+    return post;
+  }
+
+  getAllPosts() {
+    this.api.get('/posts?parent[size]=0').subscribe(
+      res => {
+        this.postsList = res.data.data.map(post => this.auth(post));
+        this.updatedPosts$.next(this.postsList);
+      }
+    )
+  }
+
+  getPostById(postId) {
+    return this.api.get(`/posts?_id=${postId}&childLevel=3`).pipe(
+      // Filter always returns array and we are searching only 1 post
+      map(res => res.data.data[0])
+    );
+  }
+
+  sendPostsList(postsList) {
+    this.postsList = postsList.reverse();
+    this.postsList = this.postsList.map(post => {
+      post.child = post.child.map(reply => this.auth(reply));
+      return this.auth(post)
+    });
+    this.updatedPosts$.next(this.postsList);
+  }
+
+  deletePost(post, config) {
+    if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
+
+    this.api.delete(`/posts/${post._id}`).subscribe(
+      res => {
+        this.modifyLevel(post, config);
+      }
+    )
+  }
+
+  publishPost(post, config?) {
+    if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
+
+    const path = '/posts'; 
+    this.api.post(path, {text: post}).subscribe(
+      res => {
+        const post = this.auth(res.data)
+        this.modifyLevel(post, config);
+      },
+      err => console.error(err)
+    );
+  }
+
+  replyPost(post, postId, config?) {
+    if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
+
+    const path = `/posts/${postId}/reply`;
+    this.api.post(path, {text: post}).subscribe(
+      res => {
+        const reply = this.auth(res.data);
+        this.modifyLevel(reply, config);
+      },
+      err => console.error(err)
+    )
+  }
+
+  private modifyLevel(post, config?:{level:number, top:boolean, remove:boolean}) {
+    const level = config?.level || 1;
+    const top = config?.top || true;
+    const remove = config?.remove || false;
+  
+    if (level === -1) {
+      return;
+    }
+    else if (level === 1) {
+      if (remove) {
+        this.postsList = this.postsList.filter(postP => postP._id !== post._id);
+      } else {        
+        this.postsList.unshift(post);
+      }
+      this.updatedPosts$.next(this.postsList);
+    }
+    else if (level === 2) {
+      this.postsList.forEach((postP, i) => {
+        if (postP._id === post.parent[post.parent.length-1]) {
+          if (remove) {
+            this.postsList[i].child = this.postsList[i].child.filter(postC => postC._id !== post._id);
+          } else {
+            this.postsList[i].child.push(post);
+          }
+        }
+      });
+      this.updatedPosts$.next(this.postsList);
+    }
+  }
+
+  likePost(postId) {
+    if (!this.token.isLogged()) {console.error('Please login'); return throwError('');}
+    this.api.get(`/posts/${postId}/like`).subscribe();
+  }
+
+
+  getPop(obj) {
+    if (!obj.child) {
+      return ' null '
+    }
+    else if (obj.child.length === 0) {
+      return ' empty';
+    }
+    else {
+      return ` pop(${obj.child.length}) >` + this.getPop(obj.child[0])
+    }
+  }
+}

@@ -5,10 +5,10 @@
     <span class="close" (click)="close()">&times;</span>
     <!-- MODAL NG CONTENT -->
     <div>
-      <div #contentWrapper></div>
-      <hr>
-      <ng-container #secondaryData></ng-container>
-      <ng-container [ngComponentOutlet]="componentLoad"></ng-container>
+      <div class="message" #message [style.display]="displayMessage ? 'block' : 'none'">
+        <hr>
+      </div>
+      <ng-container #content></ng-container>
     </div>
   </div>
 </div>

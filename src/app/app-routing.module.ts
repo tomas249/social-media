@@ -6,9 +6,7 @@ import { MainComponent } from './layouts/main/main.component';
 const routes: Routes = [];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    relativeLinkResolution: 'corrected'
-  })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

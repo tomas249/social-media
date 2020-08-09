@@ -21,11 +21,11 @@ export class ApiHttpInterceptor implements HttpInterceptor {
         const login = '/api/auth/login';
         const register = '/api/auth/register';
 
-        if (req.url.search(login) != -1 ||
-            req.url.search(register) != -1
-            ){
-            return next.handle(req);
-        }
+        // if (req.url.search(login) != -1 ||
+        //     req.url.search(register) != -1
+        //     ){
+        //     return next.handle(req);
+        // }
 
         // Send request with Access-Token
         if (this.token.getAccessToken() && this.token.getRefreshToken()) {
@@ -36,12 +36,12 @@ export class ApiHttpInterceptor implements HttpInterceptor {
 
         return next.handle(req).pipe(
             catchError(err => {
-                // return throwError('error :D');
-            if (err instanceof HttpErrorResponse && err.status === 401) {
-                return this.handle401Error(req, next);
-            } else {
                 return throwError(err.error.message);
-            }
+                // if (err instanceof HttpErrorResponse && err.status === 401) {
+                //     return this.handle401Error(req, next);
+                // } else {
+                //     return throwError(err.error.message);
+                // }
         }));
 
 

@@ -14,19 +14,27 @@ import { Observable } from 'rxjs';
 })
 export class ModalComponent implements OnInit {
   @ViewChild('modalContainer') modalContainer: ElementRef;
-  @ViewChild('contentWrapper') content: ElementRef;
-
-  @ViewChild('secondaryData',  { read: ViewContainerRef }) data: ViewContainerRef;
+  @ViewChild('message') message: ElementRef;
+  @ViewChild('content',  { read: ViewContainerRef }) content: ViewContainerRef;
 
   displayModal = false;
+  displayMessage = false;
   selectedModule;
   activeModule;
-  componentLoad;
+  componentRef;
+
+  module = {
+    AuthModule: {
+      import: async () => (await import('src/app/modules/auth/auth.module')).AuthModule
+    },
+    PostsModule: {
+      import: async () => (await import('src/app/modules/posts/posts.module')).PostsModule
+    }
+  };
   
   constructor(
     private modalService: ModalService,
-    private resolver: ComponentFactoryResolver,
-    private locationService: LocationService,
+    private resolver: ComponentFactoryResolver
   ) { }
 
   ngOnInit(): void {
@@ -41,104 +49,44 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  public open() {
+  open() {
     this.displayModal = true;
   }
 
-  compRef;
-  public close() {
-    // this.componentLoad.destroy();
+  close() {
     this.displayModal = false;
-    this.compRef.destroy();
+    this.componentRef.destroy();
     this.modalService.onClosed();
-    // this.contentData?.reset();
-    // this.ref.destroy();
-    this.content.nativeElement.innerHTML = '';
+    this.displayMessage = false;
+    this.message.nativeElement.innerHTML = '<hr>';
   }
   
-  private addContent(content) {
-    // this.content.nativeElement.innerHTML = content;
-    const temp = `<p>In order to reply, please auth yourself</p>`;
-    const temp2 = `<h4>This is secondary warning</h4>`;
-    this.content.nativeElement.insertAdjacentHTML('afterbegin', temp);
+  addMessage(message) {
+    // const tag = document.createElement('h3');
+    // const content = document.createTextNode(message);
+    // tag.append(content);
+    // const template = `${tag}`;
+    // console.log(template)
+    const style = 'style="padding: 0 2rem"'
+    this.message.nativeElement.insertAdjacentHTML('afterbegin', `<div ${style}>${message}</div>`);
+    this.displayMessage = true;
   }
 
-
-
-
-  async loadModule(moduleName, activeComponent) {
-    this.addContent('s');
+  async loadModule(moduleName, componentName) {
     this.selectedModule = this.module[moduleName];
     this.activeModule = await this.selectedModule.import();
-    // this.componentLoad = this.activeModule.components[activeComponent];
-    const comp = this.activeModule.components[activeComponent];
-    const compFct = this.resolver.resolveComponentFactory(comp);
-    this.compRef = this.data.createComponent(compFct);
-
-    // this.locationService.changeNavItems('Auth', this.selectedModule.navItems);
-    // return {
-    //   ok: (component) => {
-    //     console.log(component)
-    //     this.loadData = this.activeModule.components[component]
-    //     console.log(this.loadData)
-    //   }  
-    // };
-    return { change: component => 
-      this.componentLoad = this.activeModule.components[component] };
+    this.changeComponent(componentName);
   }
-
-
-  module = {
-    AuthModule: {
-      import: async () => (await import('src/app/modules/auth/auth.module')).AuthModule
-    },
-    PostsModule: {
-      import: async () => (await import('src/app/modules/posts/posts.module')).PostsModule
-    }
-  };
 
   changeComponent(componentName) {
-    this.componentLoad = this.activeModule.components[componentName];
+    this.content.remove();
+    const component = this.activeModule.components[componentName];
+    const componentFct = this.resolver.resolveComponentFactory(component);
+    this.componentRef = this.content.createComponent(componentFct);
   }
 
-
-
-  // public reset() {
-  // }
-
-  // emitContentAndOpen(content) {
-  //   this.addContent(content);
-  //   this.open();
-  // }
-
-  // emitParamsAndOpen(params) {
-  //   this.contentData.refreshData(params);
-  //   this.open();
-  // }
-  
-  // addEditor(component) {
-  //   const factory = this.componentFactoryResolver.resolveComponentFactory(component);
-  //   console.log(factory)
-  //   this.ref = this.viewContainerRef.createComponent(factory);
-  //   console.log(this.ref)
-  //   this.ref.instance.showTabs = true;
-  //   // ref.changeDetectorRef.detectChanges();
-  // }
-
-
-
-
-  // // TESTING
-
-  // componentFactories: ComponentFactory<any>[];
-
-  // loadData;
-  // activeModule;
-  // selectedModule;
-
-
-
-
-
+  addParams(params) {
+    Object.assign(this.componentRef.instance, params);
+  }
 
 }

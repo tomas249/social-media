@@ -17,10 +17,10 @@
         <!-- end LOGO -->
 
         <!-- DYNAMIC -->
-        <div *ngIf="navItems.length !== 0">
+        <div *ngIf="navItems && navItems.length !== 0">
           <hr>
-          <div class="h-item" *ngFor="let item of navItems.slice(1)">
-            <a class="h-bttn h-nav-link" (click)="goTo(item)" [class.selected]="item.name === navItems[0].selected">
+          <div class="h-item" *ngFor="let item of navItems">
+            <a class="h-bttn h-nav-link" (click)="goTo(item)" [class.selected]="item.name === selectedItem">
               <span>{{ item.name }}</span>
             </a>
           </div>
@@ -43,7 +43,7 @@
             </a>
           </div>
           <div class="h-item"> 
-            <a class="h-bttn h-nav-link" [routerLink]="['explore']" routerLinkActive="selected">
+            <a class="h-bttn h-nav-link" [routerLink]="['/explore']" routerLinkActive="selected">
               <svg class="bi bi-asterisk" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd"
@@ -90,7 +90,7 @@
 
         <!-- POST BUTTON -->
         <div class="h-item h-post">
-          <div class="h-post-bttn" (click)="post()">
+          <div class="h-post-bttn" (click)="openPostModal()">
             Post
           </div>
         </div>
@@ -99,7 +99,7 @@
 
       <!-- SELECTED ACCOUNT -->
       <div class="h-item h-bottom">
-        <a class="h-bttn h-acc" [routerLink]="['/auth/login']">
+        <a class="h-bttn h-acc" (click)="accountGoTo()">
           <div class="acc-container">
             <ng-container *ngIf="user; else loggedOut">
               <span class="acc-photo"></span>

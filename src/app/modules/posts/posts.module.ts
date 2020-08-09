@@ -12,8 +12,12 @@ import { PostArticleComponent } from './post-article/post-article.component';
 import { ModalModule } from 'src/app/shared/modal/modal.module';
 // import { AuthModule } from 'src/app/modules/auth/auth.module';
 
+import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
+import { UserPipe } from 'src/app/pipes/user.pipe';
 @NgModule({
   declarations: [
+    DateAgoPipe,
+    UserPipe,
     PostComponent,
     PostPublishComponent,
     PostsListComponent,
@@ -30,6 +34,7 @@ import { ModalModule } from 'src/app/shared/modal/modal.module';
 export class PostsModule { 
   static components = {
     PostComponent,
-    PostPublishComponent
+    PostPublishComponent,
+    PostsListComponent
   }
 }
