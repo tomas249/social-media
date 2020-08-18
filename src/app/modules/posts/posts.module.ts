@@ -10,7 +10,7 @@ import { PostsListComponent } from './posts-list/posts-list.component';
 import { PostArticleComponent } from './post-article/post-article.component';
 
 import { ModalModule } from 'src/app/shared/modal/modal.module';
-// import { AuthModule } from 'src/app/modules/auth/auth.module';
+import { ProfileModule } from 'src/app/modules/profile/profile.module';
 
 import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
 import { UserPipe } from 'src/app/pipes/user.pipe';
@@ -27,7 +27,7 @@ import { UserPipe } from 'src/app/pipes/user.pipe';
   imports: [
     CommonModule,
     ModalModule,
-    // AuthModule,
+    ProfileModule,
     PostsRoutingModule,
   ]
 })

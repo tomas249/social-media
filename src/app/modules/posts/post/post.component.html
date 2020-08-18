@@ -1,23 +1,27 @@
+<ng-template #profileCard>
+  <app-profile-card [user]="post.owner"></app-profile-card>
+</ng-template>
+
 <article *ngIf="post" [title]="post._id">
   <div class="route" [routerLink]="['/post', post._id]"></div>
 
   <div class="post">
     <div class="a-profile">
       <div *ngIf="config.thread" class="thread-line"></div>
-      <img src="assets/avatar.png">
+      <img #img (mousemove)="openTooltip($event)" (mouseleave)="closeTooltip()" src="assets/avatar.png">
     </div>
   
     <div class="a-content">
-      <div class="a-acc upper">
+      <div class="a-acc">
         <span class="a-name">{{ post.owner.name }}</span>
-        <span class="a-username">@{{ post.owner.username }} - {{ post.createdAt | dateAgo}}</span>
+        <span class="a-username">
+          <span>@{{ post.owner.username }} - {{ post.createdAt | dateAgo}}</span>
+        </span>
         <span class="upper" style="margin-left: auto" *ngIf="config.owner && config.showOpt">
           <button (click)="onDelete()">delete</button>
         </span>
       </div>
-      <!-- <div>
-        <span style="font-size: 0.8rem">{{ post._id }}</span>
-      </div> -->
+
       <div class="replyRef upper" *ngIf="post.replyRef.length !== 0">
         <span>Replying to&nbsp;</span>
         <div class="arobas" *ngFor="let user of post.replyRef; let i=index">

@@ -49,11 +49,13 @@ article {
   color: var(--text-color);
   font-weight: bold;
   margin-right: 0.3rem;
+  z-index: 2;
 }
 
 .a-username {
   color: rgb(136, 153, 166);
   font-size: 1rem;
+  z-index: 2;
 }
 
 .a-profile {
@@ -67,12 +69,14 @@ article {
   height: 3.4rem;
   border-radius:50%;
   background-color: var(--hover-color);
-  margin-right: 0.8rem;
+  /* margin-right: 0.8rem; */
   padding: 0.2rem;
   position: relative;
+  z-index: 2;
 }
 
 .a-content {
+  margin-left: 0.8rem;
   width: 100%;
   display: flex;
   flex-direction: column;

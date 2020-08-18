@@ -23,6 +23,7 @@ export class LocationService {
   navItems: any[] = [];
 
   frozenData;
+  fixed = false;
 
   parentLoc;
 
@@ -31,14 +32,18 @@ export class LocationService {
   ) { }
 
   subscribeLocation() {
+    if (this.fixed) return;
     return this.location$.asObservable();
   }
 
   subscribeNavItems() {
+    if (this.fixed) return;
     return this.navItems$.asObservable();
   }
 
   changeRootLoc(location) {
+    if (this.fixed) return;
+
     this.location = [location];
     this.location$.next(location);
     this.parentLoc = location;
@@ -46,6 +51,8 @@ export class LocationService {
   }
 
   changeNavItems(navItems, selected?) {
+    if (this.fixed) return;
+
     this.navItems = navItems;
     this.navItems$.next({
       navItems: this.navItems,
@@ -55,6 +62,8 @@ export class LocationService {
   }
 
   addChildLoc(location, opt:{extend:boolean, parentLoc?:string, useNav?:boolean}) {
+    if (this.fixed) return;
+
     const checkSameParent = this.parentLoc && opt.parentLoc === this.parentLoc;
     
     if (opt.useNav && !checkSameParent) {
@@ -84,6 +93,8 @@ export class LocationService {
   }
 
   removeChildLoc(skip) {
+    if (this.fixed) return;
+
     this.location.pop();
     if (skip) return;
     const newLoc = this.location.join(' > ');
@@ -108,6 +119,14 @@ export class LocationService {
 
   getLocation() {
     return this.location;
+  }
+
+  fixLocation() {
+    this.fixed = true;
+  }
+
+  unfixLocation() {
+    this.fixed = false;
   }
 
 }

@@ -5,8 +5,7 @@ import { ModalService } from 'src/app/shared/modal/modal.service';
 import { TokenService } from 'src/app/services/token.service';
 import { Router, Route, ActivatedRoute } from '@angular/router';
 import { LazyLoaderService } from 'src/app/services/lazy-loader.service';
-import { first, tap } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
 
 @Component({
   selector: 'app-post',
@@ -79,7 +78,8 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private lazyLoader: LazyLoaderService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private tooltip: TooltipService
   ) { }
 
 
@@ -162,6 +162,26 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       return true;
     }
+  }
+
+  @ViewChild('img') img:ElementRef
+  openTooltip(event) {
+    this.img.nativeElement.style.zIndex = '10';
+    const a = this.img.nativeElement.getBoundingClientRect();
+    // console.log(a)
+    const start = a.y;
+    const X = a.x + a.width / 2;
+    const Y = a.y + a.height;
+    // console.log(X, Y, start)
+    // this.tooltip.open(event.clientX, event.clientY, 'AuthModule', 'LoginComponent');
+    this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user: this.post.owner});
+    // this.tooltip.open(start, X, Y, 'AuthModule', 'LogoutComponent', {user: this.post.owner});
+    // this.tooltip.open(start, X, Y, 'PostsModule', 'PostComponent', {post: this.post});
+  }
+
+  closeTooltip() {
+    this.tooltip.close();
+    this.img.nativeElement.style.zIndex = '2';
   }
 }
 

@@ -1,7 +1,7 @@
 /* The Modal (background) */
 .modal {
   position: absolute; /* Stay in place */
-  z-index: 2; /* Sit on top */
+  z-index: 4; /* Sit on top */
   padding-top: 10rem; /* Location of the box */
   align-items: center;
   left: 0;
