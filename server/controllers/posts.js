@@ -2,6 +2,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Post = require('../models/Post');
 const advancedResults = require('../middleware/advancedResults');
+const User = require('../models/User');
 
 // @desc      Publish post
 // @route     POST /api/posts
@@ -13,9 +14,17 @@ exports.publishPost = asyncHandler(async (req, res, next) => {
     owner: req.user._id,
     text: req.body.text
   });
+
+  // Instead of populating owner, use data that we already have
+  let postRes = post.toObject({ getters: true });
+  postRes.owner = (({_id, name, username, description, count}) => ({_id, name, username, description, count}))(req.user);
+
+  // Increase posts count
+  await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': 1} });
+
   res.status(201).json({
     success: true,
-    data: post
+    data: postRes
   });
 });
 
@@ -34,6 +43,7 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
   const reply = await Post.create({
     owner: req.user._id,
     text: req.body.text,
+    parentRef: parentId,
     parent: parentPath,
     replyRef: replyRef
   });
@@ -43,9 +53,12 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
   const newParent = await Post.findByIdAndUpdate(parentId, { $push: { child: reply._id } }, { new: true })
     .populate('child');
 
+  // Instead of populating owner, use data that we already have
+  reply.owner = req.user;
+
   res.status(200).json({
     success: true,
-    data: newParent
+    data: reply
   });
 });
 
@@ -58,7 +71,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
   const parentSelect = req.query.parentSelect?.split(',').join(' ') || '';
   // Check for population level parameters
   let parentLimit = req.query.parentLimit || 0; // Usually get all parents
-  let childLimit = req.query.childLimit || '5'; // Return 5 child results
+  let childLimit = req.query.childLimit || '0'; // Return 5 child results
   let childLevel = req.query.childLevel || 2; // Populate 2 nested levels
 
   // Query params into array
@@ -99,7 +112,8 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 
   // In order to populate parent and child, we pass an array of both
   const populateOpt = [populateChild, populateParent]
-
+  // console.log(JSON.stringify(populateOpt))
+  
   // AdvancedResults callback
   const cb = (data) => {
     res.status(200).json({
@@ -122,13 +136,25 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/posts/:postId
 // @access    Private
 exports.deletePost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.postId);
-  post.deleteOne(); // Call in this way to trigger the hooks (none for now)
+  const post = await Post.findByIdAndDelete(req.params.postId);
+  if (post.child && post.child.length !== 0) deleteChildren(post.child);  
+
+  // Decrease posts count
+  await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': -1} });
 
   res.status(204).json({
     success: true
   });
 });
+
+const deleteChildren = (children) => {
+  children.forEach(async child => {
+    const childPost = await Post.findByIdAndDelete(child);
+    if (childPost.child && childPost.child.length !== 0) {
+      deleteChildren(childPost.child);
+    }
+  })
+};
 
 
 // @desc      Like post

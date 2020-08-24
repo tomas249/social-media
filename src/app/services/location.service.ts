@@ -14,6 +14,12 @@ export class LocationService {
         { name: 'Login', path: '/auth/login', component: 'LoginComponent' },
         { name: 'Register', path: '/auth/register', component: 'RegisterComponent' }
       ],
+    },
+    Profile: {
+      navItems: [
+        { name: 'Posts', path: '../posts', component: 'PostsListComponent' },
+        { name: 'Media', path: '../media', component: 'LogoutComponent' }
+      ],
     }
   }
 
@@ -27,9 +33,11 @@ export class LocationService {
 
   parentLoc;
 
-  constructor(
-    // private modal: ModalService
-  ) { }
+  constructor( ) {
+    // this.location$.subscribe(res => {
+    //   console.log('LOCATION >>', res)
+    // })
+  }
 
   subscribeLocation() {
     if (this.fixed) return;
@@ -62,16 +70,19 @@ export class LocationService {
   }
 
   addChildLoc(location, opt:{extend:boolean, parentLoc?:string, useNav?:boolean}) {
+
     if (this.fixed) return;
 
     const checkSameParent = this.parentLoc && opt.parentLoc === this.parentLoc;
-    
+  
+    // Control NavBar
     if (opt.useNav && !checkSameParent) {
       this.changeNavItems(this.paths[opt.parentLoc].navItems, location);
     } else if (!opt.useNav && !checkSameParent) {
       this.changeNavItems([]);
     }
 
+    // If same parent, do not overwrite location
     if (checkSameParent) {
       opt.extend = true;
     }

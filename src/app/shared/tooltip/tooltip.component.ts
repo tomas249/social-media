@@ -65,7 +65,7 @@ export class TooltipComponent implements OnInit {
 
    
     this.wS = a.width;
-    this.hS = this.y - start + this.offset_Y;
+    this.hS = this.y - start + this.offset_Y + 30;
     this.xS = this.x;
     this.yS = start - this.offset_Y;
     // console.warn(a)
@@ -92,8 +92,8 @@ export class TooltipComponent implements OnInit {
     }
   }
 
-  close(from?) {
-    if (this.mouseInside || !this.finishedLoad) {
+  close(forceClose=false) {
+    if ((this.mouseInside || !this.finishedLoad) && !forceClose) {
       this.closeEmitted = true;
       return;
     };

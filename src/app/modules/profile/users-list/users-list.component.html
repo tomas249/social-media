@@ -1,0 +1,28 @@
+<h1>Followers</h1>
+<hr>
+
+<div *ngIf="loading; else listLoaded">
+  <span>Loading users...</span>
+</div>
+
+<div *ngIf="!loading && usersList?.length === 0">
+  <span>No users</span>
+</div>
+
+<ng-template #listLoaded>
+  <div *ngFor="let user of usersList; let i=index; let isLast=last">
+    <div class="container" >
+      <img #img (mousemove)="openTooltip(user, i)" (mouseleave)="closeTooltip()"
+        class="acc-photo" src="assets/avatar.png" >
+      <div class="acc-names">
+        <span class="acc-name">{{ user.name }}</span>
+        <span class="acc-username">{{ user.username }}</span>
+      </div>
+      <button *ngIf="user._id !== currentUserId; else itIsYou" class="follow-bttn"
+      [ngClass]="doesItFollow(user._id) ? 'following' : 'not-following'"
+      (click)="followUser(user)"></button>
+      <ng-template #itIsYou><span class="push-right">You</span></ng-template>
+    </div>
+    <hr class="divider" *ngIf="!isLast">
+  </div>
+</ng-template>

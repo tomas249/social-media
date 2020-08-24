@@ -1,6 +1,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const User = require('../models/User');
+const Post = require('../models/Post');
 const advancedResults = require('../middleware/advancedResults');
 
 // @desc      Get all users
@@ -45,4 +46,18 @@ exports.getUserByUsername = asyncHandler(async (req, res, next) => {
     });
   }
   await advancedResults(cb, find='one', model=User)(req, res, next);
+});
+
+
+// @desc      Update count
+// @route     GET /api/users/:userId/resetcount
+// @access    Public
+exports.resetCount = asyncHandler(async (req, res, next) => {
+  const postsLength = await Post.countDocuments({ owner: req.params.userId });
+  console.log(postsLength)
+  await User.findByIdAndUpdate(req.params.userId,
+    {
+     'count.posts': postsLength
+    });
+  res.status(200).json({ success: true });
 });

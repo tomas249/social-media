@@ -46,6 +46,8 @@ export class PostArticleComponent implements OnInit, OnDestroy {
       this.postsService.getPostById(postId).subscribe(
         res => {
           this.parentPost = res;
+          const isPost = this.parentPost.parent.length === 0;
+          this.locationService.changeRootLoc(isPost ? 'Post' : 'Reply');
           this.postsService.changePostsList(res.child);
           this.parentPost$ = this.postsService.updatedPosts$.subscribe(
             res => {
@@ -57,7 +59,6 @@ export class PostArticleComponent implements OnInit, OnDestroy {
         }
       )
     });
-    this.locationService.addChildLoc('Post', {extend: false});
   }
 
   ngOnDestroy(): void {
