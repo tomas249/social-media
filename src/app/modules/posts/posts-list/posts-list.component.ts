@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { PostsService } from '../posts.service';
 import { LocationService } from 'src/app/services/location.service';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
@@ -11,6 +11,8 @@ import { ModalService } from 'src/app/shared/modal/modal.service';
   styleUrls: ['./posts-list.component.css']
 })
 export class PostsListComponent implements OnInit, OnDestroy {
+
+  @Input() searchParams = null;
 
   postsList$;
   postsList;
@@ -35,18 +37,24 @@ export class PostsListComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.locationService.addChildLoc('Explore', {extend: false});
     this.postsList$ = this.postsService.updatedPosts$.subscribe(
       res => {
         this.postsList = res;
         this.loading = false;
       }
     );
-    this.postsService.getAllPosts();
+    if (this.searchParams) {
+      this.postsService.getAllPosts(this.searchParams);
+    } else {
+      this.postsService.getAllPosts();
+      this.locationService.addChildLoc('Explore', {extend: false});
+    }
   }
 
   ngOnDestroy(): void {
-    this.locationService.removeChildLoc(true);
+    if (!this.searchParams) {
+      this.locationService.removeChildLoc(true);
+    }
     this.postsList$.unsubscribe();
   }
 

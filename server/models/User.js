@@ -60,6 +60,14 @@ const UserSchema = new mongoose.Schema({
     posts: {
       type: Number,
       default: 0
+    },
+    followers: {
+      type: Number,
+      default: 0
+    },
+    following: {
+      type: Number,
+      default: 0
     }
   }
 }, { timestamps: true });
@@ -81,6 +89,7 @@ const generateUsername = (name) => {
 
 // First time User is created
 UserSchema.pre('save', async function (next) {
+  this._wasNew = this.isNew;
   // Validation to differentiate between
   // created & updated
   if (!this.isNew) next();
@@ -101,6 +110,22 @@ UserSchema.pre('save', async function (next) {
     });
   }
   this.username = generatedUsername;
+
+  next();
+});
+
+UserSchema.post('save', async function (doc) {
+  if (!this._wasNew) {
+    console.log('is not new, returning');
+    return;
+  };
+  
+  // Generate follow schema
+  await this.model('Follow').create({
+    user: doc._id
+  });
+  console.log('created');
+
 });
 
 // Sign JWT and return

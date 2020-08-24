@@ -33,7 +33,7 @@ export class PostsService {
   }
 
   getAllPosts(params?) {
-    params = '?parent[size]=0&childLevel=3';
+    params = params || '?parent[size]=0&childLevel=3';
     this.api.get('/posts' + params).subscribe(
       res => {
         this.postsList = res.data.data;

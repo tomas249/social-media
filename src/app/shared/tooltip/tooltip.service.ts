@@ -35,8 +35,9 @@ export class TooltipService {
     return true;
   }
 
-  close() {
-    this.tooltip.close('origin');
+  close(forceClose=false) {
+    if (!this.opened) return;
+    this.tooltip.close(forceClose);
   }
 
   onClosed() {

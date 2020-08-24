@@ -99,6 +99,6 @@ export class TokenService {
         localStorage.setItem('accessToken', res.accessToken);
       })
     );
-  } 
+  }
 
 }

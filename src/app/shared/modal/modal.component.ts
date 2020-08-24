@@ -29,6 +29,9 @@ export class ModalComponent implements OnInit {
     },
     PostsModule: {
       import: async () => (await import('src/app/modules/posts/posts.module')).PostsModule
+    },
+    ProfileModule: {
+      import: async () => (await import('src/app/modules/profile/profile.module')).ProfileModule
     }
   };
   

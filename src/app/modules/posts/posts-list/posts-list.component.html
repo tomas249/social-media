@@ -1,21 +1,19 @@
 <div class="container">
   <div class="post-list">
 
-    <div *ngIf="isLogged; else notLogged">
+    <div *ngIf="!searchParams && isLogged">
       <app-post-publish [destinationConfig]="{destination: 1}"></app-post-publish>
     </div>
-    <ng-template #notLogged>
-      <div class="border auth-container">
-        <div class="notLogged">
-          <span class="auth-text">Auth in order to post</span>
-          <div>
-            <button class="bttn" (click)="auth('LoginComponent')">Login</button>
-            &nbsp;or&nbsp;
-            <button class="bttn" (click)="auth('RegisterComponent')">Register</button>
-          </div>
+    <div class="border auth-container" *ngIf="!searchParams && !isLogged">
+      <div class="notLogged">
+        <span class="auth-text">Auth in order to post</span>
+        <div>
+          <button class="bttn" (click)="auth('LoginComponent')">Login</button>
+          &nbsp;or&nbsp;
+          <button class="bttn" (click)="auth('RegisterComponent')">Register</button>
         </div>
       </div>
-    </ng-template>
+    </div>
 
     <div *ngIf="postsList && postsList.length !== 0">
       <div class="border" *ngFor="let post of postsList; let i=index">

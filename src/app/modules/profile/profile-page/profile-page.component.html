@@ -1,0 +1,12 @@
+<div class="container" *ngIf="user">
+  <app-profile-card [allowRouter]="false" [user]="user"></app-profile-card>
+</div>
+<hr>
+<div class="tab-container" *ngIf="selectedTab !== null">
+  <ng-container *ngFor="let tab of tabs; let i=index">
+    <div class="tab" [ngClass]="{'selected': i === selectedTab}" (click)="selectTab(i)">
+      <span>{{ tab.name }}</span>
+    </div>
+  </ng-container>
+</div>
+<ng-container #tabContent></ng-container>

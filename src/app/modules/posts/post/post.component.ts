@@ -61,7 +61,8 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     liked: false,
     shared: false,
     reported: false,
-    thread: false
+    thread: false,
+    tooltip: true
   }
 
   count = {
@@ -135,6 +136,12 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
         postReply: this.post, 
         destinationConfig: this.publishConfig
       });
+    // this.modal.waitForResponse().subscribe(res => {
+    //   if (res) {
+    //     this.count.replies += 1;
+    //     this.config.replied = true;
+    //   }
+    // })
   }
 
   onLike() {
@@ -166,6 +173,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('img') img:ElementRef
   openTooltip(event) {
+    if (!this.config.tooltip) return;
     this.img.nativeElement.style.zIndex = '10';
     const a = this.img.nativeElement.getBoundingClientRect();
     // console.log(a)
