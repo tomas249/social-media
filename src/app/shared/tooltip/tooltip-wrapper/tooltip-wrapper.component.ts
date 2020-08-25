@@ -9,7 +9,6 @@ import { TooltipService } from '../tooltip.service';
 export class TooltipWrapperComponent implements OnInit, AfterViewInit {
 
   @Input() params;
-  // @ViewChild('tooltipContent') tooltipContent: ElementRef;
   @ContentChild('tooltipContent') tooltipContent: ElementRef;
 
   constructor(
@@ -20,7 +19,6 @@ export class TooltipWrapperComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.tooltipContent.nativeElement)
     this.tooltipContent.nativeElement.addEventListener('mousemove', this.openTooltip.bind(this));
     this.tooltipContent.nativeElement.addEventListener('mouseleave', this.closeTooltip.bind(this));
   }

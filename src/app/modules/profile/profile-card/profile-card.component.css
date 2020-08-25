@@ -43,6 +43,10 @@
   background-color:  rgb(21, 172, 89);
 }
 
+.accounts {
+  display: flex;
+}
+
 .acc-name {
   font-size: 1rem;
   color: var(--text-color);
@@ -55,6 +59,17 @@
   color: rgb(136, 153, 166);
   font-size: 1rem;
   cursor: pointer;
+}
+
+.acc-edit {
+  /* text-decoration: underline; */
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: rgb(6, 184, 255);
+  cursor: pointer;
+}
+.acc-edit:hover {
+  color: var(--primary-color);
 }
 
 .section {

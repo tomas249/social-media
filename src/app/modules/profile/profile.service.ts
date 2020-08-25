@@ -80,7 +80,7 @@ export class ProfileService {
       return false;
     }
     else if (this.currentUserId === userId) {
-      return false;
+      return null;
     }
     else if (this.followsList) {
       return this.followsList.following.includes(userId);

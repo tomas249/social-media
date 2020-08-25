@@ -1,5 +1,5 @@
 <div class="container" *ngIf="user">
-  <app-profile-card [allowRouter]="false" [user]="user"></app-profile-card>
+  <app-profile-card [allowEdit]="true" [allowRouter]="false" [user]="user"></app-profile-card>
 </div>
 <hr>
 <div class="tab-container" *ngIf="selectedTab !== null">

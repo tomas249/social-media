@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProfileCardComponent } from './profile-card/profile-card.component';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
 import { UsersListComponent } from './users-list/users-list.component';
+import { UserEditComponent } from './user-edit/user-edit.component';
 
 
 const routes: Routes = [
@@ -19,7 +20,7 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [ProfileCardComponent, ProfilePageComponent, UsersListComponent],
+  declarations: [ProfileCardComponent, ProfilePageComponent, UsersListComponent, UserEditComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes)

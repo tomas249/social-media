@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { ProfileService } from '../profile.service';
 import { Router } from '@angular/router';
 import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
@@ -14,15 +14,19 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
 
   follows = null;
   loadingFollows = true;
+  @Input() allowEdit = false;
   @Input() allowRouter = true;
   @Input() user;
   // _user;
   // @Input()
   // set user(user) {
-  //   this.profileService.checkIfFollows(user._id).subscribe(res => {
-  //     this.follows = res;
-  //     this._user = user;
-  //   });
+  //   this.profileService.checkIfFollows(user._id).subscribe(
+  //     res => {
+  //       this.follows = res;
+  //       this._user = user;
+  //       this.loadingFollows = false;
+  //     }
+  //   )
   // }
   // get user() {
   //   return this._user;
@@ -49,7 +53,10 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
     this.profileService.removeUser();
   }
 
-  ngOnChanges(changes) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.user && !changes.user.firstChange) {
+      this.follows = this.profileService.checkIfFollowsByList(changes.user.currentValue._id)
+    }
   }
 
   goToUser(username) {
