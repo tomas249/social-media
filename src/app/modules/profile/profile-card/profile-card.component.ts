@@ -17,20 +17,6 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
   @Input() allowEdit = false;
   @Input() allowRouter = true;
   @Input() user;
-  // _user;
-  // @Input()
-  // set user(user) {
-  //   this.profileService.checkIfFollows(user._id).subscribe(
-  //     res => {
-  //       this.follows = res;
-  //       this._user = user;
-  //       this.loadingFollows = false;
-  //     }
-  //   )
-  // }
-  // get user() {
-  //   return this._user;
-  // }
 
   constructor(
     private profileService: ProfileService,
@@ -95,6 +81,16 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       return true;
     }
+  }
+
+  onEditUser() {
+    this.modal.open('ProfileModule', 'UserEditComponent', {user: this.user});
+    this.modal.waitForResponse().subscribe(res => {
+      if (res) {
+        console.log(res)
+        Object.assign(this.user, res.user);
+      }
+    })
   }
 
 }

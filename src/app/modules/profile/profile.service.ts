@@ -95,4 +95,8 @@ export class ProfileService {
     }
   }
 
+  updateUserData(updatedUser) {
+    return this.api.post('/users/updateProfile', {updatedUser});
+  }
+
 }

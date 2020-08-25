@@ -11,7 +11,7 @@
   <div class="accounts">
     <span class="acc-name" (click)="goToUser(user.username)">{{ user.name }}</span>
     <span class="acc-username" (click)="goToUser(user.username)">@{{ user.username }}</span>
-    <span class="acc-edit" *ngIf="allowEdit && follows === null">Edit profile</span>
+    <span class="acc-edit" *ngIf="allowEdit && follows === null" (click)="onEditUser()">Edit profile</span>
   </div>
   <div>
     <p>{{ user.description }}</p>

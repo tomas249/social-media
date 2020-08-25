@@ -32,6 +32,7 @@ const routes: Routes = [
 export class ProfileModule {
   static components = {
     ProfileCardComponent,
-    UsersListComponent
+    UsersListComponent,
+    UserEditComponent
   }
 }

@@ -61,3 +61,13 @@ exports.resetCount = asyncHandler(async (req, res, next) => {
     });
   res.status(200).json({ success: true });
 });
+
+
+// @desc      Update user profile
+// @route     GET /api/users/updateProfile
+// @access    Public
+exports.updateProfile = asyncHandler(async (req, res, next) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id, req.body.updatedUser, {new:true, runValidators:true});
+  res.status(200).json({ success: true, data: updatedUser });
+});

@@ -5,13 +5,13 @@ const router = express.Router();
 const advancedResults = require('../middleware/advancedResults');
 const { verifyToken, authorize } = require('../middleware/protect');
 // Controllers
-const { getUsers, getUserById, getUserByUsername, resetCount } = require('../controllers/users');
+const { getUsers, getUserById, getUserByUsername, resetCount, updateProfile } = require('../controllers/users');
 const { follow, getFollowList } = require('../controllers/follows');
  
 router.get('', getUsers ); //adv
 router.get('/u/:username', getUserByUsername);
+router.post('/updateProfile', verifyToken, updateProfile);
 router.get('/:userId', getUserById);
-// router.put('/updateProfile', updateProfile);
 // router.get('/:userId/posts'); // > re-route
 
 // Temporal
