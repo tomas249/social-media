@@ -11,6 +11,7 @@ import { PostArticleComponent } from './post-article/post-article.component';
 
 import { ModalModule } from 'src/app/shared/modal/modal.module';
 // import { ProfileModule } from 'src/app/modules/profile/profile.module';
+import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
 
 import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
 import { UserPipe } from 'src/app/pipes/user.pipe';
@@ -27,7 +28,8 @@ import { UserPipe } from 'src/app/pipes/user.pipe';
   imports: [
     CommonModule,
     PostsRoutingModule,
-    ModalModule
+    ModalModule,
+    TooltipModule
   ]
 })
 export class PostsModule { 
