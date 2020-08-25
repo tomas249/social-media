@@ -173,6 +173,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('img') img:ElementRef
   openTooltip(event) {
+    return;
     if (!this.config.tooltip) return;
     this.img.nativeElement.style.zIndex = '10';
     const a = this.img.nativeElement.getBoundingClientRect();
@@ -188,6 +189,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   closeTooltip() {
+    return;
     this.tooltip.close();
     this.img.nativeElement.style.zIndex = '2';
   }

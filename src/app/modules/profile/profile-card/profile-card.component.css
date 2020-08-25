@@ -61,6 +61,10 @@
   font-weight: bold;
 }
 
+.section-count {
+  cursor: pointer;
+}
+
 hr {
   width: 100%;
 }
