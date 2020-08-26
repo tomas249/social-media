@@ -54,7 +54,6 @@ exports.getUserByUsername = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.resetCount = asyncHandler(async (req, res, next) => {
   const postsLength = await Post.countDocuments({ owner: req.params.userId });
-  console.log(postsLength)
   await User.findByIdAndUpdate(req.params.userId,
     {
      'count.posts': postsLength
