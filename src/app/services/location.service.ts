@@ -14,6 +14,12 @@ export class LocationService {
         { name: 'Login', path: '/auth/login', component: 'LoginComponent' },
         { name: 'Register', path: '/auth/register', component: 'RegisterComponent' }
       ],
+    },
+    Profile: {
+      navItems: [
+        { name: 'Posts', path: '../posts', component: 'PostsListComponent' },
+        { name: 'Media', path: '../media', component: 'LogoutComponent' }
+      ],
     }
   }
 
@@ -23,22 +29,29 @@ export class LocationService {
   navItems: any[] = [];
 
   frozenData;
+  fixed = false;
 
   parentLoc;
 
-  constructor(
-    // private modal: ModalService
-  ) { }
+  constructor( ) {
+    // this.location$.subscribe(res => {
+    //   console.log('LOCATION >>', res)
+    // })
+  }
 
   subscribeLocation() {
+    if (this.fixed) return;
     return this.location$.asObservable();
   }
 
   subscribeNavItems() {
+    if (this.fixed) return;
     return this.navItems$.asObservable();
   }
 
   changeRootLoc(location) {
+    if (this.fixed) return;
+
     this.location = [location];
     this.location$.next(location);
     this.parentLoc = location;
@@ -46,6 +59,8 @@ export class LocationService {
   }
 
   changeNavItems(navItems, selected?) {
+    if (this.fixed) return;
+
     this.navItems = navItems;
     this.navItems$.next({
       navItems: this.navItems,
@@ -55,14 +70,19 @@ export class LocationService {
   }
 
   addChildLoc(location, opt:{extend:boolean, parentLoc?:string, useNav?:boolean}) {
+
+    if (this.fixed) return;
+
     const checkSameParent = this.parentLoc && opt.parentLoc === this.parentLoc;
-    
+  
+    // Control NavBar
     if (opt.useNav && !checkSameParent) {
       this.changeNavItems(this.paths[opt.parentLoc].navItems, location);
     } else if (!opt.useNav && !checkSameParent) {
       this.changeNavItems([]);
     }
 
+    // If same parent, do not overwrite location
     if (checkSameParent) {
       opt.extend = true;
     }
@@ -84,6 +104,8 @@ export class LocationService {
   }
 
   removeChildLoc(skip) {
+    if (this.fixed) return;
+
     this.location.pop();
     if (skip) return;
     const newLoc = this.location.join(' > ');
@@ -108,6 +130,14 @@ export class LocationService {
 
   getLocation() {
     return this.location;
+  }
+
+  fixLocation() {
+    this.fixed = true;
+  }
+
+  unfixLocation() {
+    this.fixed = false;
   }
 
 }

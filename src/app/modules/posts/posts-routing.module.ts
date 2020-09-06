@@ -7,11 +7,16 @@ import { PostComponent } from './post/post.component';
 import { PostPublishComponent } from './post-publish/post-publish.component';
 import { PostsListComponent } from './posts-list/posts-list.component';
 import { PostArticleComponent } from './post-article/post-article.component';
+import { PostHomeComponent } from './post-home/post-home.component';
 
 const routes: Routes = [
   { 
     path: 'explore', 
     component: PostsListComponent
+  },
+  { 
+    path: 'home', 
+    component: PostHomeComponent
   },
   { 
     path: 'post/:postId',

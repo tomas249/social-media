@@ -28,6 +28,11 @@ const PostSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  parentRef: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Post',
+    required: false
+  },
   parent: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Post'
@@ -91,7 +96,7 @@ PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
   innerLim = limit[level-1] || limit[limit.length - 1];
 
   // Outer: this is the first object and corresponds to the last level
-  const selectFields = 'text createdAt parent replyRef';
+  const selectFields = 'text createdAt parent parentRef replyRef likes whoLiked';
   if (!obj) obj = {path:'child', options: { limit:innerLim, select: selectFields }}
 
   // Break recursive func
@@ -113,7 +118,7 @@ PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
 // it will be returned. To avoid this, it has to be explicitly
 // excluded like this: www.example.com/route?select=-owner
 const populateOwner = function(next) {
-  this.populate('owner', 'name username description');
+  this.populate('owner', 'name username description count avatar');
   next();
 };
 

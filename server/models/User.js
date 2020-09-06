@@ -20,8 +20,18 @@ const UserSchema = new mongoose.Schema({
     maxlength: [400, 'Description field max length is 400 characters'],
   },
   avatar: {
-    type: String,
-    default: 'default-avatar.png',
+    filename: {
+      type: String,
+      default: 'default-avatar.png'
+    },
+    relativePath: {
+      type: String,
+      default: '/a/default-avatar.png'
+    },
+    fullPath: {
+      type: String,
+      default: 'http://localhost:3000/a/default-avatar.png'
+    }
   },
   password: {
     type: String,
@@ -60,6 +70,14 @@ const UserSchema = new mongoose.Schema({
     posts: {
       type: Number,
       default: 0
+    },
+    followers: {
+      type: Number,
+      default: 0
+    },
+    following: {
+      type: Number,
+      default: 0
     }
   }
 }, { timestamps: true });
@@ -81,6 +99,7 @@ const generateUsername = (name) => {
 
 // First time User is created
 UserSchema.pre('save', async function (next) {
+  this._wasNew = this.isNew;
   // Validation to differentiate between
   // created & updated
   if (!this.isNew) next();
@@ -101,6 +120,22 @@ UserSchema.pre('save', async function (next) {
     });
   }
   this.username = generatedUsername;
+
+  next();
+});
+
+UserSchema.post('save', async function (doc) {
+  if (!this._wasNew) {
+    console.log('is not new, returning');
+    return;
+  };
+  
+  // Generate follow schema
+  await this.model('Follow').create({
+    user: doc._id
+  });
+  console.log('created');
+
 });
 
 // Sign JWT and return
@@ -108,7 +143,8 @@ UserSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ 
     id: this._id,
     name: this.name,
-    username: this.username
+    username: this.username,
+    avatar: this.avatar
   }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });

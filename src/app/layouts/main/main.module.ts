@@ -10,6 +10,7 @@ import { LocationService } from 'src/app/services/location.service';
 
 // Modules
 import { ModalModule } from 'src/app/shared/modal/modal.module';
+import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
 
 // import { AuthModule } from 'src/app/modules/auth/auth.module';
 
@@ -22,6 +23,7 @@ import { ModalModule } from 'src/app/shared/modal/modal.module';
     FormsModule,
     ReactiveFormsModule,
     ModalModule,
+    TooltipModule,
     MainRoutingModule
   ],
   providers: [LocationService]

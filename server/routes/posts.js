@@ -5,8 +5,9 @@ const router = express.Router();
 const advancedResults = require('../middleware/advancedResults');
 const { verifyToken, authorize } = require('../middleware/protect');
 // Controllers
-const { publishPost, replyPost, getPosts, deletePost, likePost } = require('../controllers/posts');
+const { publishPost, replyPost, getPosts, deletePost, likePost, getFollowersPosts } = require('../controllers/posts');
 
+router.get('/user', verifyToken, getFollowersPosts);
 router.post('', verifyToken, publishPost);
 router.post('/:postId/reply', verifyToken, replyPost);
 router.get('', getPosts);

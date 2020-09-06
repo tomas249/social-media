@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="row">
+    <img class="acc-photo" [src]="user.avatar.fullPath" (click)="goToUser(user.username)">
+    <div *ngIf="follows !== null && loadingFollows" class="follow-bttn" (click)="followUser(user._id)">
+      Loading...
+    </div>
+    <div *ngIf="follows !== null && !loadingFollows"
+      class="follow-bttn" (click)="followUser(user._id)"
+      [ngClass]="follows ? 'following' : 'not-following'"></div>
+  </div>
+  <div class="accounts">
+    <span class="acc-name" (click)="goToUser(user.username)">{{ user.name }}</span>
+    <span class="acc-username" (click)="goToUser(user.username)">@{{ user.username }}</span>
+    <span class="acc-edit" *ngIf="allowEdit && follows === null" (click)="onEditUser()">Edit profile</span>
+  </div>
+  <div>
+    <p>{{ user.description }}</p>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="column">
+      <span class="section">Posts</span>
+      <span class="section-count">{{ user.count.posts }}</span>
+    </div>
+    <div class="column">
+      <span class="section">Followers</span>
+      <span class="section-count" (click)="openList('followers')">{{ user.count.followers }}</span>
+    </div>
+    <div class="column">
+      <span class="section">Following</span>
+      <span class="section-count" (click)="openList('following')">{{ user.count.following }}</span>
+    </div>
+  </div>
+</div>

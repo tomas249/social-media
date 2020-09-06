@@ -31,6 +31,7 @@ export class AuthModule {
   static components = {
     AuthComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    LogoutComponent
   };
 }

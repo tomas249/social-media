@@ -42,6 +42,7 @@ article {
 
 .a-acc {
   display: flex;
+  position: relative;
 }
 
 .a-name {
@@ -49,11 +50,15 @@ article {
   color: var(--text-color);
   font-weight: bold;
   margin-right: 0.3rem;
+  z-index: 2;
+  cursor: pointer;
 }
 
 .a-username {
   color: rgb(136, 153, 166);
   font-size: 1rem;
+  z-index: 2;
+  cursor: pointer;
 }
 
 .a-profile {
@@ -67,12 +72,14 @@ article {
   height: 3.4rem;
   border-radius:50%;
   background-color: var(--hover-color);
-  margin-right: 0.8rem;
+  /* margin-right: 0.8rem; */
   padding: 0.2rem;
   position: relative;
+  z-index: 2;
 }
 
 .a-content {
+  margin-left: 0.8rem;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -127,4 +134,9 @@ article {
   height: 90%;
   margin-top: 2rem;
   position: absolute;
+}
+
+.red {
+  color: rgb(255, 106, 106);
+  border: 0;
 }
