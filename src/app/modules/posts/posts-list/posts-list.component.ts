@@ -13,6 +13,7 @@ import { ModalService } from 'src/app/shared/modal/modal.service';
 export class PostsListComponent implements OnInit, OnDestroy {
 
   @Input() searchParams = null;
+  @Input() noLoggedMssg = 'Auth in order to post';
 
   postsList$;
   postsList;

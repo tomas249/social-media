@@ -13,7 +13,7 @@
   <div *ngFor="let user of usersList; let i=index; let isLast=last">
     <div class="container" >
       <img #img (mousemove)="openTooltip(user, i)" (mouseleave)="closeTooltip()"
-        class="acc-photo" src="assets/avatar.png" >
+        class="acc-photo" [src]="user.avatar.fullPath">
       <div class="acc-names">
         <span class="acc-name">{{ user.name }}</span>
         <span class="acc-username">{{ user.username }}</span>

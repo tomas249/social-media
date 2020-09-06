@@ -44,7 +44,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Route for images
 app.use('/a', (req, res, next) => {
-  console.log(req.url);
   const fileName = path.join(__dirname, 'public', 'avatars', req.url);
   fs.exists(fileName, (exists) => {
     const defaultImg = path.join(__dirname, 'public', 'avatars', 'imageNotFound.png');

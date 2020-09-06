@@ -206,7 +206,9 @@ exports.getFollowersPosts = asyncHandler(async (req, res, next) => {
 
   const userId = req.user._id;
   const followingDB = await Follow.findOne({ user: userId });
-  const followersPosts = await Post.find({ owner: { $in: followingDB.following } })
+  const followingArr = followingDB.following.concat(userId);
+
+  const followersPosts = await Post.find({ owner: { $in: followingArr } }).sort({'createdAt': -1});
   res.status(200).json({
     success: true,
     data: followersPosts

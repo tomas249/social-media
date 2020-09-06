@@ -11,6 +11,9 @@ import { ModalService } from 'src/app/shared/modal/modal.service';
 })
 export class PostHomeComponent implements OnInit, OnDestroy {
 
+  isLogged = false;
+  loading = true;
+
   constructor(
     private postsService: PostsService,
     private locationService: LocationService,
@@ -20,7 +23,16 @@ export class PostHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.postsService.allowSearch = false;
-    this.postsService.getFollowersPosts();
+    this.token.subscribeAcc().subscribe(
+      res => {
+        this.isLogged = !!res;
+        if (this.isLogged && this.loading) {
+          this.loading = false;
+          this.postsService.getFollowersPosts();
+        }
+      }
+    );
+
   }
 
   ngOnDestroy() {

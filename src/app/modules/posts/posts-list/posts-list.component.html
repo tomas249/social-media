@@ -6,7 +6,7 @@
     </div>
     <div class="border auth-container" *ngIf="!searchParams && !isLogged">
       <div class="notLogged">
-        <span class="auth-text">Auth in order to post</span>
+        <span class="auth-text">{{ noLoggedMssg }}</span>
         <div>
           <button class="bttn" (click)="auth('LoginComponent')">Login</button>
           &nbsp;or&nbsp;
