@@ -1,5 +1,13 @@
 <div class="container" *ngIf="parentPost">
   <div class="post-list">
+    <!-- Upper post -->
+    <div *ngFor="let upperPost of parentPost.parent">
+      <app-post
+        [publishConfig]="{destination:0}"
+        [post]="upperPost"
+        [inputConfig]="{owner:false, thread: true}">
+        </app-post>
+    </div>
     <!-- Main Post -->
     <div class="main-post">
       <app-post
