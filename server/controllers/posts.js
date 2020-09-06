@@ -106,7 +106,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
     path: 'parent',
     select: parentSelect,
     options: {
-      sort: '-parent',
+      sort: 'parent',
       limit: parentLimit,
     }
   };

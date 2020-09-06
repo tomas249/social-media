@@ -67,4 +67,8 @@ export class PostArticleComponent implements OnInit, OnDestroy {
     this.parentPost = null;
   }
 
+  onLoadUpperPost(parentIndex) {
+    console.log(parentIndex);
+  }
+
 }

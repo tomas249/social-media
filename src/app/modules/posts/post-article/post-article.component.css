@@ -1,5 +1,6 @@
 .main-post {
   border-bottom: 15px solid var(--primary-color);
+  background: var(--hover-color);
 }
 
 .container {
@@ -20,3 +21,14 @@
 .reply-container {
   border-bottom: 0.15rem solid var(--primary-color);
 }
+
+/* .upper-post {
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  background: var(--hover-color);
+}
+
+.upper-post:hover {
+  background: rgb(21, 172, 89);
+} */
