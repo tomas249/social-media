@@ -20,8 +20,18 @@ const UserSchema = new mongoose.Schema({
     maxlength: [400, 'Description field max length is 400 characters'],
   },
   avatar: {
-    type: String,
-    default: 'default-avatar.png',
+    filename: {
+      type: String,
+      default: 'default-avatar.png'
+    },
+    relativePath: {
+      type: String,
+      default: '/a/default-avatar.png'
+    },
+    fullPath: {
+      type: String,
+      default: 'http://localhost:3000/a/default-avatar.png'
+    }
   },
   password: {
     type: String,
@@ -133,7 +143,8 @@ UserSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ 
     id: this._id,
     name: this.name,
-    username: this.username
+    username: this.username,
+    avatar: this.avatar
   }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });

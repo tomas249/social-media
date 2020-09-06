@@ -13,6 +13,7 @@ export class PostPublishComponent implements OnInit {
   @ViewChild('postInput') postInput;
   @Input() postReply = null;
   @Input() destinationConfig = null;
+  user;
 
   constructor(
     private postsService: PostsService,
@@ -22,6 +23,7 @@ export class PostPublishComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.user = this.token.getUserData();
     if (!this.destinationConfig) {
       const loc = this.locationService.getLocation();
       if (loc[0] === 'Explore') {

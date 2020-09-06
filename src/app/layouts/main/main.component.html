@@ -32,7 +32,7 @@
         <!-- NAVBAR -->
         <div class="h-nav">
           <div class="h-item">
-            <a class="h-bttn h-nav-link">
+            <a class="h-bttn h-nav-link" [routerLink]="['/home']" routerLinkActive="selected">
               <svg class="bi bi-house" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd"
@@ -103,7 +103,7 @@
         <a class="h-bttn h-acc" (click)="accountGoTo()">
           <div class="acc-container">
             <ng-container *ngIf="user; else loggedOut">
-              <span class="acc-photo"></span>
+              <img class="acc-photo" [src]="user.avatar.fullPath">
               <div class="acc-names">
                 <span class="acc-name">{{ user.name }}</span>
                 <span class="acc-username">@{{ user.username }}</span>

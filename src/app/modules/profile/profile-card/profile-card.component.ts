@@ -27,6 +27,7 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
   ) { }
 
   ngOnInit(): void {
+    // this.user.avatar = `http://localhost:3000/a/${this.user.avatar}`;
     this.profileService.checkIfFollows(this.user._id).subscribe(
       res => {
         this.follows = res;
@@ -87,7 +88,6 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
     this.modal.open('ProfileModule', 'UserEditComponent', {user: this.user});
     this.modal.waitForResponse().subscribe(res => {
       if (res) {
-        console.log(res)
         Object.assign(this.user, res.user);
       }
     })

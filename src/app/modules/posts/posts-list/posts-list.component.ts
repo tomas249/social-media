@@ -55,6 +55,9 @@ export class PostsListComponent implements OnInit, OnDestroy {
     if (!this.searchParams) {
       this.locationService.removeChildLoc(true);
     }
+    this.postsService.changePostsList([]);
+    this.postsList = null;
+    this.loading = true;
     this.postsList$.unsubscribe();
   }
 

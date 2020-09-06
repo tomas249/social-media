@@ -118,7 +118,7 @@ PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
 // it will be returned. To avoid this, it has to be explicitly
 // excluded like this: www.example.com/route?select=-owner
 const populateOwner = function(next) {
-  this.populate('owner', 'name username description count');
+  this.populate('owner', 'name username description count avatar');
   next();
 };
 

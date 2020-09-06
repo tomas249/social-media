@@ -1,10 +1,23 @@
 <h3>Edit on @{{ user.username }}</h3>
 <hr>
+<input #imageSelect type="file" (change)="onImageSelect($event)" style="display: none;">
 <table>
   <tr>
     <td>Avatar:</td>
-    <td><img class="acc-photo" src="assets/avatar.png"></td>
-    <td><input class="acc-photo-change" type="submit" value="Change profile image"></td>
+    <td><img class="acc-photo" [src]="avatarUrl"></td>
+    <td>
+      <input
+        *ngIf="selectedImage"
+        (click)="onCancelSelectedImage()"
+        class="acc-photo-change"
+        type="button"
+        value="Cancel">
+      <input
+        (click)="imageSelect.click()"
+        class="acc-photo-change"
+        type="button"
+        [value]="selectedImage ? 'Select new image' : 'Change profile image'">
+    </td>
   </tr>
   <tr>
     <td>Name:</td>
@@ -17,6 +30,9 @@
   <tr>
     <td></td>
     <td></td>
-    <td class="flex"><button class="btn-save" (click)="onSave(name, description)">Save</button></td>
+    <td class="flex">
+      <div *ngIf="showUploadProgress">{{ uploadProgress }}</div>
+      <button class="btn-save" (click)="onSave(name, description)">Save</button>
+    </td>
   </tr>
 </table>

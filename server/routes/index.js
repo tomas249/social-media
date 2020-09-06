@@ -10,6 +10,7 @@ const files = require('./files');
 router.use('/auth', auth);
 router.use('/users', users);
 router.use('/posts', posts);
+router.use('/files', files);
 router.use(errorHandler);
 
 module.exports = router;

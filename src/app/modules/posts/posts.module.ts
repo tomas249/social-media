@@ -15,6 +15,7 @@ import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
 
 import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
 import { UserPipe } from 'src/app/pipes/user.pipe';
+import { PostHomeComponent } from './post-home/post-home.component';
 @NgModule({
   declarations: [
     DateAgoPipe,
@@ -23,7 +24,8 @@ import { UserPipe } from 'src/app/pipes/user.pipe';
     PostPublishComponent,
     PostsListComponent,
     PostArticleComponent,
-    PostsComponent
+    PostsComponent,
+    PostHomeComponent
   ],
   imports: [
     CommonModule,

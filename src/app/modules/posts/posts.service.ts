@@ -11,6 +11,7 @@ import { ModalService } from 'src/app/shared/modal/modal.service';
 })
 export class PostsService {
 
+  allowSearch = true;
   postsList = [];
   updatedPosts$ = new BehaviorSubject(this.postsList);
 
@@ -33,6 +34,7 @@ export class PostsService {
   }
 
   getAllPosts(params?) {
+    if (!this.allowSearch) return;
     params = params || '?parent[size]=0&childLevel=3';
     this.api.get('/posts' + params).subscribe(
       res => {
@@ -40,6 +42,13 @@ export class PostsService {
         this.updatedPosts$.next(this.postsList);
       }
     )
+  }
+
+  getFollowersPosts() {
+    this.api.get(`/posts/user`).subscribe(res => {
+      this.postsList = res.data;
+      this.updatedPosts$.next(this.postsList);
+    });
   }
 
   deletePost(postId, config) {

@@ -1,8 +1,9 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const Post = require('../models/Post');
 const advancedResults = require('../middleware/advancedResults');
+const Post = require('../models/Post');
 const User = require('../models/User');
+const Follow = require('../models/Follow');
 
 // @desc      Publish post
 // @route     POST /api/posts
@@ -17,7 +18,7 @@ exports.publishPost = asyncHandler(async (req, res, next) => {
 
   // Instead of populating owner, use data that we already have
   let postRes = post.toObject({ getters: true });
-  postRes.owner = (({_id, name, username, description, count}) => ({_id, name, username, description, count}))(req.user);
+  postRes.owner = (({_id, name, username, description, count, avatar}) => ({_id, name, username, description, count, avatar}))(req.user);
 
   // Increase posts count
   await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': 1} });
@@ -194,5 +195,20 @@ exports.likePost = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: post
+  });
+});
+
+
+// @desc      Get posts from followers
+// @route     GET /api/posts/:userId
+// @access    Private
+exports.getFollowersPosts = asyncHandler(async (req, res, next) => {
+
+  const userId = req.user._id;
+  const followingDB = await Follow.findOne({ user: userId });
+  const followersPosts = await Post.find({ owner: { $in: followingDB.following } })
+  res.status(200).json({
+    success: true,
+    data: followersPosts
   });
 });

@@ -14,11 +14,12 @@ router.post('/updateProfile', verifyToken, updateProfile);
 router.get('/:userId', getUserById);
 // router.get('/:userId/posts'); // > re-route
 
-// Temporal
-router.get('/:userId/resetcount', resetCount);
 
 router.get('/:userId/follow', verifyToken, follow);
 router.get('/:userId/followList/:populateField', getFollowList);
 router.get('/:userId/followList', getFollowList);
+
+// Temporal
+router.get('/:userId/resetcount', resetCount);
 
 module.exports = router;

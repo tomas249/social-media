@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { ProfileService } from '../profile.service';
+import { tap, flatMap, switchMap, filter, takeLast, map } from 'rxjs/operators';
+import { pipe, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user-edit',
@@ -10,6 +12,8 @@ import { ProfileService } from '../profile.service';
 export class UserEditComponent implements OnInit {
 
   user = null;
+  avatarUrl; // showAvatar
+  selectedImage: File = null;
 
   constructor(
     private modal: ModalService,
@@ -17,19 +21,70 @@ export class UserEditComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.avatarUrl = this.user.avatar.fullPath;
+  }
+
+  onImageSelect(event) {
+    const image = event.target.files[0];
+    
+    // Set image file
+    this.selectedImage = image;
+    // Display image
+    this.createFormData(image, url => { this.avatarUrl = url });
+  }
+
+  onCancelSelectedImage() {
+    this.avatarUrl = this.user.avatar.fullPath;
+    this.selectedImage = null;
   }
 
   onSave(name, description) {
+    // Validate
     if (!name || !description) return;
-    const updatedUser = {
+    let updatedUser = {
       name: name.value,
       description: description.value
     };
-    this.modal.emitResponse({user: updatedUser});
-    this.modal.close();
-    this.profileService.updateUserData(updatedUser).subscribe(
-      res => {}, err => console.error(err)
+
+    let subscription;
+    if (this.selectedImage) {
+      subscription = this.getNewAvatarUrl().pipe(
+        tap(avatarPath => updatedUser['avatar'] = avatarPath),
+        switchMap(_ => this.profileService.updateUserData(updatedUser))
+      );
+    } else {
+      subscription = this.profileService.updateUserData(updatedUser);
+    }
+    
+    subscription.subscribe(res => {
+      this.modal.emitResponse({user: res.data});
+      this.modal.close();
+    });
+  }
+
+
+  showUploadProgress = false;
+  uploadProgress: any = 0;
+  private getNewAvatarUrl() {
+    this.showUploadProgress = true;
+    return this.profileService.updateAvatar(this.selectedImage).pipe(
+      tap(res => {
+        if (res.progress) {
+          this.uploadProgress = res.progress;
+        }
+        else if (res.completed) {
+          this.uploadProgress = 'Uploaded';
+        }
+      }),
+      takeLast(1),
+      map(res => res.avatarPath)
     );
+  }
+
+  private createFormData(file, cb) {
+    const reader = new FileReader;
+    reader.readAsDataURL(file);
+    reader.onload = (_event:any) => { cb(reader.result) };
   }
 
 }

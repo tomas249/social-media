@@ -5,6 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const fileupload = require('express-fileupload');
+const fs = require('fs');
 
 // Load env vars
 dotenv.config({ path: path.join(__dirname, 'config', 'config.env') });
@@ -24,8 +25,8 @@ app.use(express.json({ limit: '20MB' }));
 // Enable CORS
 app.use(cors());
 
-// File upload (testing...)
-app.use(fileupload());
+// // File upload (testing...)
+// app.use(fileupload());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -38,6 +39,22 @@ if (process.env.NODE_ENV === 'development') {
 // Set Static Folder
 // To access angular code we need to do this
 app.use(express.static(path.join(__dirname, '..', 'dist', 'social-media')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+// Route for images
+app.use('/a', (req, res, next) => {
+  console.log(req.url);
+  const fileName = path.join(__dirname, 'public', 'avatars', req.url);
+  fs.exists(fileName, (exists) => {
+    const defaultImg = path.join(__dirname, 'public', 'avatars', 'imageNotFound.png');
+    if (exists) {
+      res.sendFile(fileName);
+    } else {
+      res.sendFile(defaultImg);
+    }
+  });
+});
 
 // Mount routes
 app.use('/api', routes);

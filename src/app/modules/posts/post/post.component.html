@@ -9,20 +9,20 @@
   <div class="post">
     <div class="a-profile">
       <div *ngIf="config.thread" class="thread-line"></div>
-      <tooltip-wrapper [params]="{user: this.post.owner}">
-        <img #tooltipContent src="assets/avatar.png">
+      <tooltip-wrapper [params]="{user: post.owner}">
+        <img #tooltipContent [src]="post.owner.avatar.fullPath">
       </tooltip-wrapper>
     </div>
   
     <div class="a-content">
       <div class="a-acc">
-        <tooltip-wrapper [params]="{user: this.post.owner}">
+        <tooltip-wrapper [params]="{user: post.owner}">
           <span #tooltipContent class="a-name">{{ post.owner.name }}</span>
         </tooltip-wrapper>
         <!-- <span class="a-name">{{ post.owner.name }}</span> -->
         <span class="a-username">
           <span>
-            <tooltip-wrapper [params]="{user: this.post.owner}">
+            <tooltip-wrapper [params]="{user: post.owner}">
               <span #tooltipContent>@{{ post.owner.username }}</span>
             </tooltip-wrapper> - {{ post.createdAt | dateAgo}}
           </span>
