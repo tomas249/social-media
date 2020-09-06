@@ -101,4 +101,13 @@ export class TokenService {
     );
   }
 
+  updateData(newData) {
+    const currentUser = this.getUserData();
+    const newUser = Object.assign(currentUser, newData);
+
+    this.account = newUser;
+    this.accountSubject.next(newUser);
+    localStorage.setItem('userData', newUser);
+  }
+
 }

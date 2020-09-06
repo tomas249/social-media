@@ -79,7 +79,7 @@ exports.getFollowList = asyncHandler(async (req, res, next) => {
 
   if (populateField) {
     followList = await Follow.find({ user: req.params.userId })
-      .populate({path: populateField, options: { select: 'name username description count' }})
+      .populate({path: populateField, options: { select: 'name username description count avatar' }})
   } else {
     followList = await Follow.find({ user: req.params.userId });
   }

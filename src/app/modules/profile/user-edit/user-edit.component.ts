@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { ProfileService } from '../profile.service';
 import { tap, flatMap, switchMap, filter, takeLast, map } from 'rxjs/operators';
 import { pipe, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -17,13 +19,15 @@ export class UserEditComponent implements OnInit {
 
   constructor(
     private modal: ModalService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private token: TokenService
   ) { }
 
   ngOnInit(): void {
     this.avatarUrl = this.user.avatar.fullPath;
   }
 
+  @ViewChild('imageSelect') imageSelect: ElementRef
   onImageSelect(event) {
     const image = event.target.files[0];
     
@@ -49,7 +53,14 @@ export class UserEditComponent implements OnInit {
     let subscription;
     if (this.selectedImage) {
       subscription = this.getNewAvatarUrl().pipe(
-        tap(avatarPath => updatedUser['avatar'] = avatarPath),
+        tap(avatarPath => {
+          updatedUser['avatar'] = {
+            filename: avatarPath,
+            relativePath: `/a/${avatarPath}`,
+            fullPath: `${environment.baseUrl}/a/${avatarPath}`
+          };
+          this.token.updateData({ avatar: updatedUser['avatar'] });
+        }),
         switchMap(_ => this.profileService.updateUserData(updatedUser))
       );
     } else {
@@ -84,7 +95,11 @@ export class UserEditComponent implements OnInit {
   private createFormData(file, cb) {
     const reader = new FileReader;
     reader.readAsDataURL(file);
-    reader.onload = (_event:any) => { cb(reader.result) };
+    reader.onload = (_event:any) => { 
+      // Clear file input
+      this.imageSelect.nativeElement.value = '';
+      cb(reader.result)
+    };
   }
 
 }
