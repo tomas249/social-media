@@ -10,16 +10,21 @@ const User = require('../models/User');
 exports.verifyToken = asyncHandler(async (req, res, next) => {
   // Get Token from header
   const rawHeader = req.header('Authorization');
-  if (!rawHeader) throw new ErrorResponse(401, 'Token no provided');
-  const token = rawHeader.split('Bearer ')[1];
-
-  // Verify token
-  const verified = await jwt.verify(token, process.env.JWT_SECRET);
-  if (!verified) throw new ErrorResponse(401, 'Invalid Token');
-
-  // Get user
-  req.user = await User.findById(verified.id);
-  next();
+  if (!rawHeader && req.verifySkip) { 
+    next();
+  }
+  else {
+    if (!rawHeader && !req.verifySkip) throw new ErrorResponse(401, 'Token no provided');
+    const token = rawHeader.split('Bearer ')[1];
+  
+    // Verify token
+    const verified = await jwt.verify(token, process.env.JWT_SECRET);
+    if (!verified) throw new ErrorResponse(401, 'Invalid Token');
+  
+    // Get user
+    req.user = await User.findById(verified.id);
+    next();
+  }
 });
 
 /**

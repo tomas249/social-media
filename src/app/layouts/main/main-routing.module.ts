@@ -15,6 +15,10 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'notifications',
+        loadChildren: () => import('src/app/modules/notifications/notifications.module').then(m => m.NotificationsModule)
+      },
+      {
         path: 'auth',
         loadChildren: () => import('src/app/modules/auth/auth.module').then(m => m.AuthModule)
       },

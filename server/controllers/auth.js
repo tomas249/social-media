@@ -1,6 +1,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const User = require('../models/User');
+const SocketUser = require('../models/SocketUser');
 
 /**
  * 
@@ -57,6 +58,9 @@ exports.login = asyncHandler(async (req, res, next) => {
   const matches = await user.matchPassword(password);
   if (!matches) throw new ErrorResponse(401, 'Invalid credentials');
 
+  // Activate SocketUser
+  await SocketUser.findByIdAndUpdate(user.socketId, { active: true });
+
   sendTokenResponse(user, 200, res);
 });
 
@@ -65,6 +69,31 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @route     GET /api/auth/logout
 // @access    Private
 exports.logout = asyncHandler(async (req, res, next) => {
+  // Deactivate SocketUser
+  await SocketUser.findByIdAndUpdate(req.user.socketId, { active: false });
+  res.status(200).json({
+    success: true
+  });
+});
+
+
+
+// @desc      Activate SocketIO
+// @route     GET /api/auth/socketio/activate
+// @access    Private
+exports.activateSocketIO = asyncHandler(async (req, res, next) => {
+  // Activate SocketUser
+  await SocketUser.findByIdAndUpdate(req.user.socketId, { active: true });
+  res.status(200).json({
+    success: true
+  });
+});
+// @desc      Deactivate SocketIO
+// @route     GET /api/auth/socketio/deactivate
+// @access    Private
+exports.deactivateSocketIO = asyncHandler(async (req, res, next) => {
+  // Deactivate SocketUser
+  await SocketUser.findByIdAndUpdate(req.user.socketId, { active: false });
   res.status(200).json({
     success: true
   });

@@ -4,7 +4,7 @@ import { TokenService } from 'src/app/services/token.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { delay } from 'rxjs/operators';
-import { ProfileService } from 'src/app/modules/profile/profile.service';
+import { NotificationsService } from 'src/app/modules/notifications/notifications.service';
 
 @Component({
   selector: 'app-main',
@@ -22,8 +22,11 @@ export class MainComponent implements OnInit {
 
   solicitedProfile = false;
 
+  notificationsCount = 0;
+
   constructor(
     private locationService: LocationService,
+    private notifications: NotificationsService,
     private token: TokenService,
     private modal: ModalService,
     private router: Router
@@ -52,7 +55,15 @@ export class MainComponent implements OnInit {
           }
         );
       }
-    )
+    );
+    // SocketIO
+    // this.notifications.getNotifications(true).subscribe(res => {
+    //   this.notificationsCount = res.data.length;
+    //   this.notifications.connect();
+    //   this.notifications.getMessage().subscribe((res: any) => {
+    //     this.notificationsCount += 1;
+    //   });
+    // })
   }
 
   goTo(item) {

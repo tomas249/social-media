@@ -20,6 +20,12 @@ export class LocationService {
         { name: 'Posts', path: '../posts', component: 'PostsListComponent' },
         { name: 'Media', path: '../media', component: 'LogoutComponent' }
       ],
+    },
+    Notifications: {
+      navItems: [
+        { name: 'All', path: '/notifications/all', component: 'PostsListComponent' },
+        { name: 'Only unread', path: '/notifications/unread', component: 'LogoutComponent' }
+      ],
     }
   }
 

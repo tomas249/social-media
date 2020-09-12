@@ -13,6 +13,7 @@ import { ModalService } from 'src/app/shared/modal/modal.service';
 export class PostsListComponent implements OnInit, OnDestroy {
 
   @Input() searchParams = null;
+  @Input() allowExploreSearch = true;
   @Input() noLoggedMssg = 'Auth in order to post';
 
   postsList$;
@@ -44,7 +45,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     );
-    if (this.searchParams) {
+    if (!this.allowExploreSearch) {
       this.postsService.getAllPosts(this.searchParams);
     } else {
       this.postsService.getAllPosts();

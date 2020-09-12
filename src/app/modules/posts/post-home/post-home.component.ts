@@ -23,6 +23,7 @@ export class PostHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.postsService.allowSearch = false;
+    this.locationService.addChildLoc('Home', {extend: false});
     this.token.subscribeAcc().subscribe(
       res => {
         this.isLogged = !!res;
@@ -37,6 +38,7 @@ export class PostHomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.postsService.allowSearch = true;
+    this.locationService.removeChildLoc(true);
   }
 
 }

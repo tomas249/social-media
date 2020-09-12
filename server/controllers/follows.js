@@ -1,8 +1,9 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
+const advancedResults = require('../middleware/advancedResults');
 const Follow = require('../models/Follow');
 const User = require('../models/User');
-const advancedResults = require('../middleware/advancedResults');
+const Notification = require('../models/Notification');
 
 // @desc      Follow or unfollow someone
 // @route     GET /api/users/:userId/follow
@@ -41,6 +42,15 @@ exports.follow = asyncHandler(async (req, res, next) => {
       {
         $inc: { 'count.followers': -1 }
       });
+
+    // Create notification
+    let notification = await Notification.create({
+      user: followingId,
+      responsible: followerId,
+      text: 'is not following you anymore'
+    });
+    notification = await notification.populate('responsible', 'name username description count avatar').execPopulate();
+    // req.io.to(req.io.id).emit('message', notification)
   } else {
     // Add follow
     followingData = await Follow.findOneAndUpdate(
@@ -59,6 +69,14 @@ exports.follow = asyncHandler(async (req, res, next) => {
       {
         $inc: { 'count.followers': 1 }
       });
+    // Create notification
+    let notification = await Notification.create({
+      user: followingId,
+      responsible: followerId,
+      text: 'started following you'
+    });
+    notification = await notification.populate('responsible', 'name username description count avatar').execPopulate();
+    // req.io.to(req.io.id).emit('message', notification)
   }
 
   res.status(200).json({
