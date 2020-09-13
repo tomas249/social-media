@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NotificationsService } from '../notifications.service';
 import { LocationService } from 'src/app/services/location.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-notifications-list',
@@ -10,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class NotificationsListComponent implements OnInit, OnDestroy {
 
+  isLogged = false;
   notificationsList;
   notificationsCount = 2;
   notificationsFilter;
@@ -18,7 +20,7 @@ export class NotificationsListComponent implements OnInit, OnDestroy {
     private notifications: NotificationsService,
     private router: Router,
     private locationService: LocationService,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
