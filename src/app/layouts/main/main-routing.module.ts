@@ -4,6 +4,9 @@ import { Routes, RouterModule } from '@angular/router';
 // Components
 import { MainComponent } from './main.component';
 
+// Guards
+import { LoggedInGuard } from 'src/app/guards/logged-in.guard';
+
 const routes: Routes = [
   {
     path: '',
@@ -16,7 +19,8 @@ const routes: Routes = [
       },
       {
         path: 'notifications',
-        loadChildren: () => import('src/app/modules/notifications/notifications.module').then(m => m.NotificationsModule)
+        loadChildren: () => import('src/app/modules/notifications/notifications.module').then(m => m.NotificationsModule),
+        canActivate: [LoggedInGuard]
       },
       {
         path: 'auth',
