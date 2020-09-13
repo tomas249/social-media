@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ErrorResponse = require('../utils/errorResponse');
+const SocketUser = require('../models/SocketUser');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -48,6 +49,10 @@ const UserSchema = new mongoose.Schema({
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       'Please add a valid email',
     ],
+  },
+  socketId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'SocketUser'
   },
   role: {
     type: String,
@@ -120,6 +125,10 @@ UserSchema.pre('save', async function (next) {
     });
   }
   this.username = generatedUsername;
+
+  // Create SocketUser
+  const socketUser = await SocketUser.create({ user: this._id });
+  this.socketId = socketUser._id;
 
   next();
 });

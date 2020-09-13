@@ -13,13 +13,12 @@ import { ModalModule } from 'src/app/shared/modal/modal.module';
 // import { ProfileModule } from 'src/app/modules/profile/profile.module';
 import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
 
-import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
-import { UserPipe } from 'src/app/pipes/user.pipe';
+import { PipesModule } from 'src/app/pipes/pipes.module';
+
 import { PostHomeComponent } from './post-home/post-home.component';
+
 @NgModule({
   declarations: [
-    DateAgoPipe,
-    UserPipe,
     PostComponent,
     PostPublishComponent,
     PostsListComponent,
@@ -31,6 +30,7 @@ import { PostHomeComponent } from './post-home/post-home.component';
     CommonModule,
     PostsRoutingModule,
     ModalModule,
+    PipesModule,
     TooltipModule
   ]
 })

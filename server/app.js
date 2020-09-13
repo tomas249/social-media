@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const fileupload = require('express-fileupload');
 const fs = require('fs');
 
+
 // Load env vars
 dotenv.config({ path: path.join(__dirname, 'config', 'config.env') });
 
@@ -23,10 +24,29 @@ const app = express();
 app.use(express.json({ limit: '20MB' }));
 
 // Enable CORS
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true
+}));
 
-// // File upload (testing...)
-// app.use(fileupload());
+// Run server
+const PORT = process.env.PORT || 3000;
+const server = app.listen(
+  PORT,
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+);
+
+// Load SocketIO
+// const io = require('./middleware/sockets').listen(server);
+// app.use((req, res, next) => {
+//   req.io =  require('./middleware/sockets').listen(server, req, res, next);
+//   next();
+// });
+// const socketio = require('./routes/socketio');
+// app.use('/socketio', (req, res, next) => {
+//   console.log('socketiooo')
+//   req.server = server;
+// } ,socketio)
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -64,14 +84,6 @@ app.get('*', (req, res) => {
   console.log(pathAngular)
   res.sendFile(pathAngular);
 });
-
-// Run server
-const PORT = process.env.PORT || 3000;
-
-const server = app.listen(
-  PORT,
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
-);
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {

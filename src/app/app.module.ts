@@ -13,6 +13,9 @@ import { MainModule } from './layouts/main/main.module';
 // Services
 import { ApiHttpInterceptor } from './services/api-http.interceptor';
 
+// import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+// const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+ 
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import { ApiHttpInterceptor } from './services/api-http.interceptor';
     BrowserModule,
     HttpClientModule,
     MainModule,
-    AppRoutingModule
+    AppRoutingModule,
+    // SocketIoModule.forRoot(config)
   ],
   providers: [
     {

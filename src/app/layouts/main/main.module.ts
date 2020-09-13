@@ -12,8 +12,6 @@ import { LocationService } from 'src/app/services/location.service';
 import { ModalModule } from 'src/app/shared/modal/modal.module';
 import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
 
-// import { AuthModule } from 'src/app/modules/auth/auth.module';
-
 @NgModule({
   declarations: [
     MainComponent
