@@ -22,9 +22,10 @@
     </div> -->
 
     <div class="a-buttons">
+      <input #mediaSelect type="file" multiple (change)="onMediaSelect($event)" style="display: none;">
 
       <div class="bttn-opt">
-        <div class="icon-box">
+        <div class="icon-box" (click)="mediaSelect.click()">
           <svg class="bi bi-image opt-icon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd"
@@ -35,7 +36,19 @@
           </svg>
         </div>
 
-        <div class="icon-box">
+        <!-- <div class="icon-box" (click)="test()">
+          <svg class="bi bi-images opt-icon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M12.002 4h-10a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-10-1a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-10z" />
+            <path
+              d="M10.648 8.646a.5.5 0 0 1 .577-.093l1.777 1.947V14h-12v-1l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71z" />
+            <path fill-rule="evenodd"
+              d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM4 2h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1v1a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2h1a1 1 0 0 1 1-1z" />
+          </svg>
+        </div> -->
+
+        <!-- <div class="icon-box">
           <svg class="bi bi-images opt-icon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd"
@@ -66,12 +79,15 @@
             <path
               d="M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
           </svg>
-        </div>
+        </div> -->
       </div>
 
 
 
       <div class="bttn-post">
+        <!-- <div class="save-bttn" (click)="publishPost()">
+          Save Draft
+        </div> -->
         <div class="post-bttn" (click)="publishPost()">
           Post
         </div>
@@ -80,7 +96,29 @@
 
     </div>
 
+    <!-- MEDIA -->
+    <div class="media" *ngIf="selectedMediaBlob.length !== 0">
+      <div class="count-container">
+        <div *ngIf="selectedMediaBlob.length > 1">
+          <ng-container *ngFor="let media of selectedMediaBlob; let i=index">
+            <button
+              (click)="selectedMediaIndex = i"
+              [ngClass]="{'current-selected-media': selectedMediaIndex === i}"
+              class="media-count">{{ i +1 }}</button>
+          </ng-container>
+        </div>
+        <span class="remove-bttn"><button (click)="onCancelSelectedMedia(selectedMediaIndex)">Remove media {{ selectedMediaIndex +1 }}</button></span>
+      </div>
 
-    <!-- <span *ngIf="destinationConfig">destination: {{ destinationConfig.destination }}</span> -->
+      <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
+        <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">
+      </div>
+
+      <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'video'">
+        <span><i>Video thumbnail</i></span>
+        <video class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url"></video>
+      </div>
+    </div>
+    
   </div>
 </article>

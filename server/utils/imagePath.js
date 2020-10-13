@@ -14,10 +14,12 @@ const fileFilter = (req, file, cb) => {
 // Some multer config
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    const Publicpath = path.join(__dirname, '..', 'public', 'avatars')
-    console.log(Publicpath);
+    const fieldPath = {
+      avatar: path.join(__dirname, '..', 'public', 'avatars'),
+      gallery: path.join(__dirname, '..', 'public', 'posts')
+    }
+    const Publicpath = fieldPath[file.fieldname];
     cb(null, Publicpath);
-
   },
   filename: function(req, file, cb) {
     let extension;

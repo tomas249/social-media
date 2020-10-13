@@ -42,6 +42,34 @@
       <div>
         {{ post.text }}
       </div>
+
+
+      <!-- MEDIA -->
+      <div class="upper" *ngIf="post.media && post.media.length !== 0">
+        <div class="count-container">
+          <div *ngIf="post.media.length > 2">
+            <ng-container *ngFor="let media of post.media.slice(1); let i=index">
+              <button
+                (click)="post.media[0].selectedIndex = i+1"
+                [ngClass]="{'current-selected-media': post.media[0].selectedIndex === i+1}"
+                class="media-count">{{ i +1 }}</button>
+            </ng-container>
+          </div>
+        </div>
+
+        <div>
+          <img class="selected-media" [src]="post.media[post.media[0].selectedIndex].fullPath">
+        </div>
+        <!-- <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
+          <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">
+        </div>
+
+        <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'video'">
+          <span><i>Video thumbnail</i></span>
+          <video class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url"></video>
+        </div> -->
+      </div> <!-- end MEDIA -->
+
       <div class="a-buttons" *ngIf="config.showOpt">
   
         <div class="a-bttn-group" (click)="onReply()">

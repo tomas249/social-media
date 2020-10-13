@@ -12,6 +12,7 @@ const PostSchema = new mongoose.Schema({
     maxlength: [800, 'Text field max length is 300 characters'],
     required: [true, 'Please introduce some text'],
   },
+  media: Array,
   likes: {
     type: Number,
     default: 0,
@@ -96,7 +97,7 @@ PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
   innerLim = limit[level-1] || limit[limit.length - 1];
 
   // Outer: this is the first object and corresponds to the last level
-  const selectFields = 'text createdAt parent parentRef replyRef likes whoLiked';
+  const selectFields = 'text createdAt parent parentRef replyRef likes whoLiked media=';
   if (!obj) obj = {path:'child', options: { limit:innerLim, select: selectFields }}
 
   // Break recursive func

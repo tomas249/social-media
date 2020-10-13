@@ -107,7 +107,7 @@ export class TokenService {
 
     this.account = newUser;
     this.accountSubject.next(newUser);
-    localStorage.setItem('userData', newUser);
+    localStorage.setItem('userData', JSON.stringify(newUser));
   }
 
 }

@@ -73,7 +73,6 @@ export class UserEditComponent implements OnInit {
     });
   }
 
-
   showUploadProgress = false;
   uploadProgress: any = 0;
   private getNewAvatarUrl() {
