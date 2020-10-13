@@ -10,10 +10,11 @@ const Follow = require('../models/Follow');
 // @access    Private
 exports.publishPost = asyncHandler(async (req, res, next) => {
   if (!req.body.text) throw new ErrorResponse(400, 'Introduce some text');
-
+  console.log(req.body.media)
   const post = await Post.create({
     owner: req.user._id,
-    text: req.body.text
+    text: req.body.text,
+    media: req.body.media
   });
 
   // Instead of populating owner, use data that we already have
@@ -41,14 +42,17 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
   const replyRef = parentModel.replyRef.concat(parentModel.owner.username);
 
   // Get parent field from parent post and add itself
+  console.log(req.body.text)
+  console.log(req.body.media)
   const reply = await Post.create({
     owner: req.user._id,
     text: req.body.text,
+    media: req.body.media,
     parentRef: parentId,
     parent: parentPath,
     replyRef: replyRef
   });
-
+  console.log(reply)
   // Push child into parent
   // const newParent = await parentModel.updateOne({ $push: { child: reply._id } }, { new: true });
   const newParent = await Post.findByIdAndUpdate(parentId, { $push: { child: reply._id } }, { new: true })
@@ -69,7 +73,7 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.getPosts = asyncHandler(async (req, res, next) => {
   // Parent select fields
-  const parentSelect = req.query.parentSelect?.split(',').join(' ') || '';
+  const parentSelect = req.query.parentSelect ? req.query.parentSelect.split(',').join(' ') : '';
   // Check for population level parameters
   let parentLimit = req.query.parentLimit || 0; // Usually get all parents
   let childLimit = req.query.childLimit || '0'; // Return 5 child results

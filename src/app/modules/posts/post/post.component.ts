@@ -30,6 +30,9 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
     set post(post) {
       this.countData(post);
+      if (post.media && post.media.length !== 0 && !post.media[0].selectedIndex) {
+        post.media.unshift({selectedIndex: 1});
+      }
       if (!this._post || (this._post && this.reload)) {
         this._post = this.loadConfig(post);
         this.reload = false;
@@ -92,6 +95,9 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     if (!changes.post?.firstChange && different) {
       // Reset values when changing posts
       this._post = this.loadConfig(changes.post.currentValue);
+      if (this._post.media && this._post.media.length !== 0 && !this._post.media.selectedIndex) {
+        this._post.media.unshift({selectedIndex: 1});
+      }
       this.config.replied = false;
       this.config.deleted = false;
     }
@@ -145,6 +151,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onLike() {
+    console.warn(this.post);
     if (!this.checkAuth('In order to like a post you need to be logged in')) return;
     if (this.config.liked) {
       this.config.liked = false;
@@ -193,5 +200,6 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     this.tooltip.close();
     this.img.nativeElement.style.zIndex = '2';
   }
+
 }
 

@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "dev": "ng serve --open && nodemon server/app.js",
-    "dev-server": "nodemon server/app.js",
+    "dev-server": "nodemon server/app.js --ignore 'node_modules/'",
     "prod": "ng build --prod && node server/app.js"
   },
   "private": true,

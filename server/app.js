@@ -61,22 +61,39 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.static(path.join(__dirname, '..', 'dist', 'social-media')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-// Route for images
-app.use('/a', (req, res, next) => {
-  const fileName = path.join(__dirname, 'public', 'avatars', req.url);
-  fs.exists(fileName, (exists) => {
-    const defaultImg = path.join(__dirname, 'public', 'avatars', 'imageNotFound.png');
-    if (exists) {
-      res.sendFile(fileName);
-    } else {
-      res.sendFile(defaultImg);
-    }
-  });
-});
-
 // Mount routes
 app.use('/api', routes);
+
+// Route for images
+app.use('/:filetype/:filename', (req, res, next) => {
+  const allFileTypes = {
+    a: 'avatars',
+    p: 'posts'
+  };
+  const filetype = allFileTypes[req.params.filetype];
+  const filename = req.params.filename;
+
+  const filepath = path.join(__dirname, 'public', filetype, filename);
+
+  fs.open(filepath, 'r', (err, file) => {
+    if (err) {
+      const defaultImg = path.join(__dirname, 'public', 'default', 'imageNotFound.png');
+      res.sendFile(defaultImg);
+    }
+    else {
+      res.sendFile(filepath);
+    }
+  });
+
+  // fs.exists(filePath, (exists) => {
+  //   if (exists) {
+  //     res.sendFile(filePath);
+  //   } else {
+  //     const defaultImg = path.join(__dirname, 'public', 'avatars', 'imageNotFound.png');
+  //     res.sendFile(defaultImg);
+  //   }
+  // });
+});
 
 // Index route
 app.get('*', (req, res) => {

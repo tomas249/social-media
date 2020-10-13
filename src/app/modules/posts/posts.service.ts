@@ -5,6 +5,7 @@ import { throwError, BehaviorSubject, Observable, Subject } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { HttpEvent } from '@angular/common/http';
 import { ModalService } from 'src/app/shared/modal/modal.service';
+import { UploadFileService } from 'src/app/shared/uploadFile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class PostsService {
   constructor(
     private api: ApiService,
     private token: TokenService,
-    private modal: ModalService
+    private modal: ModalService,
+    private uploadFile: UploadFileService
   ) { }
 
   getPostById(postId) {
@@ -65,7 +67,7 @@ export class PostsService {
     this.checkAuth();
 
     const path = '/posts'; 
-    this.api.post(path, {text: post}).subscribe(
+    this.api.post(path, post).subscribe(
       res => {
         this.addToList(res.data, config);
       },
@@ -77,7 +79,7 @@ export class PostsService {
     this.checkAuth();
 
     const path = `/posts/${postId}/reply`;
-    this.api.post(path, {text: post}).subscribe(
+    this.api.post(path, post).subscribe(
       res => {
         this.addToList(res.data, config);
       },
@@ -145,5 +147,37 @@ export class PostsService {
       this.modal.open('AuthModule', 'LoginComponent')
       return throwError('');
     }
+  }
+
+  uploadGallery(gallery) {
+    const fd = new FormData();
+    gallery.forEach(image => {
+      fd.append('gallery', image);
+    });
+
+    const opt = this.uploadFile.getOptions();
+    
+    // Upload all images to get their url
+    return this.api.post('/files/uploadGallery', fd, opt).pipe(
+      map(event => {
+
+        const res = this.uploadFile.getProgress(event);
+        if (!res.completedUpload) {
+          return res;
+        }
+        else {
+          // Expected response is an array of all images
+          // with their new filename
+          const gallery = res.data;
+  
+          return {
+            completed: true,
+            message: res.message,
+            gallery
+          };
+        }
+
+      }
+    ));
   }
 }

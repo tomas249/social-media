@@ -57,6 +57,7 @@ article {
   margin-right: 0.3rem;
   cursor: pointer;
   border-radius: 500px;
+  outline: 0;
 }
 .icon-box:hover {
   background-color: var(--hover-color);
@@ -82,6 +83,21 @@ article {
   background-color: var(--primary-color);
 }
 .post-bttn:hover {
+  background-color:  rgb(21, 172, 89);
+}
+
+.save-bttn {
+  margin-right: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.4rem 1rem;
+  border-radius: 500px;
+  text-align: center;
+  display: inline;
+  cursor: pointer;
+  background-color: var(--primary-color);
+}
+.save-bttn:hover {
   background-color:  rgb(21, 172, 89);
 }
 
@@ -123,4 +139,41 @@ article {
   display: block; /* For Firefox */
 }
 
+.selected-media {
+  width: 100%;
+  height: auto;
+  border-radius: 30px;
+  margin-bottom: 1rem;
+}
 
+.media-count {
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 500px;
+  text-align: center;
+  display: inline;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  margin-right: 1rem;
+}
+.media-count:hover:not(.current-selected-media) {
+  background-color:  rgb(21, 172, 89);
+}
+
+.count-container {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.current-selected-media {
+  background-color: var(--hover-color);
+}
+
+.remove-bttn {
+  margin-left: auto;
+}
