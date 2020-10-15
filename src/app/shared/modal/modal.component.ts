@@ -32,6 +32,9 @@ export class ModalComponent implements OnInit {
     },
     ProfileModule: {
       import: async () => (await import('src/app/modules/profile/profile.module')).ProfileModule
+    },
+    DashboardModule: {
+      import: async () => (await import('src/app/modules/dashboard/dashboard.module')).DashboardModule
     }
   };
   

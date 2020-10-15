@@ -153,7 +153,8 @@ UserSchema.methods.getSignedJwtToken = function () {
     id: this._id,
     name: this.name,
     username: this.username,
-    avatar: this.avatar
+    avatar: this.avatar,
+    role: this.role
   }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });

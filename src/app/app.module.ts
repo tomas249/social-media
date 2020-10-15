@@ -7,9 +7,6 @@ import { AppComponent } from './app.component';
 // Modules
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-// Modules (layouts)
-import { MainModule } from './layouts/main/main.module';
-
 // Services
 import { ApiHttpInterceptor } from './services/api-http.interceptor';
 
@@ -24,7 +21,6 @@ import { ApiHttpInterceptor } from './services/api-http.interceptor';
   imports: [
     BrowserModule,
     HttpClientModule,
-    MainModule,
     AppRoutingModule,
     // SocketIoModule.forRoot(config)
   ],

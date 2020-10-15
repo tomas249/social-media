@@ -52,7 +52,6 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
     parent: parentPath,
     replyRef: replyRef
   });
-  console.log(reply)
   // Push child into parent
   // const newParent = await parentModel.updateOne({ $push: { child: reply._id } }, { new: true });
   const newParent = await Post.findByIdAndUpdate(parentId, { $push: { child: reply._id } }, { new: true })
