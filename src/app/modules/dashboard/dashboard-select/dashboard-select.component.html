@@ -1,0 +1,12 @@
+<h3>Select a preset:</h3>
+<button (click)="onSelectPreset('users')">Users</button>
+<button (click)="onSelectPreset('posts')">Posts</button>
+
+<hr>
+
+<div *ngIf="selectedPreset">
+  <div *ngFor="let item of selectedPreset">
+    <p>{{ item | json }}</p>
+  </div>
+  <button (click)="onQuery(selectedPreset)">Query</button>
+</div>

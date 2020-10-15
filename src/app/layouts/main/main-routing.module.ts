@@ -6,6 +6,7 @@ import { MainComponent } from './main.component';
 
 // Guards
 import { LoggedInGuard } from 'src/app/guards/logged-in.guard';
+import { IsAdminGuard } from 'src/app/guards/is-admin.guard';
 
 const routes: Routes = [
   {

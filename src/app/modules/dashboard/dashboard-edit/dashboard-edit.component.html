@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <ng-container *ngFor="let preset of presetData">
+      <th>{{ preset.fieldname }}</th>
+    </ng-container>
+  </tr>
+  <ng-container *ngFor="let record of data">
+    <tr>
+      <ng-container *ngFor="let preset of presetData">
+        <td>{{ record[preset.query] }}</td>
+      </ng-container>
+    </tr>
+  </ng-container>
+</table>
