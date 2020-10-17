@@ -12,6 +12,8 @@ import { LocationService } from 'src/app/services/location.service';
 import { ModalModule } from 'src/app/shared/modal/modal.module';
 import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
 
+import { NavbarModule } from 'src/app/shared/navbar/navbar.module';
+
 @NgModule({
   declarations: [
     MainComponent
@@ -22,6 +24,7 @@ import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
     ReactiveFormsModule,
     ModalModule,
     TooltipModule,
+    NavbarModule,
     MainRoutingModule
   ],
   providers: [LocationService]

@@ -1,0 +1,15 @@
+<div *ngIf="selItemIdx && itemsList[selItemIdx].children">
+  <hr>
+  <div *ngFor="let subItem of itemsList[selItemIdx].children; let i=index">
+    <a
+      [ngStyle]="i === selSubItemIdx && {'color':'green'}"
+      (click)="changeSubItem(i, subItem, itemsList[selItemIdx])">{{ subItem.name }}</a>
+  </div>
+  <hr>
+</div>
+
+<div *ngFor="let item of itemsList; let i=index">
+  <a
+    [ngStyle]="i === selItemIdx && {'color':'green'}"
+    (click)="changeItem(i, item)">{{ item.name }}</a>
+</div>
