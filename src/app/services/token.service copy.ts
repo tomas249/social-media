@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { tap, map } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
@@ -9,44 +9,41 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class TokenService {
 
-  private _user = new BehaviorSubject<any>(false);
-
-  user$ = this._user.asObservable();
+  accountSubject = new BehaviorSubject<any>('');
+  account = '';
 
   constructor(
     private api: ApiService,
+    private cookieService: CookieService
   ) {
-    // Check tokens existence
-    const refreshToken = localStorage.getItem('refreshToken');
-    const accessToken = localStorage.getItem('accessToken');
-
-    if (refreshToken && accessToken) {
-      const storedUserData = this.getUserData();
-      this._user.next(storedUserData);
-    }
-    else if (refreshToken && !accessToken) {
-      console.error('AutoUpdate must be implemented');
-    }
-    else {
-      console.error('AutoUpdate must be implemented 2');
-    }
+    document.cookie = 'testData=subnormal';
   }
 
+  testfn() {
+    
+  }
+
+  subscribeAcc() {
+    const acc = this.getUserData();
+    this.account = acc;
+    this.accountSubject.next(this.account);
+    return this.accountSubject.asObservable();
+  }
 
   setTokens(refreshToken: string, accessToken: string) {
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('accessToken', accessToken);
 
-    const userJWT = atob(accessToken.split('.')[1]);
-    const userParsed = JSON.stringify(JSON.parse(userJWT));
-
-    localStorage.setItem('userData', userParsed);
-  
-    this._user.next(JSON.parse(userJWT));
+    const userData = atob(accessToken.split('.')[1]);
+    const userParsed = JSON.parse(userData);
+    this.account = userParsed;
+    this.accountSubject.next(userParsed);
+    localStorage.setItem('userData', userData);
   }
 
   removeTokens() {
-    this._user.next(false);
+    this.account = '';
+    this.accountSubject.next('');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userData');
@@ -116,10 +113,9 @@ export class TokenService {
     const currentUser = this.getUserData();
     const newUser = Object.assign(currentUser, newData);
 
-    // this.account = newUser;
-    // this.accountSubject.next(newUser);
+    this.account = newUser;
+    this.accountSubject.next(newUser);
     localStorage.setItem('userData', JSON.stringify(newUser));
-    this._user.next(newUser);
   }
 
 }

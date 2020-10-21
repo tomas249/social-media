@@ -46,11 +46,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.locationService.addChildLoc('Login', {extend:false, parentLoc:'Auth', useNav:true});
+    // this.locationService.addChildLoc('Login', {extend:false, parentLoc:'Auth', useNav:true});
   }
 
   ngOnDestroy() {
-    this.locationService.removeChildLoc(true);
+    // this.locationService.removeChildLoc(true);
   }
 
 

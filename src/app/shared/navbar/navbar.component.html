@@ -1,4 +1,4 @@
-<div *ngIf="selItemIdx && itemsList[selItemIdx].children">
+<div *ngIf="selSubItemIdx !== -1">
   <hr>
   <div *ngFor="let subItem of itemsList[selItemIdx].children; let i=index">
     <a
@@ -8,8 +8,11 @@
   <hr>
 </div>
 
-<div *ngFor="let item of itemsList; let i=index">
-  <a
-    [ngStyle]="i === selItemIdx && {'color':'green'}"
-    (click)="changeItem(i, item)">{{ item.name }}</a>
-</div>
+<ng-container *ngFor="let item of itemsList; let i=index">
+  <div *ngIf="!item.protected || !!(item.checkAvailability | async) === item.expectingRes">
+    <a
+      [ngStyle]="i === selItemIdx && {'color':'green'}"
+      (click)="changeItem(i, item)">{{ item.name }}
+    </a>
+  </div>
+</ng-container>

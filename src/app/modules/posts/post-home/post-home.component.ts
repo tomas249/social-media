@@ -23,22 +23,22 @@ export class PostHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.postsService.allowSearch = false;
-    this.locationService.addChildLoc('Home', {extend: false});
-    this.token.subscribeAcc().subscribe(
-      res => {
-        this.isLogged = !!res;
-        if (this.isLogged && this.loading) {
-          this.loading = false;
-          this.postsService.getFollowersPosts();
-        }
-      }
-    );
+    // this.locationService.addChildLoc('Home', {extend: false});
+    // this.token.subscribeAcc().subscribe(
+    //   res => {
+    //     this.isLogged = !!res;
+    //     if (this.isLogged && this.loading) {
+    //       this.loading = false;
+    //       this.postsService.getFollowersPosts();
+    //     }
+    //   }
+    // );
 
   }
 
   ngOnDestroy() {
     this.postsService.allowSearch = true;
-    this.locationService.removeChildLoc(true);
+    // this.locationService.removeChildLoc(true);
   }
 
 }

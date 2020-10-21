@@ -59,7 +59,7 @@ export class UserEditComponent implements OnInit {
             relativePath: `/a/${avatarPath}`,
             fullPath: `${environment.baseUrl}/a/${avatarPath}`
           };
-          this.token.updateData({ avatar: updatedUser['avatar'] });
+          // this.token.updateData({ avatar: updatedUser['avatar'] });
         }),
         switchMap(_ => this.profileService.updateUserData(updatedUser))
       );

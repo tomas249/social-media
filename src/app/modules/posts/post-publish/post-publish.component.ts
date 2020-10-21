@@ -29,13 +29,13 @@ export class PostPublishComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.token.getUserData();
     if (!this.destinationConfig) {
-      const loc = this.locationService.getLocation();
-      if (loc[0] === 'Explore') {
-        this.destinationConfig = {destination: 1};
-      }
-      else if (loc[0] !== 'Explore' && !this.postReply) {
-        this.destinationConfig = {destination: 0};
-      }
+      // const loc = this.locationService.getLocation();
+      // if (loc[0] === 'Explore') {
+      //   this.destinationConfig = {destination: 1};
+      // }
+      // else if (loc[0] !== 'Explore' && !this.postReply) {
+      //   this.destinationConfig = {destination: 0};
+      // }
     }
   }
 

@@ -16,11 +16,13 @@ export class MainComponent implements OnInit {
   navItemsList = [
     {
       name: 'Home',
-      path: '/home'
+      path: '/home',
+      protected: false
     },
     {
       name: 'Explore',
-      path: '/explore'
+      path: '/explore',
+      protected: false
     },
     {
       name: 'Notifications',
@@ -29,11 +31,17 @@ export class MainComponent implements OnInit {
         { name: 'All', path: '/all' },
         { name: 'Only unread', path: '/unread' }
       ],
-      selChildIdx: 1
+      selChildIdx: 1,
+      protected: true,
+      checkAvailability: this.token.user$,
+      expectingRes: true
     },
     {
       name: 'Profile',
-      path: '/u/me'
+      path: '/u/me',
+      protected: true,
+      checkAvailability: this.token.user$,
+      expectingRes: true
     },
     {
       name: 'Auth',
@@ -42,12 +50,33 @@ export class MainComponent implements OnInit {
         { name: 'Login', path: '/login' },
         { name: 'Register', path: '/register' }
       ],
-      selChildIdx: 0
+      selChildIdx: 0,
+      protected: true,
+      checkAvailability: this.token.user$,
+      expectingRes: false
+    },
+    {
+      name: 'Auth',
+      path: '/auth/accounts',
+      protected: true,
+      checkAvailability: this.token.user$,
+      expectingRes: true
     }
-  ]
+  ];
+
+  location$;
+  user$;
   
-  constructor() {}
-  ngOnInit() {}
+  constructor(
+    private locationService: LocationService,
+    private token: TokenService,
+    private router: Router
+  ) {}
+  ngOnInit() {
+    this.location$ = this.locationService.location$;
+    this.user$ = this.token.user$;
+  }
+
 
   // OLD ----------------
 

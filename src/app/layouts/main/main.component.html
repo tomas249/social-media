@@ -31,10 +31,10 @@
       </div>
 
       <!-- SELECTED ACCOUNT -->
-      <!-- <div class="h-item h-bottom">
-        <a class="h-bttn h-acc" (click)="accountGoTo()">
-          <div class="acc-container">
-            <ng-container *ngIf="user; else loggedOut">
+      <div class="h-item h-bottom">
+        <a class="h-bttn h-acc">
+          <div class="acc-container" [routerLink]="['/auth/accounts']">
+            <ng-container *ngIf="user$ | async as user; else loggedOut">
               <img class="acc-photo" [src]="user.avatar.fullPath">
               <div class="acc-names">
                 <span class="acc-name">{{ user.name }}</span>
@@ -47,13 +47,13 @@
               </svg>
             </ng-container>
             <ng-template #loggedOut>
-              <div class="acc-auth">
+              <div class="acc-auth" [routerLink]="['/auth/login']">
                 Login/Register
               </div>
             </ng-template>
           </div>
         </a>
-      </div> -->
+      </div>
       <!-- end SELECTED ACCOUNT -->
     </div>
   </header>
@@ -66,7 +66,7 @@
         <div class="m-column">
           <div class="title-container">
             <div class="title">
-              <!-- {{ locationName }} -->
+              {{ location$ | async }}
             </div>
           </div>
           <div class="m-list">

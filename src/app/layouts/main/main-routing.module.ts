@@ -29,7 +29,8 @@ const routes: Routes = [
       },
       {
         path: 'u',
-        loadChildren: () => import('src/app/modules/profile/profile.module').then(m => m.ProfileModule)
+        loadChildren: () => import('src/app/modules/profile/profile.module').then(m => m.ProfileModule),
+        canActivate: [LoggedInGuard]
       },
       {
         path: '',

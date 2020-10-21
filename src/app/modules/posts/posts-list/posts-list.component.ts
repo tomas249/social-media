@@ -30,15 +30,15 @@ export class PostsListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.token.subscribeAcc().subscribe(
-      res => {
-        this.isLogged = !!res;
-        if (this.isLogged && !this.loading) {
-          this.postsList = this.postsList.map(p => Object.assign({}, p));
-          this.modal.close();
-        }
-      }
-    );
+    // this.token.subscribeAcc().subscribe(
+    //   res => {
+    //     this.isLogged = !!res;
+    //     if (this.isLogged && !this.loading) {
+    //       this.postsList = this.postsList.map(p => Object.assign({}, p));
+    //       this.modal.close();
+    //     }
+    //   }
+    // );
     this.postsList$ = this.postsService.updatedPosts$.subscribe(
       res => {
         this.postsList = res;
@@ -49,13 +49,13 @@ export class PostsListComponent implements OnInit, OnDestroy {
       this.postsService.getAllPosts(this.searchParams);
     } else {
       this.postsService.getAllPosts();
-      this.locationService.addChildLoc('Explore', {extend: false});
+      // this.locationService.addChildLoc('Explore', {extend: false});
     }
   }
 
   ngOnDestroy(): void {
     if (!this.searchParams) {
-      this.locationService.removeChildLoc(true);
+      // this.locationService.removeChildLoc(true);
     }
     this.postsService.changePostsList([]);
     this.postsList = null;

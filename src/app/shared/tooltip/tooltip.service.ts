@@ -27,7 +27,7 @@ export class TooltipService {
   }
 
   async init(moduleName, componentName, params?) {
-    this.locationService.fixLocation();
+    // this.locationService.fixLocation();
     const finished = await this.tooltip.loadModule(moduleName, componentName);
     if (!finished) return false;
     if (params) this.tooltip.addParams(params);
@@ -41,7 +41,7 @@ export class TooltipService {
   }
 
   onClosed() {
-    this.locationService.unfixLocation();
+    // this.locationService.unfixLocation();
     this.opened = false;
   }
 }

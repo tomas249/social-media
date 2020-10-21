@@ -32,7 +32,7 @@ export class ProfilePageComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const capitalUsername = params.username[0].toUpperCase() + params.username.slice(1).toLowerCase();
-      this.locationService.addChildLoc('Posts', {extend: false, parentLoc: capitalUsername, useNav: false});
+      // this.locationService.addChildLoc('Posts', {extend: false, parentLoc: capitalUsername, useNav: false});
       const storedUser = this.profileService.getStoredUser();
       if (storedUser) {
         this.user = storedUser;
@@ -88,8 +88,8 @@ export class ProfilePageComponent implements OnInit {
     if (this.selectedTab === i) return;
     await this.loadModule(this.tabs[i]);
     if (this.selectedTab || this.selectedTab === 0) {
-      this.locationService.removeChildLoc(true);
-      this.locationService.addChildLoc(this.tabs[i].name, {extend: true});
+      // this.locationService.removeChildLoc(true);
+      // this.locationService.addChildLoc(this.tabs[i].name, {extend: true});
     }
     // this.location.go(this.tabs[i].name);
     this.selectedTab = i;

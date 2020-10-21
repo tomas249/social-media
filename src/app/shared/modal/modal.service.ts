@@ -19,7 +19,7 @@ export class ModalService {
   }
 
   async open(moduleName, componentName, params?) {
-    this.locationService.freeze();
+    // this.locationService.freeze();
     await this.modal.loadModule(moduleName, componentName);
     if (params) this.modal.addParams(params);
     this.modal.open();
@@ -36,7 +36,7 @@ export class ModalService {
   }
   
   onClosed() {
-    this.locationService.restore();
+    // this.locationService.restore();
     this.opened = false;
     if (!this.response$) return;
     this.response$.next(false);

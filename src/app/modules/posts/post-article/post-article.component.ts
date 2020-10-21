@@ -31,23 +31,23 @@ export class PostArticleComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.token.subscribeAcc().subscribe(
-      res => {
-        if (res && this.parentPost) {
-          this.modal.close();
-          this.reloadPost = true;
-          this.parentPost = Object.assign({}, this.parentPost);
-          this.postsService.changePostsList(this.parentPost.child.reverse());
-        }
-      }
-    );
+    // this.token.subscribeAcc().subscribe(
+    //   res => {
+    //     if (res && this.parentPost) {
+    //       this.modal.close();
+    //       this.reloadPost = true;
+    //       this.parentPost = Object.assign({}, this.parentPost);
+    //       this.postsService.changePostsList(this.parentPost.child.reverse());
+    //     }
+    //   }
+    // );
     this.route.params.subscribe(params => {
       const postId = params['postId'];
       this.postsService.getPostById(postId).subscribe(
         res => {
           this.parentPost = res;
           const isPost = this.parentPost.parent.length === 0;
-          this.locationService.changeRootLoc(isPost ? 'Post' : 'Reply');
+          // this.locationService.changeRootLoc(isPost ? 'Post' : 'Reply');
           this.postsService.changePostsList(res.child);
           this.parentPost$ = this.postsService.updatedPosts$.subscribe(
             res => {
@@ -62,7 +62,7 @@ export class PostArticleComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.locationService.removeChildLoc(true);
+    // this.locationService.removeChildLoc(true);
     this.parentPost$.unsubscribe();
     this.parentPost = null;
   }
