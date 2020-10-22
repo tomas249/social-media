@@ -28,7 +28,7 @@ export class TokenService {
       console.error('AutoUpdate must be implemented');
     }
     else {
-      console.error('AutoUpdate must be implemented 2');
+      console.error('No auth');
     }
   }
 

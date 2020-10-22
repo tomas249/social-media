@@ -80,6 +80,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
+
   onLogin() {
     this.getFormValidationErrors();
     if (this.loginForm.invalid) return;
@@ -99,7 +100,6 @@ export class LoginComponent implements OnInit {
       this.success = false;
       this.messageList.push(err);
     });
-    
   }
   
 }

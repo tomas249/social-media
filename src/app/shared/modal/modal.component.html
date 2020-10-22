@@ -1,14 +1,11 @@
-<!-- The Modal -->
-<div #modalContainer class="modal" [style.display]="displayModal ? 'block' : 'none'">
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close" (click)="close()">&times;</span>
-    <!-- MODAL NG CONTENT -->
-    <div>
-      <div class="message" #message [style.display]="displayMessage ? 'block' : 'none'">
-        <hr>
-      </div>
-      <ng-container #content></ng-container>
+<!-- Modal content -->
+<div class="modal-content">
+  <span class="close" (click)="close()">&times;</span>
+  <!-- MODAL NG CONTENT -->
+  <div>
+    <div class="message" #message [style.display]="displayMessage ? 'block' : 'none'">
+      <hr>
     </div>
+    <ng-template #content></ng-template>
   </div>
 </div>

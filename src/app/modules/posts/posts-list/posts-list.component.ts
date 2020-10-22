@@ -64,7 +64,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   }
 
   auth(componentName) {
-    this.modal.addMessage('Auth in order to post');
-    this.modal.open('AuthModule', componentName, {navigateEnd: false});
+    // this.modal.addMessage('Auth in order to post');
+    // this.modal.open('AuthModule', componentName, {navigateEnd: false});
   }
 }

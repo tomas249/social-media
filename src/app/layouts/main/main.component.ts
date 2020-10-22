@@ -70,13 +70,37 @@ export class MainComponent implements OnInit {
   constructor(
     private locationService: LocationService,
     private token: TokenService,
-    private router: Router
+    private router: Router,
+    private modal: ModalService
   ) {}
+
   ngOnInit() {
     this.location$ = this.locationService.location$;
     this.user$ = this.token.user$;
   }
 
+  open(name) {
+    this.modal.open(name)
+  }
+
+  text;
+  default() {
+    const mContent = [
+      {
+        module: 'AuthModule',
+        component: 'LoginComponent'
+      }
+    ];
+    this.modal.open('extendedModal', mContent)
+  }
+
+  close() {
+    const r = this.modal.close('defaultModal');
+  }
+
+  openPostModal() {
+    this.default();
+  }
 
   // OLD ----------------
 

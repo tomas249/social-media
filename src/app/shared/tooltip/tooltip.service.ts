@@ -11,7 +11,8 @@ export class TooltipService {
 
   constructor(
     private locationService: LocationService
-  ) { }
+  ) {
+  }
 
   add(component) {
     this.tooltip = component;

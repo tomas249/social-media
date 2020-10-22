@@ -1,29 +1,32 @@
-import { Component, OnInit, ViewChild, Input, HostListener, ElementRef, ContentChild, ViewContainerRef, ComponentFactoryResolver, NgModuleFactoryLoader, Injector, Compiler, ComponentFactory, Type
-, ɵcreateInjector as createInjector, 
-ComponentRef} from '@angular/core';
+import { Component, OnInit, ViewChild, Input, HostListener, ElementRef, ViewContainerRef, ComponentFactoryResolver, 
+OnChanges,
+SimpleChanges,
+Output,
+TemplateRef} from '@angular/core';
 import { ModalService } from './modal.service';
 import { NgModuleFactory } from '@angular/core/src/r3_symbols';
 import { LocationService } from 'src/app/services/location.service';
 import { LoadChildren } from '@angular/router';
 import { Observable } from 'rxjs';
+import { EventEmitter } from 'protractor';
 
 @Component({
-  selector: 'modal-placeholder',
+  selector: 'modal-core',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css']
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, OnChanges {
   @ViewChild('modalContainer') modalContainer: ElementRef;
   @ViewChild('message') message: ElementRef;
   @ViewChild('content',  { read: ViewContainerRef }) content: ViewContainerRef;
 
-  displayModal = false;
   displayMessage = false;
   selectedModule;
   activeModule;
+  componentFct;
   componentRef;
 
-  module = {
+  private _modules = {
     AuthModule: {
       import: async () => (await import('src/app/modules/auth/auth.module')).AuthModule
     },
@@ -37,34 +40,92 @@ export class ModalComponent implements OnInit {
       import: async () => (await import('src/app/modules/dashboard/dashboard.module')).DashboardModule
     }
   };
-  
+
+  @Input() mContent;
+  @Input() mType;
+  @Input() mId;
+
+  private _states = [];
+  loaded = false;
   constructor(
     private modalService: ModalService,
     private resolver: ComponentFactoryResolver
   ) { }
 
   ngOnInit(): void {
-    this.modalService.add(this);
+    // const content = this.mContent[0]
+    // this.loadModule(content.module, content.component); 
   }
 
-  // Close when clicking outside modal
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    if (event.target === this.modalContainer.nativeElement) {
-      this.close();
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if (changes.mContent && !changes.mContent.firstChange && !this.loaded) {
+
+      const statesLen = this._states.length;
+      const mId = changes.mId?.currentValue || this.mId;
+
+      // Store data
+      if (statesLen < mId) {
+        const currentVar = {
+          selectedModule: this.selectedModule,
+          activeModule: this.activeModule,
+          componentFct: this.componentFct,
+          componentRef: this.componentRef
+        };
+        this._states.push(Object.assign({}, currentVar));
+      }
+
+      // Load component
+      if (statesLen <= mId) {
+        const module = changes.mContent.currentValue[0].module;
+        const component = changes.mContent.currentValue[0].component;
+        this.loadModule(module, component);
+      }
+
+      // Restore data
+      if (statesLen > mId) {
+        const oldData = this._states[mId];
+        this.selectedModule = oldData.selectedModule;
+        this.activeModule = oldData.activeModule;
+        this.createComponent(oldData.componentFct);
+
+        this._states.pop();
+
+        // Retrieve variables for component
+        let obj1 = this.componentRef.instance;
+        let obj2 = oldData.componentRef.instance;
+        Object.keys(obj2).forEach(function(key) {
+          if (typeof key !== 'object' || key === null) {
+            if (key in obj1) {
+              obj1[key] = obj2[key];
+            }
+          }
+        });
+      }
     }
   }
 
+  // Close when clicking outside modal
+  // @HostListener('document:click', ['$event'])
+  // onDocumentClick(event: MouseEvent) {
+  //   if (event.target === this.modalContainer.nativeElement) {
+  //     this.close();
+  //   }
+  // }
+
   open() {
-    this.displayModal = true;
+    // this.displayModal = true;
   }
 
+  // close() {
+  //   this.displayModal = false;
+  //   this.componentRef.destroy();
+  //   this.modalService.onClosed();
+  //   this.displayMessage = false;
+  //   this.message.nativeElement.innerHTML = '<hr>';
+  // }
   close() {
-    this.displayModal = false;
-    this.componentRef.destroy();
-    this.modalService.onClosed();
-    this.displayMessage = false;
-    this.message.nativeElement.innerHTML = '<hr>';
+    this.modalService.close(this.mType);
   }
   
   addMessage(message) {
@@ -79,7 +140,7 @@ export class ModalComponent implements OnInit {
   }
 
   async loadModule(moduleName, componentName) {
-    this.selectedModule = this.module[moduleName];
+    this.selectedModule = this._modules[moduleName];
     this.activeModule = await this.selectedModule.import();
     this.changeComponent(componentName);
   }
@@ -87,7 +148,12 @@ export class ModalComponent implements OnInit {
   changeComponent(componentName) {
     this.content.remove();
     const component = this.activeModule.components[componentName];
-    const componentFct = this.resolver.resolveComponentFactory(component);
+    this.componentFct = this.resolver.resolveComponentFactory(component);
+    this.componentRef = this.content.createComponent(this.componentFct);
+  }
+
+  createComponent(componentFct) {
+    this.content.remove();
     this.componentRef = this.content.createComponent(componentFct);
   }
 

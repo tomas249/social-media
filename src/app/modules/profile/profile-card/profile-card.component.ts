@@ -85,13 +85,13 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onEditUser() {
-    this.modal.open('ProfileModule', 'UserEditComponent', {user: this.user});
-    this.modal.waitForResponse().subscribe(res => {
-      if (res) {
-        console.log(res.user)
-        Object.assign(this.user, res.user);
-      }
-    })
+    // this.modal.open('ProfileModule', 'UserEditComponent', {user: this.user});
+    // this.modal.waitForResponse().subscribe(res => {
+    //   if (res) {
+    //     console.log(res.user)
+    //     Object.assign(this.user, res.user);
+    //   }
+    // })
   }
 
 }

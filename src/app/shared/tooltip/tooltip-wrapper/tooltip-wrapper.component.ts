@@ -18,9 +18,16 @@ export class TooltipWrapperComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
   }
 
+  time;
+
   ngAfterViewInit() {
-    this.tooltipContent.nativeElement.addEventListener('mousemove', this.openTooltip.bind(this));
+    this.tooltipContent.nativeElement.addEventListener('mouseenter', this.checkDelay.bind(this));
     this.tooltipContent.nativeElement.addEventListener('mouseleave', this.closeTooltip.bind(this));
+  }
+
+  checkDelay() {
+    clearTimeout(this.time);
+    this.time = setTimeout(() => this.openTooltip(), 2000);
   }
 
   openTooltip() {
@@ -33,6 +40,7 @@ export class TooltipWrapperComponent implements OnInit, AfterViewInit {
   }
 
   closeTooltip() {
+    clearTimeout(this.time);
     this.tooltip.close();
     this.tooltipContent.nativeElement.style.zIndex = '2';
   }
