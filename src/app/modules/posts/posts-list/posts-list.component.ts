@@ -30,15 +30,15 @@ export class PostsListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // this.token.subscribeAcc().subscribe(
-    //   res => {
-    //     this.isLogged = !!res;
-    //     if (this.isLogged && !this.loading) {
-    //       this.postsList = this.postsList.map(p => Object.assign({}, p));
-    //       this.modal.close();
-    //     }
-    //   }
-    // );
+    this.token.user$.subscribe(
+      res => {
+        this.isLogged = !!res;
+        if (this.isLogged && !this.loading) {
+          this.postsList = this.postsList.map(p => Object.assign({}, p));
+          // this.modal.close();
+        }
+      }
+    );
     this.postsList$ = this.postsService.updatedPosts$.subscribe(
       res => {
         this.postsList = res;
@@ -49,6 +49,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
       this.postsService.getAllPosts(this.searchParams);
     } else {
       this.postsService.getAllPosts();
+      this.locationService.finishComposition();
       // this.locationService.addChildLoc('Explore', {extend: false});
     }
   }
@@ -64,6 +65,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   }
 
   auth(componentName) {
+    // this.modal.open('default', [{module: 'AuthModule', component: componentName}]);
     // this.modal.addMessage('Auth in order to post');
     // this.modal.open('AuthModule', componentName, {navigateEnd: false});
   }

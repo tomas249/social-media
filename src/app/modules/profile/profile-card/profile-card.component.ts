@@ -48,7 +48,7 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
 
   goToUser(username) {
     if (!this.allowRouter) return;
-    this.modal.close();
+    // this.modal.close();
     this.profileService.setUser(this.user);
     this.tooltip.close(true);
     this.router.navigate(['/u/' + username]);
@@ -58,8 +58,8 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
     this.tooltip.close(true);
     const currentUserId = this.token.getUserId();
     // console.log({currentUserId, userId: this.user._id, usersField: field})
-    this.modal.open('ProfileModule', 'UsersListComponent', 
-    {currentUserId, userId: this.user._id, usersField: field});
+    // this.modal.open('ProfileModule', 'UsersListComponent', 
+    // {currentUserId, userId: this.user._id, usersField: field});
   }
 
   followUser(userId) {
@@ -76,8 +76,8 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
   checkAuth(message) {
     if (!this.token.isLogged()) {
       this.tooltip.close(true);
-      this.modal.addMessage(message);
-      this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
+      // this.modal.addMessage(message);
+      // this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
       return false;
     } else {
       return true;

@@ -8,18 +8,15 @@ import { ModalService } from '../modal.service';
 })
 export class ModalExtendedComponent implements OnInit {
 
+  type = 'extended';
   display = false;
-  displayMessage = false;
-  mContent = null;
-
-  id = -1;
 
   constructor(
     private modalService: ModalService
   ) { }
-
+  
   ngOnInit(): void {
-    this.modalService.initiate('extendedModal', this);
+    this.modalService.initType('extended', this);
   }
 
 }

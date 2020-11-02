@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onLoadSelectView() {
-    this.modal.open('DashboardModule', 'DashboardSelectComponent');
+    // this.modal.open('DashboardModule', 'DashboardSelectComponent');
   }
 
 }

@@ -68,8 +68,8 @@ export class UserEditComponent implements OnInit {
     }
     
     subscription.subscribe(res => {
-      this.modal.emitResponse({user: res.data});
-      this.modal.close();
+      // this.modal.emitResponse({user: res.data});
+      // this.modal.close();
     });
   }
 

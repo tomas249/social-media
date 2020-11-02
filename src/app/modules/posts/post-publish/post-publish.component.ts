@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit, AfterViewChecked, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit, AfterViewChecked, ElementRef, OnChanges } from '@angular/core';
 import { PostsService } from '../posts.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { LocationService } from 'src/app/services/location.service';
@@ -28,7 +28,9 @@ export class PostPublishComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.token.getUserData();
+    this.locationService.finishComposition();
     if (!this.destinationConfig) {
+
       // const loc = this.locationService.getLocation();
       // if (loc[0] === 'Explore') {
       //   this.destinationConfig = {destination: 1};
@@ -81,9 +83,9 @@ export class PostPublishComponent implements OnInit {
           this.postsService.publishPost(post, this.destinationConfig);
         }
         this.clear();
-        this.modal.emitResponse(true);
+        // this.modal.emitResponse(true);
         // Close modal (if it exists)
-        this.modal.close();
+        // this.modal.close();
       });
     } else {
       // Check if it is a post or a reply
@@ -93,9 +95,9 @@ export class PostPublishComponent implements OnInit {
         this.postsService.publishPost({text: input, media: []}, this.destinationConfig);
       }
       this.clear();
-      this.modal.emitResponse(true);
+      // this.modal.emitResponse(true);
       // Close modal (if it exists)
-      this.modal.close();
+      // this.modal.close();
 
     }
   }
@@ -119,7 +121,15 @@ export class PostPublishComponent implements OnInit {
   selectedMediaBlob = [];
   selectedMediaIndex = 0;
   onMediaSelect(event) {
-    this.tooltip.close();
+    this.modal.open('extended', [
+      {
+        title: 'Please login in order to post'
+      },{
+        module: 'Auth',
+        component: 'Login'
+      }]);
+    return;
+    // this.tooltip.close();
     for (const [key, media] of Object.entries(event.target.files)) {
       const filter = this.tempFilter(media);
       console.log('Filter:', filter)

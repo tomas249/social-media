@@ -101,6 +101,9 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
       this.config.replied = false;
       this.config.deleted = false;
     }
+    for (let date in changes) {
+      
+    }
   }
 
   ngOnDestroy() {
@@ -137,11 +140,11 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
 
   onReply() {
     if (!this.checkAuth('In order to reply a post you need to be logged in')) return;
-    this.modal.open('PostsModule', 'PostPublishComponent', 
-      {
-        postReply: this.post, 
-        destinationConfig: this.publishConfig
-      });
+    // this.modal.open('PostsModule', 'PostPublishComponent', 
+    //   {
+    //     postReply: this.post, 
+    //     destinationConfig: this.publishConfig
+    //   });
     // this.modal.waitForResponse().subscribe(res => {
     //   if (res) {
     //     this.count.replies += 1;
@@ -170,8 +173,8 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
 
   checkAuth(message) {
     if (!this.token.isLogged()) {
-      this.modal.addMessage(message);
-      this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
+      // this.modal.addMessage(message);
+      // this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
       return false;
     } else {
       return true;

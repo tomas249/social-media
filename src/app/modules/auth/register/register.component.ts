@@ -46,6 +46,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.locationService.finishComposition();
     // this.locationService.addChildLoc('Register', {extend:false, parentLoc:'Auth', useNav:true});
   }
 

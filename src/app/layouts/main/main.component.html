@@ -28,6 +28,12 @@
             Post
           </div>
         </div>
+        <div>
+          <button (click)="openModal('default')">open default</button>
+          <button (click)="openModal('extended')">open extended</button>
+          <button (click)="openMText()">open text</button>
+          <button (click)="changeMssg()">add MEssage</button>
+        </div>
         <!-- end POST BUTTON -->
       </div>
 
@@ -68,6 +74,7 @@
           <div class="title-container">
             <div class="title">
               {{ location$ | async }}
+              <!-- {{ location }} -->
             </div>
           </div>
           <div class="m-list">

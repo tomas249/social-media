@@ -143,8 +143,8 @@ export class PostsService {
   checkAuth() {
     if (!this.token.isLogged()) {
       console.error('Please login');
-      this.modal.addMessage('In order to reply or like, you need to login');
-      this.modal.open('AuthModule', 'LoginComponent')
+      // this.modal.addMessage('In order to reply or like, you need to login');
+      // this.modal.open('AuthModule', 'LoginComponent')
       return throwError('');
     }
   }

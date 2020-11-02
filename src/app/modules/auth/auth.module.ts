@@ -34,4 +34,12 @@ export class AuthModule {
     RegisterComponent,
     LogoutComponent
   };
+
+  static list = {
+    root: 'Auth',
+    children: [
+      { name: 'Login', component: 'LoginComponent', modalOrigin: 'default' },
+      { name: 'Register', component: 'RegisterComponent', modalOrigin: 'default' }
+    ]
+  }
 }

@@ -22,6 +22,7 @@ export class PostHomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.locationService.finishComposition();
     this.postsService.allowSearch = false;
     // this.locationService.addChildLoc('Home', {extend: false});
     // this.token.subscribeAcc().subscribe(

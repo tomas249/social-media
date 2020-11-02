@@ -8,8 +8,8 @@ import { ModalService } from '../shared/modal/modal.service';
 })
 export class LocationService {
 
+  private _location = new Subject<string>();
   private _locationStack: Array<string> = [];
-  private _location = new BehaviorSubject<string>('');
 
   location$ = this._location.asObservable()
 
@@ -20,29 +20,36 @@ export class LocationService {
     this._location.next(location);
   }
 
+  finishComposition() {
+    this.joinStackAndSend(this._locationStack);
+  }
+
   addItemToStack(item) {
     this._locationStack.push(item);
-    this.joinStackAndSend(this._locationStack);
   }
 
   removeItemFromStack() {
     this._locationStack.pop();
-    this.joinStackAndSend(this._locationStack);
   }
 
   changeStackRoot(item: string) {
     this._locationStack = [item];
-    this.joinStackAndSend(this._locationStack);
   }
 
   changeItemAtIndex(item: string, i: number) {
     this._locationStack = this._locationStack.slice(0, i).concat(item);
-    this.joinStackAndSend(this._locationStack);
+  }
+
+  replaceItemsFromEnd(position, items) {
+    this._locationStack = this._locationStack.slice(0, -position);
+    this._locationStack = this._locationStack.concat(items);
   }
 
   changeItemAtRoot(item: string, root: string) {
     const rootIndex = this._locationStack.indexOf(root);
     this.changeItemAtIndex(item, rootIndex+1);
   }
+
+  
 
 }

@@ -9,156 +9,138 @@ import { LocationService } from 'src/app/services/location.service';
 import { LoadChildren } from '@angular/router';
 import { Observable } from 'rxjs';
 import { EventEmitter } from 'protractor';
+import { NavbarService } from '../navbar/navbar.service';
+import { moduleList } from './module-list'
 
 @Component({
   selector: 'modal-core',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css']
 })
-export class ModalComponent implements OnInit, OnChanges {
-  @ViewChild('modalContainer') modalContainer: ElementRef;
-  @ViewChild('message') message: ElementRef;
-  @ViewChild('content',  { read: ViewContainerRef }) content: ViewContainerRef;
+export class ModalComponent implements OnInit {
+  @ViewChild('contentCmp',  { read: ViewContainerRef }) contentCmp: ViewContainerRef;
+  @Input('type') parentType;
 
-  displayMessage = false;
-  selectedModule;
-  activeModule;
-  componentFct;
+  loading = false;
+
+  content = {begin: [], end: []};
+
   componentRef;
 
-  private _modules = {
-    AuthModule: {
-      import: async () => (await import('src/app/modules/auth/auth.module')).AuthModule
-    },
-    PostsModule: {
-      import: async () => (await import('src/app/modules/posts/posts.module')).PostsModule
-    },
-    ProfileModule: {
-      import: async () => (await import('src/app/modules/profile/profile.module')).ProfileModule
-    },
-    DashboardModule: {
-      import: async () => (await import('src/app/modules/dashboard/dashboard.module')).DashboardModule
-    }
-  };
-
-  @Input() mContent;
-  @Input() mType;
-  @Input() mId;
-
   private _states = [];
-  loaded = false;
+
   constructor(
     private modalService: ModalService,
-    private resolver: ComponentFactoryResolver
+    private resolver: ComponentFactoryResolver,
+    private navbarService: NavbarService
   ) { }
 
   ngOnInit(): void {
-    // const content = this.mContent[0]
-    // this.loadModule(content.module, content.component); 
+    this.modalService.initCore(this.parentType, this);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  onClose() {
+    if (this.componentRef) {
+      this.componentRef.destroy();
+      this.componentRef = null;
+    }
+    if (this.contentCmp) {
+      this.contentCmp.clear()
+    }
+    this.loading = false;
+    this.content = {begin: [], end: []};
+    this.modalService.close(this.parentType);
+  }
 
-    if (changes.mContent && !changes.mContent.firstChange && !this.loaded) {
-
-      const statesLen = this._states.length;
-      const mId = changes.mId?.currentValue || this.mId;
-
-      // Store data
-      if (statesLen < mId) {
-        const currentVar = {
-          selectedModule: this.selectedModule,
-          activeModule: this.activeModule,
-          componentFct: this.componentFct,
-          componentRef: this.componentRef
-        };
-        this._states.push(Object.assign({}, currentVar));
+  loadContent(content, params?) {
+    // If content requires a component, means that there is a possible async load.
+    let asyncLoad;
+    let mContent = {begin: [], end: []};
+    content.forEach(c => {
+      if ('component' in c) {
+        asyncLoad = c;
       }
-
-      // Load component
-      if (statesLen <= mId) {
-        const module = changes.mContent.currentValue[0].module;
-        const component = changes.mContent.currentValue[0].component;
-        this.loadModule(module, component);
+      else if (!asyncLoad) {
+        mContent['begin'].push(c);
       }
-
-      // Restore data
-      if (statesLen > mId) {
-        const oldData = this._states[mId];
-        this.selectedModule = oldData.selectedModule;
-        this.activeModule = oldData.activeModule;
-        this.createComponent(oldData.componentFct);
-
-        this._states.pop();
-
-        // Retrieve variables for component
-        let obj1 = this.componentRef.instance;
-        let obj2 = oldData.componentRef.instance;
-        Object.keys(obj2).forEach(function(key) {
-          if (typeof key !== 'object' || key === null) {
-            if (key in obj1) {
-              obj1[key] = obj2[key];
-            }
-          }
-        });
+      else { 
+        mContent['end'].push(c);
       }
+    });
+
+    if (asyncLoad) {
+      this.loading = true;
+      this.content = mContent;
+
+      this.loadModule(asyncLoad.module, (module) => {
+        const componentFct = this.resolveComponent(module, asyncLoad.component);
+        this.componentRef = this.contentCmp.createComponent(componentFct);
+        Object.assign(this.componentRef.instance, params);
+        this.loading = false;
+      });
+    }
+    else {
+      this.content = mContent;
     }
   }
 
-  // Close when clicking outside modal
-  // @HostListener('document:click', ['$event'])
-  // onDocumentClick(event: MouseEvent) {
-  //   if (event.target === this.modalContainer.nativeElement) {
-  //     this.close();
+  saveState() {
+    let currentState = {
+      content: this.content
+    };
+    if (this.contentCmp) {
+      currentState['view'] = this.contentCmp.detach();
+    }
+    this._states.push(currentState);
+  }
+
+  restoreState() {
+    const oldData = this._states[this._states.length -1];
+    this.content = oldData.content;
+    if (oldData.view) {
+      this.contentCmp.insert(oldData.view);
+    }
+    this._states.pop();
+  }
+
+  private async loadModule(moduleName, cb) {
+    moduleName = moduleName + 'Module';
+    const module = await moduleList[moduleName].import();
+    cb(module);
+  }
+
+  private resolveComponent(module, componentName) {
+    componentName = componentName + 'Component';
+    const component = module.components[componentName];
+    return this.resolver.resolveComponentFactory(component);
+  }
+
+  // changeContent(newContent, index?) {
+  //   // Check if it is possible such change
+  //   let i;
+  //   if (!index && typeof index !== 'number') {
+  //     this.content.push(newContent);
+  //     return;
   //   }
+  //   else if (index === 'replace-last') {
+  //     i = this.content.length -1;
+  //   }
+  //   else if (index === 'replace-all') {
+  //     this.content = [];
+  //     this.content.push(newContent);
+  //     return;
+  //   }
+  //   else if (this.content.length > index) {
+  //     i = index;
+  //   }
+  //   else if (this.content.length <= index) {
+  //     this.content.push(newContent);
+  //     return;
+  //   }
+  //   else {
+  //     console.error('Invalid index');
+  //   }
+  //   this.content[i] = newContent;
   // }
-
-  open() {
-    // this.displayModal = true;
-  }
-
-  // close() {
-  //   this.displayModal = false;
-  //   this.componentRef.destroy();
-  //   this.modalService.onClosed();
-  //   this.displayMessage = false;
-  //   this.message.nativeElement.innerHTML = '<hr>';
-  // }
-  close() {
-    this.modalService.close(this.mType);
-  }
-  
-  addMessage(message) {
-    // const tag = document.createElement('h3');
-    // const content = document.createTextNode(message);
-    // tag.append(content);
-    // const template = `${tag}`;
-    // console.log(template)
-    const style = 'style="padding: 0 2rem"'
-    this.message.nativeElement.insertAdjacentHTML('afterbegin', `<div ${style}>${message}</div>`);
-    this.displayMessage = true;
-  }
-
-  async loadModule(moduleName, componentName) {
-    this.selectedModule = this._modules[moduleName];
-    this.activeModule = await this.selectedModule.import();
-    this.changeComponent(componentName);
-  }
-
-  changeComponent(componentName) {
-    this.content.remove();
-    const component = this.activeModule.components[componentName];
-    this.componentFct = this.resolver.resolveComponentFactory(component);
-    this.componentRef = this.content.createComponent(this.componentFct);
-  }
-
-  createComponent(componentFct) {
-    this.content.remove();
-    this.componentRef = this.content.createComponent(componentFct);
-  }
-
-  addParams(params) {
-    Object.assign(this.componentRef.instance, params);
-  }
 
 }

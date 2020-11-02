@@ -71,8 +71,8 @@ export class UsersListComponent implements OnInit {
   checkAuth(message) {
     if (!this.token.isLogged()) {
       this.tooltip.close(true);
-      this.modal.addMessage(message);
-      this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
+      // this.modal.addMessage(message);
+      // this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
       return false;
     } else {
       return true;

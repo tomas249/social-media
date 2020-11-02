@@ -2,6 +2,8 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Router, RouterEvent, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LocationService } from 'src/app/services/location.service';
+import { ModalService } from '../modal/modal.service';
+import { NavbarService } from './navbar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -25,13 +27,19 @@ export class NavbarComponent implements OnInit {
   selSubItemIdx: number = -1;
 
   private _allUrls: [string, number, number][] = [];
+  private _states = [];
+
+  subMenu = null;
 
   constructor(
     private router: Router,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private navbarService: NavbarService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
+    this.navbarService.init(this);
     this._allUrls = this.listAllUrl(this.itemsList);
     // Detect url on init
     this.detectUrlAndChangeLoc(this.router.url);
@@ -80,6 +88,24 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  loadSubMenu(subMenuItems) {
+    this.saveState();
+    this.locationService.changeStackRoot(subMenuItems.name);
+    this.selSubItemIdx = subMenuItems.selChildIdx;
+    this.subMenu = subMenuItems;
+    this.locationService.addItemToStack(this.subMenu.children[this.selSubItemIdx].name)
+  }
+
+  getSubItemsList() {
+    if (this.subMenu) {
+      return this.subMenu.children;
+    }
+    else {
+      return this.itemsList[this.selItemIdx].children;
+    }
+  }
+  
+
   changeItem(itemIdx, item) {
     // Keep if same path
     if (itemIdx === this.selItemIdx) return;
@@ -93,11 +119,53 @@ export class NavbarComponent implements OnInit {
     this.router.navigate([route]);
   }
 
-  changeSubItem(subItemIdx, subItem, item) {
+  changeSubItem(subItemIdx, subItem, item?) {
     // Keep if same path
     if (subItemIdx === this.selSubItemIdx) return;
     
-    this.router.navigate([item.path.concat(subItem.path)]);
+    if (this.subMenu) {
+      this.selSubItemIdx = subItemIdx;
+      this.locationService.changeItemAtRoot(subItem.name, this.subMenu.name);
+      // this.modalService.changeComponent(subItem.modalOrigin, subItem.component);
+    }
+    else {
+      this.router.navigate([item.path.concat(subItem.path)]);
+    }
+  }
+
+  private saveState() {
+    this._states.push({
+      itemsList: this.itemsList,
+      selItemIdx: this.selItemIdx,
+      selSubItemIdx: this.selSubItemIdx,
+      subMenu: this.subMenu
+    });
+  }
+
+  restoreState(keepSubMenu=true) {
+    const state = this._states[this._states.length-1];
+    this.itemsList = state.itemsList;
+    this.selItemIdx = state.selItemIdx;
+    this.selSubItemIdx = state.selSubItemIdx;
+    if (keepSubMenu) {
+      this.subMenu = state.subMenu;
+      const itemName = this.itemsList[this.selSubItemIdx].name;
+      this.locationService.changeItemAtRoot(itemName, this.subMenu.name);
+    }
+    else {
+      this.subMenu = null;
+      const selItem = this.itemsList[this.selItemIdx];
+      this.locationService.changeStackRoot(selItem.name);
+      if (selItem.children) {
+        this.locationService.addItemToStack(selItem.children[this.selSubItemIdx].name);
+      }
+    }
+    this.locationService.finishComposition();
+    this._states.pop();
+  }
+
+  private reloadLocation(root, item) {
+    this.locationService.changeStackRoot(root)
   }
 
 }

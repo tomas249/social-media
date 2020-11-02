@@ -56,7 +56,7 @@ export class MainComponent implements OnInit {
       expectingRes: false
     },
     {
-      name: 'Auth',
+      name: 'Accounts',
       path: '/auth/accounts',
       protected: true,
       checkAvailability: this.token.user$,
@@ -72,34 +72,74 @@ export class MainComponent implements OnInit {
     private token: TokenService,
     private router: Router,
     private modal: ModalService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.location$ = this.locationService.location$;
+    this.location$ = this.locationService.location$.pipe(delay(0));
     this.user$ = this.token.user$;
   }
 
-  open(name) {
-    this.modal.open(name)
-  }
+  mContent = [
+    {
+      title: 'Please login in order to post'
+    },{
+      module: 'Auth',
+      component: 'Register'
+    },{
+      html: `<div>yo mamma tis difficulting</div>`
+    }];
 
-  text;
-  default() {
-    const mContent = [
-      {
-        module: 'AuthModule',
-        component: 'LoginComponent'
-      }
-    ];
-    this.modal.open('extendedModal', mContent)
-  }
-
-  close() {
-    const r = this.modal.close('defaultModal');
+  changeMessage() {
+    // this.modal.changeContentMssg('default', 2, {
+    //   html: `<hr>noiiiise<hr>`
+    // });
   }
 
   openPostModal() {
-    this.default();
+    // this.modal.open('extended', [])
+  }
+
+  openModal(type) {
+    if (type == 'extended') {
+      this.modal.open(type, [
+        {
+          title: 'Please register in order to post'
+        },{
+          module: 'Auth',
+          component: 'Register'
+        },{
+          html: `<div>yo mamma tis difficulting</div>`
+        }]);
+    }
+    else {
+      this.modal.open(type, [
+        {
+          title: 'Please login in order to post'
+        },{
+          module: 'Auth',
+          component: 'Login'
+        }]);
+    }
+  }
+
+  openMText() {
+    this.modal.open('default', [
+      { title: 'Error in API' },
+      { html: '<div>Please reconsider what you are doing</div>'},
+      {
+        module: 'Posts',
+        component: 'PostPublish'
+      }
+    ], { testnum: 66666 })
+  }
+
+  changeMssg() {
+    // this.modal.changeContent({ title: 'Changed!' }, 0)
+    // this.modal.changeContent({ title: 'Changed!' }, 1)
+    // this.modal.changeContent({
+    //   module: 'Auth',
+    //   component: 'Login'
+    // }, 2)
   }
 
   // OLD ----------------

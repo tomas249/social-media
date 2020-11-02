@@ -2,7 +2,7 @@
   <div class="post-list">
 
     <div *ngIf="!searchParams && isLogged">
-      <app-post-publish [destinationConfig]="{destination: 1}"></app-post-publish>
+      <app-post-publish [destinationConfig]="{destination: 1, showUploadProgress: true}"></app-post-publish>
     </div>
     <div class="border auth-container" *ngIf="!searchParams && !isLogged">
       <div class="notLogged">

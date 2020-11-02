@@ -1,6 +1,26 @@
-<div *ngIf="selSubItemIdx !== -1">
+<!-- <div *ngIf="subMenu">
+  <hr>
+  <div *ngFor="let subItem of subMenu; let i=index">
+    <a
+      [ngStyle]="i === selSubItemIdx && {'color':'green'}"
+      (click)="changeSubItem(i, subItem)">{{ subItem.name }}</a>
+  </div>
+  <hr>
+</div> -->
+
+<!-- <div *ngIf="selSubItemIdx !== -1">
   <hr>
   <div *ngFor="let subItem of itemsList[selItemIdx].children; let i=index">
+    <a
+      [ngStyle]="i === selSubItemIdx && {'color':'green'}"
+      (click)="changeSubItem(i, subItem, itemsList[selItemIdx])">{{ subItem.name }}</a>
+  </div>
+  <hr>
+</div> -->
+
+<div *ngIf="selSubItemIdx !== -1">
+  <hr>
+  <div *ngFor="let subItem of getSubItemsList(); let i=index">
     <a
       [ngStyle]="i === selSubItemIdx && {'color':'green'}"
       (click)="changeSubItem(i, subItem, itemsList[selItemIdx])">{{ subItem.name }}</a>

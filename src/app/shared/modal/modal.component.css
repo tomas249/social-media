@@ -45,5 +45,17 @@
 .message {
   padding: 1rem;
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1rem;
+}
+
+.text {
+  padding: 2rem 1rem;
+}
+
+.loading-state {
+  width: 100%;
+  padding: 2rem 0;
+  text-align: center;
+  color: gray;
+  font-size: 1.5rem;
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { ModalService } from '../modal.service';
 
 @Component({
@@ -8,26 +8,16 @@ import { ModalService } from '../modal.service';
 })
 export class ModalDefaultComponent implements OnInit {
 
+  type = 'default';
   display = false;
-  displayMessage = false;
 
   constructor(
     private modalService: ModalService
   ) { }
-
-  id = -1;
-  text = '000';
-
-  mContent;
-
-
+  
   ngOnInit(): void {
-    this.modalService.initiate('defaultModal', this);
+    this.modalService.initType('default', this);
   }
-
-
-  close() {}
-
 }
 
 
