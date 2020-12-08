@@ -7,16 +7,17 @@ import { PostComponent } from './post/post.component';
 import { PostPublishComponent } from './post-publish/post-publish.component';
 import { PostsListComponent } from './posts-list/posts-list.component';
 import { PostArticleComponent } from './post-article/post-article.component';
-import { PostHomeComponent } from './post-home/post-home.component';
 
 const routes: Routes = [
   { 
     path: 'explore', 
-    component: PostsListComponent
+    component: PostsListComponent,
+    data: { queryUrl: '/posts?parent[size]=0&childLevel=0&[limit]=13' }
   },
   { 
     path: 'home', 
-    component: PostHomeComponent
+    component: PostsListComponent,
+    data: { queryUrl: '/posts/user' }
   },
   { 
     path: 'post/:postId',

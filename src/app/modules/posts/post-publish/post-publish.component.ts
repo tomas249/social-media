@@ -3,7 +3,7 @@ import { PostsService } from '../posts.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { LocationService } from 'src/app/services/location.service';
 import { TokenService } from 'src/app/services/token.service';
-import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
+// import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
 import { map, switchMap, takeLast, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
@@ -20,15 +20,14 @@ export class PostPublishComponent implements OnInit {
 
   constructor(
     private postsService: PostsService,
-    private modal: ModalService,
+    private modalService: ModalService,
     private locationService: LocationService,
     private token: TokenService,
-    private tooltip: TooltipService
+    // private tooltip: TooltipService
   ) { }
 
   ngOnInit(): void {
     this.user = this.token.getUserData();
-    this.locationService.finishComposition();
     if (!this.destinationConfig) {
 
       // const loc = this.locationService.getLocation();
@@ -63,36 +62,41 @@ export class PostPublishComponent implements OnInit {
     const input = this.postInput.nativeElement.innerText;
     if (!input) return;
 
-    if (this.selectedMedia) {
-      this.getGalleryUrl().pipe(
-        map(res => {
-          return res.gallery.map(image => {
-            return {
-              filename: image.filename,
-              relativePath: `/p/${image.filename}`,
-              fullPath: `${environment.baseUrl}/p/${image.filename}`
-            }
-          });
-        })
-      ).subscribe(res => {
-        // Check if it is a post or a reply
-        const post = {text: input, media: res};
-        if (this.postReply) {
-          this.postsService.replyPost(this.postReply._id, post, this.destinationConfig);
-        } else {
-          this.postsService.publishPost(post, this.destinationConfig);
-        }
-        this.clear();
-        // this.modal.emitResponse(true);
-        // Close modal (if it exists)
-        // this.modal.close();
-      });
+    if (this.selectedMedia.length !== 0) {
+      // this.getGalleryUrl().pipe(
+      //   map(res => {
+      //     return res.gallery.map(image => {
+      //       return {
+      //         filename: image.filename,
+      //         relativePath: `/p/${image.filename}`,
+      //         fullPath: `${environment.baseUrl}/p/${image.filename}`
+      //       }
+      //     });
+      //   })
+      // ).subscribe(res => {
+      //   // Check if it is a post or a reply
+      //   const post = {text: input, media: res};
+      //   if (this.postReply) {
+      //     this.postsService.replyPost(this.postReply._id, post, this.destinationConfig);
+      //   } else {
+      //     this.postsService.publishPost(post, this.destinationConfig);
+      //   }
+      //   this.clear();
+      //   // this.modal.emitResponse(true);
+      //   // Close modal (if it exists)
+      //   // this.modal.close();
+      // });
     } else {
       // Check if it is a post or a reply
+      this.modalService.emitResponse(false, false);
       if (this.postReply) {
-        this.postsService.replyPost(this.postReply._id, {text: input, media: []}, this.destinationConfig);
+        this.postsService.replyPost(this.postReply._id, {text: input, media: []}, this.destinationConfig)
+        .subscribe(res => {
+          this.modalService.emitResponse(true, res);
+        });
       } else {
         this.postsService.publishPost({text: input, media: []}, this.destinationConfig);
+        this.modalService.emitResponse(true, true);
       }
       this.clear();
       // this.modal.emitResponse(true);
@@ -121,14 +125,13 @@ export class PostPublishComponent implements OnInit {
   selectedMediaBlob = [];
   selectedMediaIndex = 0;
   onMediaSelect(event) {
-    this.modal.open('extended', [
-      {
-        title: 'Please login in order to post'
-      },{
-        module: 'Auth',
-        component: 'Login'
-      }]);
-    return;
+    // this.modal.open('extended', [
+    //   {
+    //     title: 'Please login in order to post'
+    //   },{
+    //     module: 'Auth',
+    //     component: 'Login'
+    //   }]);
     // this.tooltip.close();
     for (const [key, media] of Object.entries(event.target.files)) {
       const filter = this.tempFilter(media);
@@ -192,18 +195,18 @@ export class PostPublishComponent implements OnInit {
   uploadProgress: any = 0;
   private getGalleryUrl() {
     this.showUploadProgress = true;
-    return this.postsService.uploadGallery(this.selectedMedia).pipe(
-      tap(res => {
-        if (res.progress) {
-          this.uploadProgress = res.progress;
-        }
-        else if (res.completed) {
-          this.uploadProgress = 'Uploaded';
-        }
-      }),
-      takeLast(1),
-      map(res => res)
-    );
+    // return this.postsService.uploadGallery(this.selectedMedia).pipe(
+    //   tap(res => {
+    //     if (res.progress) {
+    //       this.uploadProgress = res.progress;
+    //     }
+    //     else if (res.completed) {
+    //       this.uploadProgress = 'Uploaded';
+    //     }
+    //   }),
+    //   takeLast(1),
+    //   map(res => res)
+    // );
   }
 
   test() {

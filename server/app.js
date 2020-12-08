@@ -51,7 +51,6 @@ const server = app.listen(
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
   app.use((req, res, next) => {
-    console.dir(req.ip);
     next();
   }, morgan('dev'));
 }

@@ -11,7 +11,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Some multer config
+// Multer config
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     const fieldPath = {

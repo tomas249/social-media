@@ -13,7 +13,6 @@ export class AuthComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('auth component started')
     this.loadNav();
   }
 

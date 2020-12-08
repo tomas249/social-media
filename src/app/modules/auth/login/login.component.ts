@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, Validators, ValidationErrors } from '@angular/f
 import { LocationService } from 'src/app/services/location.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { filter, take } from 'rxjs/operators';
+import { NavbarService } from 'src/app/shared/navbar/navbar.service';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit {
     private auth: AuthService,
     private token: TokenService,
     private router: Router,
-    private locationService: LocationService,
+    private navbarService: NavbarService,
     private modal: ModalService
   ) {
 
@@ -47,7 +48,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.locationService.finishComposition();
+    // this.locationService.finishComposition();
   }
 
   errorMessages(field, keyError, extra=null) {
@@ -89,8 +90,8 @@ export class LoginComponent implements OnInit {
     // Send request to API
     this.auth.login(payload).subscribe(
     res => {
-      // this.modal.emitResponse(true);
-      if (this.navigateEnd) this.router.navigate(['/']);
+      this.modal.emitResponse(true);
+      if (this.navigateEnd) this.navbarService.go('/explore');
     },
     err => {
       this.success = false;

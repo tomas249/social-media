@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private fb: FormBuilder,
     private locationService: LocationService,
-    private modal: ModalService
+    private modalService: ModalService
   ) {
     this.registerForm = this.fb.group({
       name: ['', [
@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.locationService.finishComposition();
+    // this.locationService.finishComposition();
     // this.locationService.addChildLoc('Register', {extend:false, parentLoc:'Auth', useNav:true});
   }
 
@@ -98,7 +98,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
   onRegister() {
     this.getFormValidationErrors();

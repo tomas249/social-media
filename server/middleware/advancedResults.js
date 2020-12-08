@@ -5,6 +5,7 @@ const advancedResults = (cb, find, model, populate) => asyncHandler(async (req, 
    */
   let query;
   const reqQuery = {...req.query};
+  console.log(reqQuery)
 
   /**
    * Clean reqQuery
@@ -37,7 +38,6 @@ const advancedResults = (cb, find, model, populate) => asyncHandler(async (req, 
 
   // Parse again to object
   reqQueryStr = JSON.parse(reqQueryStr);
-
 
   /**
    * 1. Query without excluded fields

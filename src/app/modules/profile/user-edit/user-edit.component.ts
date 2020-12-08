@@ -51,21 +51,21 @@ export class UserEditComponent implements OnInit {
     };
 
     let subscription;
-    if (this.selectedImage) {
-      subscription = this.getNewAvatarUrl().pipe(
-        tap(avatarPath => {
-          updatedUser['avatar'] = {
-            filename: avatarPath,
-            relativePath: `/a/${avatarPath}`,
-            fullPath: `${environment.baseUrl}/a/${avatarPath}`
-          };
-          // this.token.updateData({ avatar: updatedUser['avatar'] });
-        }),
-        switchMap(_ => this.profileService.updateUserData(updatedUser))
-      );
-    } else {
-      subscription = this.profileService.updateUserData(updatedUser);
-    }
+    // if (this.selectedImage) {
+    //   subscription = this.getNewAvatarUrl().pipe(
+    //     tap(avatarPath => {
+    //       updatedUser['avatar'] = {
+    //         filename: avatarPath,
+    //         relativePath: `/a/${avatarPath}`,
+    //         fullPath: `${environment.baseUrl}/a/${avatarPath}`
+    //       };
+    //       // this.token.updateData({ avatar: updatedUser['avatar'] });
+    //     }),
+    //     switchMap(_ => this.profileService.updateUserData(updatedUser))
+    //   );
+    // } else {
+    //   subscription = this.profileService.updateUserData(updatedUser);
+    // }
     
     subscription.subscribe(res => {
       // this.modal.emitResponse({user: res.data});
@@ -77,18 +77,18 @@ export class UserEditComponent implements OnInit {
   uploadProgress: any = 0;
   private getNewAvatarUrl() {
     this.showUploadProgress = true;
-    return this.profileService.updateAvatar(this.selectedImage).pipe(
-      tap(res => {
-        if (res.progress) {
-          this.uploadProgress = res.progress;
-        }
-        else if (res.completed) {
-          this.uploadProgress = 'Uploaded';
-        }
-      }),
-      takeLast(1),
-      map(res => res.avatarPath)
-    );
+    // return this.profileService.updateAvatar(this.selectedImage).pipe(
+    //   tap(res => {
+    //     if (res.progress) {
+    //       this.uploadProgress = res.progress;
+    //     }
+    //     else if (res.completed) {
+    //       this.uploadProgress = 'Uploaded';
+    //     }
+    //   }),
+    //   takeLast(1),
+    //   map(res => res.avatarPath)
+    // );
   }
 
   private createFormData(file, cb) {

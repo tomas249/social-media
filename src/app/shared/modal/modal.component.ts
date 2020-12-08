@@ -7,7 +7,7 @@ import { ModalService } from './modal.service';
 import { NgModuleFactory } from '@angular/core/src/r3_symbols';
 import { LocationService } from 'src/app/services/location.service';
 import { LoadChildren } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { EventEmitter } from 'protractor';
 import { NavbarService } from '../navbar/navbar.service';
 import { moduleList } from './module-list'
@@ -24,8 +24,8 @@ export class ModalComponent implements OnInit {
   loading = false;
 
   content = {begin: [], end: []};
-
-  componentRef;
+  private _components;
+  private _componentRef;
 
   private _states = [];
 
@@ -40,9 +40,9 @@ export class ModalComponent implements OnInit {
   }
 
   onClose() {
-    if (this.componentRef) {
-      this.componentRef.destroy();
-      this.componentRef = null;
+    if (this._componentRef) {
+      this._componentRef.destroy();
+      this._componentRef = null;
     }
     if (this.contentCmp) {
       this.contentCmp.clear()
@@ -73,10 +73,18 @@ export class ModalComponent implements OnInit {
       this.content = mContent;
 
       this.loadModule(asyncLoad.module, (module) => {
-        const componentFct = this.resolveComponent(module, asyncLoad.component);
-        this.componentRef = this.contentCmp.createComponent(componentFct);
-        Object.assign(this.componentRef.instance, params);
+        // Once we have module, check for menu items
+        if (module.menu) {
+          // Send this menu and current component to navbar service
+          this.navbarService.loadMenu(module.menu, asyncLoad);
+        }
+        const componentFct = this.resolveComponent(module.components, asyncLoad.component);
+        this._componentRef = this.contentCmp.createComponent(componentFct);
+        Object.assign(this._componentRef.instance, params);
         this.loading = false;
+
+        // Save access to components
+        this._components = module.components;
       });
     }
     else {
@@ -89,6 +97,7 @@ export class ModalComponent implements OnInit {
       content: this.content
     };
     if (this.contentCmp) {
+      currentState['components'] = this._components;
       currentState['view'] = this.contentCmp.detach();
     }
     this._states.push(currentState);
@@ -99,6 +108,7 @@ export class ModalComponent implements OnInit {
     this.content = oldData.content;
     if (oldData.view) {
       this.contentCmp.insert(oldData.view);
+      this._components = oldData.components;
     }
     this._states.pop();
   }
@@ -109,38 +119,18 @@ export class ModalComponent implements OnInit {
     cb(module);
   }
 
-  private resolveComponent(module, componentName) {
+  private resolveComponent(components, componentName) {
     componentName = componentName + 'Component';
-    const component = module.components[componentName];
+    const component = components[componentName];
     return this.resolver.resolveComponentFactory(component);
   }
 
-  // changeContent(newContent, index?) {
-  //   // Check if it is possible such change
-  //   let i;
-  //   if (!index && typeof index !== 'number') {
-  //     this.content.push(newContent);
-  //     return;
-  //   }
-  //   else if (index === 'replace-last') {
-  //     i = this.content.length -1;
-  //   }
-  //   else if (index === 'replace-all') {
-  //     this.content = [];
-  //     this.content.push(newContent);
-  //     return;
-  //   }
-  //   else if (this.content.length > index) {
-  //     i = index;
-  //   }
-  //   else if (this.content.length <= index) {
-  //     this.content.push(newContent);
-  //     return;
-  //   }
-  //   else {
-  //     console.error('Invalid index');
-  //   }
-  //   this.content[i] = newContent;
-  // }
+  changeComponent(componentName) {
+    const componentFct = this.resolveComponent(this._components, componentName);
+    this.contentCmp.clear();
+    this._componentRef = this.contentCmp.createComponent(componentFct);
+  }
+
+  
 
 }

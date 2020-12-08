@@ -97,7 +97,7 @@ PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
   innerLim = limit[level-1] || limit[limit.length - 1];
 
   // Outer: this is the first object and corresponds to the last level
-  const selectFields = 'text createdAt parent parentRef replyRef likes whoLiked media=';
+  const selectFields = 'text createdAt parent parentRef child replyRef likes whoLiked media=';
   if (!obj) obj = {path:'child', options: { limit:innerLim, select: selectFields }}
 
   // Break recursive func
@@ -126,5 +126,17 @@ const populateOwner = function(next) {
 PostSchema.
   pre('findOne', populateOwner).
   pre('find', populateOwner);
+
+
+PostSchema.post('findOneAndDelete', async function(post) {
+  console.group('Deleting %s', post.text)
+  post.child.forEach(console.log)
+  console.groupEnd()
+  // Remove all children
+  await post.child.forEach(async child => {
+    await this.model.findByIdAndDelete(child)
+  });
+
+});
 
 module.exports = mongoose.model('Post', PostSchema);

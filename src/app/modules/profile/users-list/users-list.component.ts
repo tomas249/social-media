@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { ProfileService } from '../profile.service';
-import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
+// import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
 import { TokenService } from 'src/app/services/token.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 
@@ -20,7 +20,7 @@ export class UsersListComponent implements OnInit {
 
   constructor(
     private profileService: ProfileService,
-    private tooltip: TooltipService,
+    // private tooltip: TooltipService,
     private token: TokenService,
     private modal: ModalService
   ) { }
@@ -43,11 +43,11 @@ export class UsersListComponent implements OnInit {
     const start = a.y;
     const X = a.x + a.width / 2;
     const Y = a.y + a.height;
-    this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user});
+    // this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user});
   }
 
   closeTooltip() {
-    this.tooltip.close();
+    // this.tooltip.close();
     this.image.nativeElement.style.zIndex = '2';
   }
 
@@ -70,7 +70,7 @@ export class UsersListComponent implements OnInit {
 
   checkAuth(message) {
     if (!this.token.isLogged()) {
-      this.tooltip.close(true);
+      // this.tooltip.close(true);
       // this.modal.addMessage(message);
       // this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
       return false;

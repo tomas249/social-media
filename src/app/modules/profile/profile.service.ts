@@ -3,7 +3,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { TokenService } from 'src/app/services/token.service';
 import { map, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { UploadFileService } from 'src/app/shared/uploadFile.service';
+// import { UploadFileService } from 'src/app/shared/uploadFile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class ProfileService {
   constructor(
     private api: ApiService,
     private token: TokenService,
-    private uploadFile: UploadFileService
+    // private uploadFile: UploadFileService
   ) {
     this.currentUserId = this.token.getUserId();
   }
@@ -105,30 +105,30 @@ export class ProfileService {
     const fd = new FormData();
     fd.append('avatar', newImage);
 
-    const opt = this.uploadFile.getOptions();
+    // const opt = this.uploadFile.getOptions();
     
     // Upload all images to get their url
-    return this.api.post('/files/updateAvatar', fd, opt).pipe(
-      map(event => {
+    // return this.api.post('/files/updateAvatar', fd, opt).pipe(
+    //   map(event => {
 
-        const res = this.uploadFile.getProgress(event);
-        if (!res.completedUpload) {
-          return res;
-        }
-        else {
-          // Expected response is an array of all images
-          // with their new filename
-          const galleryFilename = res.data;
+    //     // const res = this.uploadFile.getProgress(event);
+    //     // if (!res.completedUpload) {
+    //     //   return res;
+    //     // }
+    //     // else {
+    //     //   // Expected response is an array of all images
+    //     //   // with their new filename
+    //     //   const galleryFilename = res.data;
   
-          return {
-            completed: true,
-            message: res.message,
-            avatarPath: galleryFilename
-          };
-        }
+    //     //   return {
+    //     //     completed: true,
+    //     //     message: res.message,
+    //     //     avatarPath: galleryFilename
+    //     //   };
+    //     // }
 
-      }
-    ));
+    //   }
+    // ));
 
     // return this.api.post('/files/updateAvatar', fd);
   }

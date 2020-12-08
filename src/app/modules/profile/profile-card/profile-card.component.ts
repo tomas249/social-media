@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { ProfileService } from '../profile.service';
 import { Router } from '@angular/router';
-import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
+// import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { TokenService } from 'src/app/services/token.service';
 
@@ -21,7 +21,7 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private profileService: ProfileService,
     private router: Router,
-    private tooltip: TooltipService,
+    // private tooltip: TooltipService,
     private modal: ModalService,
     private token: TokenService
   ) { }
@@ -50,12 +50,12 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.allowRouter) return;
     // this.modal.close();
     this.profileService.setUser(this.user);
-    this.tooltip.close(true);
+    // this.tooltip.close(true);
     this.router.navigate(['/u/' + username]);
   }
 
   openList(field) {
-    this.tooltip.close(true);
+    // this.tooltip.close(true);
     const currentUserId = this.token.getUserId();
     // console.log({currentUserId, userId: this.user._id, usersField: field})
     // this.modal.open('ProfileModule', 'UsersListComponent', 
@@ -75,7 +75,7 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
 
   checkAuth(message) {
     if (!this.token.isLogged()) {
-      this.tooltip.close(true);
+      // this.tooltip.close(true);
       // this.modal.addMessage(message);
       // this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
       return false;

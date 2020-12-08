@@ -1,38 +1,22 @@
-<!-- <div *ngIf="subMenu">
+<!-- Menu -->
+<div *ngIf="selMenuItemIdx !== -1">
   <hr>
-  <div *ngFor="let subItem of subMenu; let i=index">
+  <div *ngFor="let item of menuList; let i=index">
     <a
-      [ngStyle]="i === selSubItemIdx && {'color':'green'}"
-      (click)="changeSubItem(i, subItem)">{{ subItem.name }}</a>
-  </div>
-  <hr>
-</div> -->
-
-<!-- <div *ngIf="selSubItemIdx !== -1">
-  <hr>
-  <div *ngFor="let subItem of itemsList[selItemIdx].children; let i=index">
-    <a
-      [ngStyle]="i === selSubItemIdx && {'color':'green'}"
-      (click)="changeSubItem(i, subItem, itemsList[selItemIdx])">{{ subItem.name }}</a>
-  </div>
-  <hr>
-</div> -->
-
-<div *ngIf="selSubItemIdx !== -1">
-  <hr>
-  <div *ngFor="let subItem of getSubItemsList(); let i=index">
-    <a
-      [ngStyle]="i === selSubItemIdx && {'color':'green'}"
-      (click)="changeSubItem(i, subItem, itemsList[selItemIdx])">{{ subItem.name }}</a>
+      [ngStyle]="i === selMenuItemIdx && {'color':'green'}"
+      (click)="changeMenuItem(i, item, navbarList[selNavbarItemIdx])">
+      {{ item.name }}
+    </a>
   </div>
   <hr>
 </div>
 
-<ng-container *ngFor="let item of itemsList; let i=index">
+<!-- Navbar List -->
+<ng-container *ngFor="let item of navbarList; let i=index">
   <div *ngIf="!item.protected || !!(item.checkAvailability | async) === item.expectingRes">
     <a
-      [ngStyle]="i === selItemIdx && {'color':'green'}"
-      (click)="changeItem(i, item)">{{ item.name }}
+      [ngStyle]="i === selNavbarItemIdx && {'color':'green'}"
+      (click)="changeNavbarItem(i, item)">{{ item.name }}
     </a>
   </div>
 </ng-container>

@@ -8,7 +8,7 @@ export const moduleList = {
   ProfileModule: {
     import: async () => (await import('src/app/modules/profile/profile.module')).ProfileModule
   },
-  DashboardModule: {
-    import: async () => (await import('src/app/modules/dashboard/dashboard.module')).DashboardModule
-  }
+  // DashboardModule: {
+  //   import: async () => (await import('src/app/modules/dashboard/dashboard.module')).DashboardModule
+  // }
 };

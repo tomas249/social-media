@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AppComponent } from './app.component';
+
+/**
+ *  Load all layouts in a lazy way
+ */
 
 const routes: Routes = [
-  {
-    path: 'full',
-    loadChildren: () => import('./layouts/full/full.module')
-      .then(m => m.FullModule)
-  },
   {
     path: '',
     loadChildren: () => import('./layouts/main/main.module')

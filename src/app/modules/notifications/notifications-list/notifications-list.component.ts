@@ -36,9 +36,13 @@ export class NotificationsListComponent implements OnInit, OnDestroy {
           unread: 'Only unread'
         }
         // this.locationService.addChildLoc(redirects[this.notificationsFilter], {extend:false, parentLoc:'Notifications', useNav:true});
+        
+        // Change location
+        this.locationService.replaceItemsFromEnd(1, redirects[this.notificationsFilter]);
+        this.locationService.finishComposition();
 
         this.notifications.getNotifications(this.notificationsFilter === 'unread').subscribe(res => {
-          this.notificationsList = res.data.reverse();
+          this.notificationsList = res.reverse();
         });
         // this.notifications.sub().subscribe(res => {
         //   console.warn(res);
