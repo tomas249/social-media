@@ -62,41 +62,78 @@ export class PostPublishComponent implements OnInit {
     const input = this.postInput.nativeElement.innerText;
     if (!input) return;
 
+    // This way we can close the modal but still send data
+    this.modalService.emitResponse(false, false);
+
+
     if (this.selectedMedia.length !== 0) {
-      // this.getGalleryUrl().pipe(
-      //   map(res => {
-      //     return res.gallery.map(image => {
-      //       return {
-      //         filename: image.filename,
-      //         relativePath: `/p/${image.filename}`,
-      //         fullPath: `${environment.baseUrl}/p/${image.filename}`
-      //       }
-      //     });
-      //   })
-      // ).subscribe(res => {
-      //   // Check if it is a post or a reply
-      //   const post = {text: input, media: res};
-      //   if (this.postReply) {
-      //     this.postsService.replyPost(this.postReply._id, post, this.destinationConfig);
-      //   } else {
-      //     this.postsService.publishPost(post, this.destinationConfig);
-      //   }
-      //   this.clear();
-      //   // this.modal.emitResponse(true);
-      //   // Close modal (if it exists)
-      //   // this.modal.close();
-      // });
+
+      // Check if it is a post or a reply
+      if (this.postReply) {
+        this.postsService.replyPost(this.postReply._id, {text: input, media: this.selectedMedia},
+          this.destinationConfig)
+        .subscribe(res => {
+          // console.log('got it')
+
+          // console.log(res)
+          this.modalService.emitResponse(!res.hasOwnProperty('progress'), res);
+
+        }, err => {
+          console.log('error amig')
+          console.log(err)
+        });
+      } else {
+        this.postsService.publishPost({text: input, media: this.selectedMedia}, this.destinationConfig)
+        .subscribe(res => {
+          console.log(res)
+
+          // this.modalService.emitResponse(true, res);
+        });
+      }
+
+
+      return;
+      this.getGalleryUrl().pipe(
+        map(res => {
+          return res.gallery.map(image => {
+            return {
+              filename: image.filename,
+              relativePath: `/p/${image.filename}`,
+              fullPath: `${environment.baseUrl}/p/${image.filename}`
+            }
+          });
+        })
+      ).subscribe(res => {
+        // Check if it is a post or a reply
+        const post = {text: input, media: res};
+        if (this.postReply) {
+          this.postsService.replyPost(this.postReply._id, post, this.destinationConfig)
+          .subscribe(res => {
+            this.modalService.emitResponse(true, res);
+          });
+        } else {
+          this.postsService.publishPost(post, this.destinationConfig)
+          .subscribe(res => {
+            this.modalService.emitResponse(true, res);
+          });
+        }
+        this.clear();
+        // this.modal.emitResponse(true);
+        // Close modal (if it exists)
+        // this.modal.close();
+      });
     } else {
       // Check if it is a post or a reply
-      this.modalService.emitResponse(false, false);
       if (this.postReply) {
         this.postsService.replyPost(this.postReply._id, {text: input, media: []}, this.destinationConfig)
         .subscribe(res => {
           this.modalService.emitResponse(true, res);
         });
       } else {
-        this.postsService.publishPost({text: input, media: []}, this.destinationConfig);
-        this.modalService.emitResponse(true, true);
+        this.postsService.publishPost({text: input, media: []}, this.destinationConfig)
+        .subscribe(res => {
+          this.modalService.emitResponse(true, res);
+        });
       }
       this.clear();
       // this.modal.emitResponse(true);
@@ -123,7 +160,7 @@ export class PostPublishComponent implements OnInit {
   @ViewChild('mediaSelect') mediaSelect: ElementRef;
   selectedMedia = [];
   selectedMediaBlob = [];
-  selectedMediaIndex = 0;
+  selectedMediaIndex = -1;
   onMediaSelect(event) {
     // this.modal.open('extended', [
     //   {
@@ -133,18 +170,38 @@ export class PostPublishComponent implements OnInit {
     //     component: 'Login'
     //   }]);
     // this.tooltip.close();
+    // Check number of media selected
+    if (this.selectedMedia.length + event.target.files.length > 5) {
+      this.modalService.open(
+        {type: 'default', content: [{title: 'Media error'},
+                                    {html: '<p>You can only attach 5 media files per post!</p>'}]},
+        {action: 'add', name:['Media', 'Error']});
+      return;
+    }
+
     for (const [key, media] of Object.entries(event.target.files)) {
       const filter = this.tempFilter(media);
-      console.log('Filter:', filter)
-      if (!filter.valid) return;
+      if (!filter.valid) {
+        // Open modal informing the client why the media was not uploaded
+        this.modalService.open(
+          {type: 'default', content: [{title: 'Media error'},
+                                      {html: filter.message}, 
+                                      {html: '<p>Try with images or short videos!</p>'}]},
+          {action: 'add', name:['Media', 'Error']});
+        // Stop function
+        return;
+      };
       // Set image file
       this.selectedMedia.push(media);
       // Display image
       this.createFormData(media, url => {
-      const mediaBlob = {format: filter.format, url}
-        this.selectedMediaBlob.push(mediaBlob); 
+        const mediaBlob = {format: filter.format, url}
+        this.selectedMediaBlob.push(mediaBlob);
       });
     }
+    // Always select last media on upload
+    this.selectedMediaIndex = this.selectedMedia.length-1;
+
   }
 
   onCancelSelectedMedia(index) {
@@ -175,8 +232,8 @@ export class PostPublishComponent implements OnInit {
       valid: null,
       message: null
     };
-    response.format = media.type.match(/.+?(?=\/)/g)[0];
-
+    const splittedFormat = media.type.match(/(\w+)\/(\w+)?/);
+    response.format = splittedFormat[1]
     if (response.format === 'video') {
       response.valid = !(media.size > 15000000);
       response.message = 'Max size is 15MB';
@@ -186,7 +243,7 @@ export class PostPublishComponent implements OnInit {
     }
     else {
       response.valid = false;
-      response.message = 'Unknown format';
+      response.message = `'<strong>${splittedFormat[2]}</strong>' is not a valid format.`;
     }
     return response;
   }
@@ -195,18 +252,20 @@ export class PostPublishComponent implements OnInit {
   uploadProgress: any = 0;
   private getGalleryUrl() {
     this.showUploadProgress = true;
-    // return this.postsService.uploadGallery(this.selectedMedia).pipe(
-    //   tap(res => {
-    //     if (res.progress) {
-    //       this.uploadProgress = res.progress;
-    //     }
-    //     else if (res.completed) {
-    //       this.uploadProgress = 'Uploaded';
-    //     }
-    //   }),
-    //   takeLast(1),
-    //   map(res => res)
-    // );
+    return this.postsService.uploadGallery(this.selectedMedia).pipe(
+      tap(res => {
+        if (res.progress) {
+          this.uploadProgress = res.progress;
+          this.modalService.emitResponse(false, {progress: res.progress});
+          console.log(this.uploadProgress);
+        }
+        else if (res.completed) {
+          this.uploadProgress = 'Uploaded';
+        }
+      }),
+      takeLast(1),
+      map(res => res)
+    );
   }
 
   test() {

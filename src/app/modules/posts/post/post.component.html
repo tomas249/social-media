@@ -74,9 +74,9 @@
           </div>
         </div>
 
-        <!-- <div>
+        <div>
           <img class="selected-media" [src]="post.media[post.media[0].selectedIndex].fullPath">
-        </div> -->
+        </div>
         <!-- <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
           <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">
         </div>
@@ -99,7 +99,7 @@
           </div>
           <span class="a-bttn-count upper">
             {{ count.replies }} 
-            <span class="notify" style="color: orange" *ngIf="config.publishing">&nbsp;~ publishing</span>
+            <span class="notify" style="color: orange" *ngIf="config.publishing">&nbsp;~ publishing ({{replyingProgress}})</span>
             <span class="primary notify" *ngIf="config.replied">&nbsp;~ published</span>
             <!-- <span class="primary notify" *ngIf="config.deleted">&nbsp;~ deleted</span> -->
           </span>

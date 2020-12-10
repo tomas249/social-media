@@ -18,10 +18,7 @@ export class ApiService {
   ) { }
 
   post(url: string, payload: object, options={}) {
-    return this.http.post<any>(`${this.baseUrl}${url}`, payload, options).pipe(
-      filter(res => res.success || throwError('Unsuccessful request')),
-      map(res => res.data),
-      catchError(err => this.errorHandler(this.modalService, err)));
+    return this.http.post<any>(`${this.baseUrl}${url}`, payload, options);
   }
 
   get(url: string) {

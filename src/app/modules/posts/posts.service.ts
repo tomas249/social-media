@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
-import { catchError, first, map, take, tap } from 'rxjs/operators';
+import { catchError, first, flatMap, map, mergeMap, switchMap, take, takeLast, tap } from 'rxjs/operators';
 import { throwError, BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { HttpEvent } from '@angular/common/http';
 import { ModalService } from 'src/app/shared/modal/modal.service';
-// import { UploadFileService } from 'src/app/shared/uploadFile.service';
+import { UploadFileService } from 'src/app/services/upload-file.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class PostsService {
     private api: ApiService,
     private token: TokenService,
     private modal: ModalService,
-    // private uploadFile: UploadFileService
+    private uploadFile: UploadFileService
   ) {
     // this.posts$.subscribe(console.error)
   }
@@ -123,7 +124,7 @@ export class PostsService {
     // ).subscribe();
   }
   
-  getPostById(postId, setMainMenu=false) {
+  getPostById(postId) {
     return this.api.get(`/posts?_id=${postId}&childLevel=2`).pipe(
       // Filter always returns array and we are searching only 1 post
       map(res => res.data[0]),
@@ -157,12 +158,12 @@ export class PostsService {
 
     // Add temporarily
     this.addToList(post, config);
-    const path = '/posts'; 
-    this.api.post(path, post).subscribe(
-      res => {
+    const path = '/posts';
+    return;
+    return this.api.post(path, post).pipe(map(res => res.data)).pipe(
+      tap(res => {
         this.editFromList(res, config);
-      },
-      err => console.error(err)
+      })
     );
   }
 
@@ -170,11 +171,33 @@ export class PostsService {
     this.checkAuth();
     this.addToList(post, config);
     const path = `/posts/${postId}/reply`;
-    return this.api.post(path, post).pipe(
-      tap(res => {
-        this.editFromList(res, config);
-      })
-    )
+    if (post.media) {
+      return this.uploadGallery(post.media).pipe(
+        mergeMap(res1 => {
+          if (res1.completed) {
+            post.media = res1.gallery;
+            // console.warn('sending>', post)
+            return this.api.post(path, post).pipe(
+              map(res2 => res2.data),
+              tap(post => {
+                this.editFromList(post, config);
+              })
+            )
+          }
+          else {
+            return of(res1);
+          }
+        }),
+      );
+    }
+    else {
+      return this.api.post(path, post).pipe(
+        map(res => res.data),
+        tap(res => {
+          this.editFromList(res, config);
+        })
+      );
+    }
   }
 
   addToList(post, config:{destination, parentIndex?, end?}) {
@@ -263,29 +286,33 @@ export class PostsService {
       fd.append('gallery', image);
     });
 
-    // const opt = this.uploadFile.getOptions();
+    const opt = this.uploadFile.getOptions();
     
     // Upload all images to get their url
-    // return this.api.post('/files/uploadGallery', fd, opt).pipe(
-    //   map(event => {
+    return this.api.post('/files/uploadGallery', fd, opt).pipe(
+      map(event => {
+        const res = this.uploadFile.getProgress(event);
+        if (!res.completedUpload) {
+          
+          return res;
+        }
+        else {
+          // Expected response is an array of gallery with their paths
+          const gallery = res.data.map(image => {
+            return {
+              filename: image.filename,
+              relativePath: `/p/${image.filename}`,
+              fullPath: `${environment.baseUrl}/p/${image.filename}`
+            };
+          });
+          return {
+            completed: true,
+            message: res.message,
+            gallery
+          };
+        }
 
-    //     const res = this.uploadFile.getProgress(event);
-    //     if (!res.completedUpload) {
-    //       return res;
-    //     }
-    //     else {
-    //       // Expected response is an array of all images
-    //       // with their new filename
-    //       const gallery = res.data;
-  
-    //       return {
-    //         completed: true,
-    //         message: res.message,
-    //         gallery
-    //       };
-    //     }
-
-    //   }
-    // ));
+      }
+    ));
   }
 }

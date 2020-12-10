@@ -83,6 +83,9 @@ export class NavbarComponent implements OnInit {
     // Keep if same path
     if (itemIdx === this.selNavbarItemIdx) return;
 
+    // Close modal from previous window
+    this.modalService.close();
+
     // Add route
     let route = item.path;
     let menuIdx = -1;
@@ -104,6 +107,9 @@ export class NavbarComponent implements OnInit {
   changeMenuItem(menuItemIdx, menuItem, navbarItem) {
     // Keep if same path
     if (menuItemIdx === this.selMenuItemIdx) return;
+
+    // Close modal from previous window
+    this.modalService.close();
 
     // Change location
     this.locationService.removeItemFromStack();

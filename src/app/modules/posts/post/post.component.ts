@@ -42,6 +42,10 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   _post;
   @Input()
     set post(post) {
+      // Set selected media index
+      if (post.media && post.media.length !== 0 && !post.media[0].selectedIndex) {
+        post.media.unshift({selectedIndex: 1});
+      }
       // Simulate empty user for loading purposes
       if (this.config.empty) {
         post._id = 'loading...';
@@ -140,6 +144,8 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     shares: 0
   };
 
+  mediaSelIdx = 0;
+
   constructor(
     private postsService: PostsService,
     // private time: TimeService,
@@ -219,6 +225,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     return post;
   }
 
+  replyingProgress = 0;
   onReply() {
     if (!this.checkAuth('In order to reply a post you need to be logged in')) return;
     // this.modal.open('PostsModule', 'PostPublishComponent', 
@@ -240,8 +247,22 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     const modal = {type: 'default', content, params};
     const location = {action: 'add', name: ['Publish', 'Reply']};
     this.modalService.open(modal, location, (res) => {
-      if (res) {
+      if (!res) {
+      console.log(1111, res)
+
+        this.config.replied = false;
+        this.config.publishing = true;
+        // Now, reply is being published, so we can change location to indicate that
+        this.locationService.removeItemFromStack(2);
+        this.locationService.addItemToStack(['Publishing reply...'])
+      } 
+      else if (res && res.hasOwnProperty('progress')) {
+        console.log(22222, res)
+        this.replyingProgress = res.progress;
+      }
+      else {
         this.count.replies += 1;
+        console.log(3333, res)
         this.config.publishing = false;
         this.config.replied = true;
 
@@ -250,12 +271,6 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
         if (['list', 'reply'].includes(this.contextInfo?.type) ) {
           this.post.child.push(res);
         }
-      } else {
-        this.config.replied = false;
-        this.config.publishing = true;
-        // Now, reply is being published, so we can change location to indicate that
-        this.locationService.removeItemFromStack(2);
-        this.locationService.addItemToStack(['Publishing reply...'])
       }
     });
   }

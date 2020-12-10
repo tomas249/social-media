@@ -97,7 +97,7 @@ PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
   innerLim = limit[level-1] || limit[limit.length - 1];
 
   // Outer: this is the first object and corresponds to the last level
-  const selectFields = 'text createdAt parent parentRef child replyRef likes whoLiked media=';
+  const selectFields = 'text createdAt parent parentRef child replyRef media likes whoLiked media=';
   if (!obj) obj = {path:'child', options: { limit:innerLim, select: selectFields }}
 
   // Break recursive func

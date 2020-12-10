@@ -154,7 +154,13 @@ export class ModalService {
     this._modals[parentType]['core'] = coreComponent;
   }
 
-  close(type) {
+  close(type?) {
+    // If no type specified, choose last one
+    type = type || this._actives.getCurrent();
+
+    // If nothing to close, return
+    if (!type) return;
+
     // Restore location & menu
     this.locationService.restoreState();
     this.navbarService.restoreState();
@@ -162,9 +168,9 @@ export class ModalService {
     this._actives.list.pop();
     this._responses.pop();
 
-    const previousType = this._actives.getCurrent()
-    const currentModal = this._modals[type];
+    const previousType = this._actives.getCurrent();
     const previousModal = this._modals[previousType];
+    const currentModal = this._modals[type];
 
     if (!previousType) {
       currentModal.wrapper.display = false;

@@ -15,17 +15,11 @@
     <!-- <textarea class="text-area" placeholder="What's happening?"></textarea> -->
     <div #postInput contenteditable="true" id="text-box" placeholder="What's happening?"></div>
 
-    <!-- <div style="width: 100%; height: 160px; background-color: aquamarine; border-radius: 30px;">
-      <div>
-        bla bla 
-      </div>
-    </div> -->
-
     <div class="a-buttons">
       <input #mediaSelect type="file" multiple (change)="onMediaSelect($event)" style="display: none;">
 
       <div class="bttn-opt">
-        <div class="icon-box" (click)="onMediaSelect(null)">
+        <div class="icon-box" (click)="mediaSelect.click()">
           <svg class="bi bi-image opt-icon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
             xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd"
@@ -82,6 +76,10 @@
         </div> -->
       </div>
 
+      <div style="margin-left:auto" *ngIf="showUploadProgress">
+        Uploading {{ uploadProgress }}%
+      </div>
+
 
 
       <div class="bttn-post">
@@ -110,11 +108,11 @@
         <span class="remove-bttn"><button (click)="onCancelSelectedMedia(selectedMediaIndex)">Remove media {{ selectedMediaIndex +1 }}</button></span>
       </div>
 
-      <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
+      <div *ngIf="selectedMediaBlob[selectedMediaIndex]?.format === 'image'">
         <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">
       </div>
 
-      <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'video'">
+      <div *ngIf="selectedMediaBlob[selectedMediaIndex]?.format === 'video'">
         <span><i>Video thumbnail</i></span>
         <video class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url"></video>
       </div>

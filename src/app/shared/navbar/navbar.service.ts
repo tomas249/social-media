@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocationService } from 'src/app/services/location.service';
+import { ModalService } from '../modal/modal.service';
 
 @Injectable({
   providedIn: 'root'
