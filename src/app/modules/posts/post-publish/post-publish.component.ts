@@ -18,6 +18,8 @@ export class PostPublishComponent implements OnInit {
   @Input() destinationConfig = null;
   user;
 
+  publisher$;
+
   constructor(
     private postsService: PostsService,
     private modalService: ModalService,
@@ -65,89 +67,115 @@ export class PostPublishComponent implements OnInit {
     // This way we can close the modal but still send data
     this.modalService.emitResponse(false, false);
 
+    // Create post payload and check if media was uploaded
+    const post = {
+      text: input,
+      media: this.selectedMedia.length !== 0 ? this.selectedMedia : null
+    };
 
-    if (this.selectedMedia.length !== 0) {
+    // Check if it is a post or a reply
+    const publisher = () => {
+      return this.postReply ?
+             this.postsService.replyPost(this.postReply._id, post, this.destinationConfig) :
+             this.postsService.publishPost(post, this.destinationConfig) ;
+    };
 
-      // Check if it is a post or a reply
-      if (this.postReply) {
-        this.postsService.replyPost(this.postReply._id, {text: input, media: this.selectedMedia},
-          this.destinationConfig)
-        .subscribe(res => {
-          // console.log('got it')
-
-          // console.log(res)
-          this.modalService.emitResponse(!res.hasOwnProperty('progress'), res);
-
-        }, err => {
-          console.log('error amig')
-          console.log(err)
-        });
-      } else {
-        this.postsService.publishPost({text: input, media: this.selectedMedia}, this.destinationConfig)
-        .subscribe(res => {
-          console.log(res)
-
-          // this.modalService.emitResponse(true, res);
-        });
+    this.publisher$ = publisher().subscribe(res => {
+      if (res.progress) {
+        this.showUploadProgress = true;
+        this.uploadProgress = res.progress;
       }
+      else { this.showUploadProgress = false; }
+      // This response catches both progress and published post/reply
+      // Keep emitting responses until progress property does not exist
+      this.modalService.emitResponse(!res.hasOwnProperty('progress'), res);
+    });
+
+    // Empty input and media
+    this.clear();
 
 
-      return;
-      this.getGalleryUrl().pipe(
-        map(res => {
-          return res.gallery.map(image => {
-            return {
-              filename: image.filename,
-              relativePath: `/p/${image.filename}`,
-              fullPath: `${environment.baseUrl}/p/${image.filename}`
-            }
-          });
-        })
-      ).subscribe(res => {
-        // Check if it is a post or a reply
-        const post = {text: input, media: res};
-        if (this.postReply) {
-          this.postsService.replyPost(this.postReply._id, post, this.destinationConfig)
-          .subscribe(res => {
-            this.modalService.emitResponse(true, res);
-          });
-        } else {
-          this.postsService.publishPost(post, this.destinationConfig)
-          .subscribe(res => {
-            this.modalService.emitResponse(true, res);
-          });
-        }
-        this.clear();
-        // this.modal.emitResponse(true);
-        // Close modal (if it exists)
-        // this.modal.close();
-      });
-    } else {
-      // Check if it is a post or a reply
-      if (this.postReply) {
-        this.postsService.replyPost(this.postReply._id, {text: input, media: []}, this.destinationConfig)
-        .subscribe(res => {
-          this.modalService.emitResponse(true, res);
-        });
-      } else {
-        this.postsService.publishPost({text: input, media: []}, this.destinationConfig)
-        .subscribe(res => {
-          this.modalService.emitResponse(true, res);
-        });
-      }
-      this.clear();
-      // this.modal.emitResponse(true);
-      // Close modal (if it exists)
-      // this.modal.close();
+    // if (this.selectedMedia.length !== 0) {
 
-    }
+    //   // Check if it is a post or a reply
+    //   if (this.postReply) {
+    //     this.postsService.replyPost(this.postReply._id, {text: input, media: this.selectedMedia},
+    //       this.destinationConfig)
+    //     .subscribe(res => {
+    //       // console.log('got it')
+
+    //       // console.log(res)
+          
+
+    //     }, err => {
+    //       console.log('error amig')
+    //       console.log(err)
+    //     });
+    //   } else {
+    //     this.postsService.publishPost({text: input, media: this.selectedMedia}, this.destinationConfig)
+    //     .subscribe(res => {
+    //       // console.log(res)
+    //       this.modalService.emitResponse(!res.hasOwnProperty('progress'), res);
+    //     });
+    //   }
+
+
+    //   return;
+    //   this.getGalleryUrl().pipe(
+    //     map(res => {
+    //       return res.gallery.map(image => {
+    //         return {
+    //           filename: image.filename,
+    //           relativePath: `/p/${image.filename}`,
+    //           fullPath: `${environment.baseUrl}/p/${image.filename}`
+    //         }
+    //       });
+    //     })
+    //   ).subscribe(res => {
+    //     // Check if it is a post or a reply
+    //     const post = {text: input, media: res};
+    //     if (this.postReply) {
+    //       this.postsService.replyPost(this.postReply._id, post, this.destinationConfig)
+    //       .subscribe(res => {
+    //         this.modalService.emitResponse(true, res);
+    //       });
+    //     } else {
+    //       this.postsService.publishPost(post, this.destinationConfig)
+    //       .subscribe(res => {
+    //         this.modalService.emitResponse(true, res);
+    //       });
+    //     }
+    //     this.clear();
+    //     // this.modal.emitResponse(true);
+    //     // Close modal (if it exists)
+    //     // this.modal.close();
+    //   });
+    // } else {
+    //   // Check if it is a post or a reply
+    //   if (this.postReply) {
+    //     this.postsService.replyPost(this.postReply._id, {text: input, media: []}, this.destinationConfig)
+    //     .subscribe(res => {
+    //       this.modalService.emitResponse(true, res);
+    //     });
+    //   } else {
+    //     this.postsService.publishPost({text: input, media: []}, this.destinationConfig)
+    //     .subscribe(res => {
+    //       this.modalService.emitResponse(true, res);
+    //     });
+    //   }
+    //   // this.modal.emitResponse(true);
+    //   // Close modal (if it exists)
+    //   // this.modal.close();
+
+    // }
+    
+
   }
 
   clear() {
     // Clear input
     this.postInput.nativeElement.innerText = '';
     this.mediaSelect.nativeElement.value = '';
-    this.selectedMedia = [];
     this.selectedMedia = [];
     this.selectedMediaBlob = [];
     this.selectedMediaIndex = 0;

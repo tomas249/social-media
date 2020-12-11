@@ -119,6 +119,23 @@ export class ModalService {
     }
   }
 
+  forceClose() {
+    // forClose() closes all modals
+    // Important to use a copy, because we are working with a
+    // property that after the first iteration will be modified
+    for (const type of [...this._actives.list]) {
+      console.log(type)
+      // If nothing to close, return
+      if (!type) return;
+
+      // Trigger onClose()
+      // Once the core is clear, it will trigger close()
+      // from this service
+      const modal = this._modals[type];
+      modal.core.onClose();
+    }
+  }
+
 
 
 
@@ -154,10 +171,7 @@ export class ModalService {
     this._modals[parentType]['core'] = coreComponent;
   }
 
-  close(type?) {
-    // If no type specified, choose last one
-    type = type || this._actives.getCurrent();
-
+  close(type) {
     // If nothing to close, return
     if (!type) return;
 

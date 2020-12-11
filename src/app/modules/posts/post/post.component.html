@@ -99,7 +99,10 @@
           </div>
           <span class="a-bttn-count upper">
             {{ count.replies }} 
-            <span class="notify" style="color: orange" *ngIf="config.publishing">&nbsp;~ publishing ({{replyingProgress}})</span>
+            <span class="notify" style="color: orange" *ngIf="config.publishing">
+              ~ publishing
+              <span *ngIf="replyingProgress !== 0">&nbsp;({{replyingProgress}})</span>
+            </span>
             <span class="primary notify" *ngIf="config.replied">&nbsp;~ published</span>
             <!-- <span class="primary notify" *ngIf="config.deleted">&nbsp;~ deleted</span> -->
           </span>

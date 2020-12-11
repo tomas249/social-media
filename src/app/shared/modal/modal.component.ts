@@ -40,6 +40,7 @@ export class ModalComponent implements OnInit {
   }
 
   onClose() {
+    console.log('Closing')
     if (this._componentRef) {
       this._componentRef.destroy();
       this._componentRef = null;
@@ -68,6 +69,7 @@ export class ModalComponent implements OnInit {
       }
     });
 
+    // Load component or not
     if (asyncLoad) {
       this.loading = true;
       this.content = mContent;
@@ -93,17 +95,23 @@ export class ModalComponent implements OnInit {
   }
 
   saveState() {
+    console.log('Saving')
     let currentState = {
       content: this.content
     };
     if (this.contentCmp) {
       currentState['components'] = this._components;
       currentState['view'] = this.contentCmp.detach();
+      // Important to clear this property because otherwise
+      // if new modal is opened with no components, both modals will
+      // reference the same one
+      this._componentRef = null;
     }
     this._states.push(currentState);
   }
 
   restoreState() {
+    console.log('Restoring')
     const oldData = this._states[this._states.length -1];
     this.content = oldData.content;
     if (oldData.view) {

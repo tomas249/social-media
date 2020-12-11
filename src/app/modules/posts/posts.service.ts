@@ -153,30 +153,25 @@ export class PostsService {
   }
 
   publishPost(post, config) {
-    this.checkAuth();
-
-
-    // Add temporarily
-    this.addToList(post, config);
     const path = '/posts';
-    return;
-    return this.api.post(path, post).pipe(map(res => res.data)).pipe(
-      tap(res => {
-        this.editFromList(res, config);
-      })
-    );
+    return this.universalPost(path, post, config);
+
   }
 
   replyPost(postId, post, config) {
+    const path = `/posts/${postId}/reply`;
+    return this.universalPost(path, post, config);
+  }
+
+  private universalPost(path, post, config) {
     this.checkAuth();
     this.addToList(post, config);
-    const path = `/posts/${postId}/reply`;
     if (post.media) {
       return this.uploadGallery(post.media).pipe(
         mergeMap(res1 => {
           if (res1.completed) {
+            // Replace media with updated gallery
             post.media = res1.gallery;
-            // console.warn('sending>', post)
             return this.api.post(path, post).pipe(
               map(res2 => res2.data),
               tap(post => {

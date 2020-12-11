@@ -76,9 +76,9 @@ export class MainComponent implements OnInit {
   modal3() {
     const content = [
       { title: 'You have nothing to do here' },
-      { module: 'Auth', component:'Logout'}
+      // { module: 'Auth', component:'Logout'}
     ];
-    const modal = {type: 'extended', content};
+    const modal = {type: 'default', content};
     const location = {action: 'set', name: ['ACCOUNT']};
     this.modalService.open(modal, location, (res) => {
       console.log('3) this is callback:', res);

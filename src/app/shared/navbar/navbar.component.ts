@@ -5,6 +5,7 @@ import { TokenService } from 'src/app/services/token.service';
 import { ModalService } from '../modal/modal.service';
 import { navbarList } from './navbar-list';
 import { NavbarService } from './navbar.service';
+import { PlatformLocation } from '@angular/common'
 
 @Component({
   selector: 'app-navbar',
@@ -29,18 +30,27 @@ export class NavbarComponent implements OnInit {
     private tokenService: TokenService,
     private locationService: LocationService,
     private modalService: ModalService,
-    private router: Router
+    private router: Router,
+    location: PlatformLocation
   ) {
     this.navbarList = navbarList(this.tokenService);
+    // When going back, update navbar
+    location.onPopState(() => {
+      this.loadDetectChangeUrl(window.location.pathname);
+  });
   }
 
   ngOnInit(): void {
     // Give access to service
     this.navbarService.init(this);
+    this.loadDetectChangeUrl(window.location.pathname);
+  }
+
+  private loadDetectChangeUrl(currentRoute) {
     // Get all urls in plain text and their respective index
     this._allUrls = this.listAllUrl(this.navbarList);
     // Detect url
-    const url = this.detectUrl(this.router.url);
+    const url = this.detectUrl(currentRoute);
     // If not url detected return
     if (!url) return;
     // Change selected navbar item and load menu list
@@ -84,7 +94,7 @@ export class NavbarComponent implements OnInit {
     if (itemIdx === this.selNavbarItemIdx) return;
 
     // Close modal from previous window
-    this.modalService.close();
+    this.modalService.forceClose();
 
     // Add route
     let route = item.path;
@@ -109,7 +119,7 @@ export class NavbarComponent implements OnInit {
     if (menuItemIdx === this.selMenuItemIdx) return;
 
     // Close modal from previous window
-    this.modalService.close();
+    this.modalService.forceClose();
 
     // Change location
     this.locationService.removeItemFromStack();

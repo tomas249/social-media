@@ -26,7 +26,7 @@ export class AuthService {
     .pipe(
       tap(res => {
         const refreshTKN = 'deeee';
-        const accessTKN = res.token
+        const accessTKN = res.data.token
         this.token.setTokens(refreshTKN, accessTKN);
       })
     );

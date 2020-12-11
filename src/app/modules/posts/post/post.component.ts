@@ -248,7 +248,6 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     const location = {action: 'add', name: ['Publish', 'Reply']};
     this.modalService.open(modal, location, (res) => {
       if (!res) {
-      console.log(1111, res)
 
         this.config.replied = false;
         this.config.publishing = true;
@@ -257,14 +256,13 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
         this.locationService.addItemToStack(['Publishing reply...'])
       } 
       else if (res && res.hasOwnProperty('progress')) {
-        console.log(22222, res)
         this.replyingProgress = res.progress;
       }
       else {
         this.count.replies += 1;
-        console.log(3333, res)
         this.config.publishing = false;
         this.config.replied = true;
+        this.replyingProgress = 0;
 
         // In this cases (or destionation==0 too), parent child is not updated,
         // so we must do it manually
