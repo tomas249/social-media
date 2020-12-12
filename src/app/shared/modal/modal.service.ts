@@ -44,7 +44,7 @@ export class ModalService {
    * 
    */
   // open(type, content, params?, location?, menu?) {
-  open(modal: {type:string, content:any, params?:any},
+  async open(modal: {type:string, content:any, params?:any, keepOpened?:boolean},
        location: {action:string, name:Array<string>}, responseCb?) {
     /*
         Check actives:
@@ -62,8 +62,9 @@ export class ModalService {
     const newModal = this._modals[modal.type];
 
     // (1) Hide old - { different }
-    if (oldType && oldType !== modal.type) {
-      oldModal.wrapper.display = false;
+    if (!modal.keepOpened && oldType && oldType !== modal.type) {
+      // oldModal.wrapper.display = false;
+      oldModal.wrapper.hideModal();
     }
 
     // (2) Save old content - { same }
@@ -79,12 +80,16 @@ export class ModalService {
 
 
     // (3) Load new content & set as active - { empty, same, different }
-    newModal.core.loadContent(modal.content, modal.params);
+    newModal.core.loadContent(modal.content);
     this._actives.list.push(modal.type);
 
     // (4) Display wrapper- { empty, different }
     if (!oldType || oldType !== modal.type) {
-      newModal.wrapper.display = true;
+      // Assign params
+      newModal.wrapper = Object.assign(newModal.wrapper, modal.params);
+
+      // newModal.wrapper.display = true;
+      newModal.wrapper.displayModal();
     }
 
     // Save callback fn that will be used on emitResponse
@@ -104,7 +109,8 @@ export class ModalService {
     if (!end) {
       const type = this._actives.getCurrent()
       const modal = this._modals[type];
-      modal.wrapper.display = false;
+      // modal.wrapper.display = false;
+      modal.wrapper.hideModal();
     }
 
     // Check if response callback fn was given
@@ -119,12 +125,16 @@ export class ModalService {
     }
   }
 
-  forceClose() {
-    // forClose() closes all modals
+  forceClose(count=1) {
+    // Count == 0 -> all list
+    const typesList = count === 0 ?
+      this._actives.list :
+      this._actives.list
+        .slice(this._actives.list.length-count)
+        .reverse() ;
     // Important to use a copy, because we are working with a
     // property that after the first iteration will be modified
-    for (const type of [...this._actives.list]) {
-      console.log(type)
+    for (const type of [...typesList]) {
       // If nothing to close, return
       if (!type) return;
 
@@ -187,18 +197,18 @@ export class ModalService {
     const currentModal = this._modals[type];
 
     if (!previousType) {
-      currentModal.wrapper.display = false;
+      // currentModal.wrapper.display = false;
+      currentModal.wrapper.hideModal();
     }
     else if (previousType === type) {
       previousModal.core.restoreState();
     }
     else if (previousType !== type) {
-      currentModal.wrapper.display = false;
-      previousModal.wrapper.display = true;
+      // currentModal.wrapper.display = false;
+      currentModal.wrapper.hideModal();
+      // previousModal.wrapper.display = true;
+      previousModal.wrapper.displayModal();
     }
   }
-
-
-
 
 }

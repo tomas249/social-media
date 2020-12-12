@@ -16,7 +16,19 @@ export class ModalExtendedComponent implements OnInit {
   ) { }
   
   ngOnInit(): void {
-    this.modalService.initType('extended', this);
+    this.modalService.initType(this.type, this);
+  }
+
+  onClose() {
+    this.modalService.forceClose();
+  }
+
+  displayModal() {
+    this.display = true;
+  }
+
+  hideModal() {
+    this.display = false;
   }
 
 }

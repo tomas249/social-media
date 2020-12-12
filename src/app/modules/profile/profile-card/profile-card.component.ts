@@ -22,7 +22,7 @@ export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
     private profileService: ProfileService,
     private router: Router,
     // private tooltip: TooltipService,
-    private modal: ModalService,
+    private modalService: ModalService,
     private token: TokenService
   ) { }
 

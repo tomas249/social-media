@@ -16,25 +16,19 @@ export class ModalDefaultComponent implements OnInit {
   ) { }
   
   ngOnInit(): void {
-    this.modalService.initType('default', this);
+    this.modalService.initType(this.type, this);
   }
+
+  onClose() {
+    this.modalService.forceClose();
+  }
+
+  displayModal() {
+    this.display = true;
+  }
+
+  hideModal() {
+    this.display = false;
+  }
+
 }
-
-
-
-
-// <!-- The Modal -->
-// <div #modalContainer class="modal" [style.display]="display ? 'block' : 'none'">
-//   <!-- Modal content -->
-//   <div class="modal-content">
-//     <span class="close" (click)="close()">&times;</span>
-//     <!-- MODAL NG CONTENT -->
-//     <div>
-//       <div class="message" #message [style.display]="displayMessage ? 'block' : 'none'">
-//         <hr>
-//       </div>
-//       <ng-container #content></ng-container>
-//       <modal-core [mType]="'defaultModal'"></modal-core>
-//     </div>
-//   </div>
-// </div>

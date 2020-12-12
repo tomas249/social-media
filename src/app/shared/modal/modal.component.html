@@ -1,40 +1,34 @@
-<!-- Modal content -->
-<div class="modal-content">
-  <!-- Close button -->
-  <span class="close" (click)="onClose()">&times;</span>
-
-  <!-- TEXT BEGIN -->
-  <ng-container *ngFor="let renContent of content.begin">
-    <ng-template  [ngTemplateOutlet]="showText"
-                  [ngTemplateOutletContext]="{$implicit: renContent}"></ng-template>
-  </ng-container>
+<!-- TEXT BEGIN -->
+<ng-container *ngFor="let renContent of content.begin">
+  <ng-template  [ngTemplateOutlet]="showText"
+                [ngTemplateOutletContext]="{$implicit: renContent}"></ng-template>
+</ng-container>
 
 
-  <!-- COMPONENT -->
-  <div [style.display]="loading ? 'block' : 'none'" class="loading-state">
-    Loading component...
-  </div>
-  <ng-template #contentCmp></ng-template>
-  
-
-  <!-- TEXT END -->
-  <ng-container *ngFor="let renContent of content.end">
-    <ng-template  [ngTemplateOutlet]="showText"
-                  [ngTemplateOutletContext]="{$implicit: renContent}"></ng-template>
-  </ng-container>
+<!-- COMPONENT -->
+<div [style.display]="loading ? 'block' : 'none'" class="loading-state">
+  Loading component...
 </div>
+<ng-template #contentCmp></ng-template>
 
 
+<!-- TEXT END -->
+<ng-container *ngFor="let renContent of content.end">
+  <ng-template  [ngTemplateOutlet]="showText"
+                [ngTemplateOutletContext]="{$implicit: renContent}"></ng-template>
+</ng-container>
 
+
+<!-- TEMPLATES -->
 <ng-template #showText let-element>
-    <!-- type: title -->
-    <div *ngIf="element.title" class="message">
-      <h2 [innerHTML]="element.title"></h2>
-      <hr>
-    </div>
+  <!-- type: title -->
+  <div *ngIf="element.title" class="message">
+    <h2 [innerHTML]="element.title"></h2>
+    <hr>
+  </div>
 
-    <!-- type: html -->
-    <div *ngIf="element.html" class="text">
-      <div [innerHTML]="element.html"></div>
-    </div>
+  <!-- type: html -->
+  <div *ngIf="element.html" class="text">
+    <div [innerHTML]="element.html"></div>
+  </div>
 </ng-template>

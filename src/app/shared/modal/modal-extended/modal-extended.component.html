@@ -1,3 +1,9 @@
-<div class="modal" [style.display]="display ? 'block' : 'none'">
-  <modal-core [type]="type"></modal-core>
+<div class="modal-container" [style.display]="display ? 'block' : 'none'">
+  <div class="modal">
+    <!-- Close button -->
+    <span class="close" (click)="onClose()">&times;</span>
+    <div class="content">
+      <modal-core [type]="type"></modal-core>
+    </div>
+  </div>
 </div>

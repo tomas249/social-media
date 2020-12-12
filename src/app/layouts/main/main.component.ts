@@ -68,7 +68,7 @@ export class MainComponent implements OnInit {
       { module: 'Posts', component:'PostPublish'},
       { title: 'We hope you like it'}
     ];
-    const modal = {type: 'default', content};
+    const modal = {type: 'extended', content};
     const location = {action: 'add', name: ['PublishContent']};
     this.modalService.open(modal, location);
   }
@@ -78,7 +78,7 @@ export class MainComponent implements OnInit {
       { title: 'You have nothing to do here' },
       // { module: 'Auth', component:'Logout'}
     ];
-    const modal = {type: 'default', content};
+    const modal = {type: 'tooltip', content, keepOpened:true};
     const location = {action: 'set', name: ['ACCOUNT']};
     this.modalService.open(modal, location, (res) => {
       console.log('3) this is callback:', res);

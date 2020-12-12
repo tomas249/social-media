@@ -29,6 +29,9 @@ export class ModalComponent implements OnInit {
 
   private _states = [];
 
+  private _closeIsRequested = false;
+  private _closeWasRequested = false;
+
   constructor(
     private modalService: ModalService,
     private resolver: ComponentFactoryResolver,
@@ -40,7 +43,15 @@ export class ModalComponent implements OnInit {
   }
 
   onClose() {
-    console.log('Closing')
+    // If close is requested while loading a module, then request
+    // service to hide modal and finish loading in background
+    if (this.loading) {
+      this._closeIsRequested = true;
+      this._closeWasRequested = true;
+      this.modalService.close(this.parentType);
+      return;
+    }
+
     if (this._componentRef) {
       this._componentRef.destroy();
       this._componentRef = null;
@@ -48,12 +59,17 @@ export class ModalComponent implements OnInit {
     if (this.contentCmp) {
       this.contentCmp.clear()
     }
-    this.loading = false;
     this.content = {begin: [], end: []};
-    this.modalService.close(this.parentType);
+
+    // Check if modal is already hidden
+    if (this._closeWasRequested) {
+      this._closeWasRequested = false;
+    } else {
+      this.modalService.close(this.parentType);
+    }
   }
 
-  loadContent(content, params?) {
+  loadContent(content) {
     // If content requires a component, means that there is a possible async load.
     let asyncLoad;
     let mContent = {begin: [], end: []};
@@ -82,8 +98,7 @@ export class ModalComponent implements OnInit {
         }
         const componentFct = this.resolveComponent(module.components, asyncLoad.component);
         this._componentRef = this.contentCmp.createComponent(componentFct);
-        Object.assign(this._componentRef.instance, params);
-        this.loading = false;
+        Object.assign(this._componentRef.instance, asyncLoad.params);
 
         // Save access to components
         this._components = module.components;
@@ -95,7 +110,6 @@ export class ModalComponent implements OnInit {
   }
 
   saveState() {
-    console.log('Saving')
     let currentState = {
       content: this.content
     };
@@ -111,7 +125,6 @@ export class ModalComponent implements OnInit {
   }
 
   restoreState() {
-    console.log('Restoring')
     const oldData = this._states[this._states.length -1];
     this.content = oldData.content;
     if (oldData.view) {
@@ -124,7 +137,16 @@ export class ModalComponent implements OnInit {
   private async loadModule(moduleName, cb) {
     moduleName = moduleName + 'Module';
     const module = await moduleList[moduleName].import();
-    cb(module);
+    this.loading = false;
+
+    // After loading module, check if this modal is still requested
+    if (this._closeIsRequested) {
+      this._closeIsRequested = false;
+      this.onClose();
+    } else {
+      // Otherwise run callback
+      cb(module);
+    }
   }
 
   private resolveComponent(components, componentName) {

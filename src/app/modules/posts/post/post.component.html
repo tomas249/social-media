@@ -20,10 +20,12 @@
     <div class="a-profile">
       <div *ngIf="config.thread" class="thread-line"></div>
       <div *ngIf="post.owner">
-        <img #tooltipContent [src]="post.owner.avatar.fullPath" (click)="closeTooltip(post)">
+        <tooltip-wrapper [params]="{user: post.owner}">
+          <img #obj [src]="post.owner.avatar.fullPath">
+        </tooltip-wrapper>
       </div>
       <div *ngIf="config.empty">
-        <img style="width: 3.2rem; height: 3.2rem; background-color: lightgray;" #tooltipContent (click)="closeTooltip(post)">
+        <img style="width: 3.2rem; height: 3.2rem; background-color: lightgray;" #tooltipContent>
       </div>
       <!-- <tooltip-wrapper [params]="{user: post.owner}">
         <img #tooltipContent [src]="post.owner.avatar.fullPath" (click)="closeTooltip(post)">
@@ -39,8 +41,11 @@
         <span class="a-username">
           <span>
             <!-- <tooltip-wrapper [params]="{user: post.owner}">
-              <span #tooltipContent>@{{ post.owner.username }}</span>
-            </tooltip-wrapper> - {{ post.createdAt | dateAgo}} -->
+            </tooltip-wrapper>  -->
+            <span #tooltipContent>
+              @{{ post.owner.username }}
+              - {{ post.createdAt | dateAgo}}
+            </span>
           </span>
         </span>
         <span class="upper" style="margin-left: auto" *ngIf="config.owner && config.showOpt">
@@ -75,7 +80,8 @@
         </div>
 
         <div>
-          <img class="selected-media" [src]="post.media[post.media[0].selectedIndex].fullPath">
+          <img (click)="openMedia(post.media[post.media[0].selectedIndex].fullPath)"
+            class="selected-media" [src]="post.media[post.media[0].selectedIndex].fullPath">
         </div>
         <!-- <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
           <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">

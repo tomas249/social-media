@@ -1,5 +1,4 @@
-/* The Modal (background) */
-.modal {
+.modal-container {
   position: absolute; /* Stay in place */
   z-index: 4; /* Sit on top */
   padding-top: 10rem; /* Location of the box */
@@ -15,16 +14,21 @@
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;         /* Opera/IE 8+ */
+  background-color: rgba(0, 255, 255, 0.356);
 }
 
 /* Modal Content */
-.modal-content {
+.modal {
   background-color: #fefefe;
   margin: auto;
   padding: 20px;
   border-radius: 30px;
   width: 70%;
   background-color: var(--background-color);
+}
+
+.content {
+  padding:  1rem;
 }
 
 /* The Close Button */

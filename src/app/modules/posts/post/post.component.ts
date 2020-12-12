@@ -240,11 +240,11 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     //   }
     // })
 
-    const content = [
-      { module: 'Posts', component:'PostPublish'}
-    ];
     const params = {postReply: this.post, destinationConfig: this.publishConfig};
-    const modal = {type: 'default', content, params};
+    const content = [
+      { module: 'Posts', component:'PostPublish', params}
+    ];
+    const modal = {type: 'default', content};
     const location = {action: 'add', name: ['Publish', 'Reply']};
     this.modalService.open(modal, location, (res) => {
       if (!res) {
@@ -307,19 +307,32 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('img') img:ElementRef
   openTooltip(event) {
-    return;
-    if (!this.config.tooltip) return;
-    this.img.nativeElement.style.zIndex = '10';
     const a = this.img.nativeElement.getBoundingClientRect();
-    // console.log(a)
-    const start = a.y;
-    const X = a.x + a.width / 2;
-    const Y = a.y + a.height;
+    console.log(a)
+
+    // this.img.nativeElement.style.zIndex = '10';
+    // const start = a.y;
+    // const x = a.x + a.width / 2;
+    // const y = a.y + a.height;
     // console.log(X, Y, start)
     // this.tooltip.open(event.clientX, event.clientY, 'AuthModule', 'LoginComponent');
     // this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user: this.post.owner});
     // this.tooltip.open(start, X, Y, 'AuthModule', 'LogoutComponent', {user: this.post.owner});
     // this.tooltip.open(start, X, Y, 'PostsModule', 'PostComponent', {post: this.post});
+
+    const content = [
+      // { title: 'You have nothing to do here' },
+      { module: 'Profile', component:'ProfileCard', params: {user: this.post.owner}}
+      // { module: 'Auth', component:'Logout'}
+    ];
+    // const params = {wS:300, hS:200, top:a.top, left:a.left};
+    const wS = a.width+30;
+    const hS = a.height+30;
+    const top = 2
+    const params = {objDimensions: a};
+    const modal = {type: 'tooltip', content, params, keepOpened:true};
+    const location = {action: 'set', name: ['ACCOUNT']};
+    this.modalService.open(modal, location);
   }
 
   closeTooltip(a) {
@@ -327,6 +340,17 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     return;
     // this.tooltip.close();
     this.img.nativeElement.style.zIndex = '2';
+  }
+
+  openMedia(src) {
+    const content = [
+      { title: `Media from @${this.post.owner.username}` },
+      { html: `<img width="100%" src="${src}">` }
+    ]
+
+    const modal = {type: 'extended', content};
+    const location = {action: 'add', name: ['Media']};
+    this.modalService.open(modal, location);
   }
 
 }
