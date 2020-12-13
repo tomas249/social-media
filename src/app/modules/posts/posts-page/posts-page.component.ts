@@ -5,35 +5,21 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { ActivatedRoute } from '@angular/router';
-import { first, map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { query } from '@angular/animations';
 
 @Component({
-  selector: 'app-posts-list',
-  templateUrl: './posts-list.component.html',
-  styleUrls: ['./posts-list.component.css']
+  selector: 'app-posts-page',
+  templateUrl: './posts-page.component.html',
+  styleUrls: ['./posts-page.component.css']
 })
-export class PostsListComponent implements OnInit, OnDestroy {
+export class PostsPageComponent implements OnInit, OnDestroy {
+
 
   // @Input() searchParams = null;
   // @Input() allowExploreSearch = true;
   // @Input() noLoggedMssg = 'Auth in order to post';
-  _queryUrl: string;
-  @Input()
-    set queryUrl(queryUrl) {
-      this.loading = true;
-      this.postsService.getPostsList(queryUrl).pipe(first()).subscribe(res =>{
-        this.loading = false;
-        this.pageInfo = {
-          count: res.count,
-          pagination: res.pagination
-        };
-      });
-      this._queryUrl = queryUrl;
-    }
-    get queryUrl() {
-      return this._queryUrl;
-    }
+  queryUrl;
 
   postsList$;
   pageInfo;
@@ -50,26 +36,25 @@ export class PostsListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // this.isLogged$ = this.token.user$.pipe(map(user => !!user));
-    this.postsList$ = this.postsService.posts$;
-    // this.postsService.getPostsList(this.queryUrl).pipe(first()).subscribe(res =>{
-    //   console.warn(1)
-    //   this.loading = false;
-    //   this.pageInfo = {
-    //     count: res.count,
-    //     pagination: res.pagination
-    //   };
-    // });
-    // this.route.data.subscribe(v => {
-    //   const path = this.queryUrl || v.queryUrl;
-    //   this.postsService.getPostsList(path).subscribe(res =>{
-    //     this.loading = false;
-    //     this.pageInfo = {
-    //       count: res.count,
-    //       pagination: res.pagination
-    //     };
-    //   });
-    // });
+    const queryUrls = {
+      explore: '/posts?parent[size]=0&childLevel=0&[limit]=10',
+      home: '/posts/user'
+    };
+    this.isLogged$ = this.token.user$.pipe(map(user => !!user));
+    // this.postsList$ = this.postsService.posts$;
+    this.route.params.subscribe(v => {
+      this.queryUrl = queryUrls[v.page];
+      console.log(this.queryUrl)
+      // this.queryUrl = v.queryUrl;
+      // const path = this.queryUrl || v.queryUrl;
+      // this.postsService.getPostsList(path).subscribe(res =>{
+      //   this.loading = false;
+      //   this.pageInfo = {
+      //     count: res.count,
+      //     pagination: res.pagination
+      //   };
+      // });
+    });
     // this.token.user$.subscribe(
     //   res => {
     //     this.isLogged = !!res;
@@ -107,5 +92,6 @@ export class PostsListComponent implements OnInit, OnDestroy {
     // this.modal.addMessage('Auth in order to post');
     // this.modal.open('AuthModule', componentName, {navigateEnd: false});
   }
+
 
 }

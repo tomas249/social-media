@@ -33,7 +33,6 @@ export class PostsService {
   constructor(
     private api: ApiService,
     private token: TokenService,
-    private modal: ModalService,
     private uploadFile: UploadFileService
   ) {
     // this.posts$.subscribe(console.error)

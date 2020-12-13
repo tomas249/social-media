@@ -1,0 +1,29 @@
+<div class="container">
+  <!-- <div *ngIf="pageInfo">
+    <span>Count: {{ pageInfo.count }} | </span>
+    <span>Next page: {{ pageInfo.pagination.next.page }} | </span>
+    <span>Limit: {{  pageInfo.pagination.next.limit}}</span>
+    <hr>
+  </div> -->
+
+
+  <!-- Publish Component -->
+  <div *ngIf="isLogged$ | async; else notLogged">
+    <app-post-publish
+      [destinationConfig]="{destination:1, parentIndex:0}">
+    </app-post-publish>
+  </div>
+  
+  <ng-template #notLogged class="border auth-container">
+    <div class="notLogged">
+      <span class="auth-text"></span>
+      <div>
+        <button class="bttn" (click)="auth('LoginComponent')">Login</button>
+        &nbsp;or&nbsp;
+        <button class="bttn" (click)="auth('RegisterComponent')">Register</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <app-posts-list [queryUrl]="queryUrl"></app-posts-list>
+</div>

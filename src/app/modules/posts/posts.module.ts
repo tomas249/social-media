@@ -14,6 +14,7 @@ import { ModalModule } from 'src/app/shared/modal/modal.module';
 // import { TooltipModule } from 'src/app/shared/tooltip/tooltip.module';
 
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { PostsPageComponent } from './posts-page/posts-page.component';
 
 
 @NgModule({
@@ -22,13 +23,19 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     PostPublishComponent,
     PostsListComponent,
     PostArticleComponent,
-    PostsComponent
+    PostsComponent,
+    PostsPageComponent
   ],
   imports: [
     CommonModule,
     PostsRoutingModule,
     ModalModule,
     PipesModule,
+  ],
+  exports: [
+    PostComponent,
+    PostPublishComponent,
+    PostsListComponent
   ]
 })
 export class PostsModule { 

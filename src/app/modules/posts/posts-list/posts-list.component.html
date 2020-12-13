@@ -6,26 +6,6 @@
     <hr>
   </div> -->
 
-
-  <!-- Publish Component -->
-  <div *ngIf="isLogged$ | async; else notLogged">
-    <app-post-publish
-      [destinationConfig]="{destination:1, parentIndex:0}">
-    </app-post-publish>
-  </div>
-  
-  <ng-template #notLogged class="border auth-container">
-    <div class="notLogged">
-      <span class="auth-text"></span>
-      <div>
-        <button class="bttn" (click)="auth('LoginComponent')">Login</button>
-        &nbsp;or&nbsp;
-        <button class="bttn" (click)="auth('RegisterComponent')">Register</button>
-      </div>
-    </div>
-  </ng-template>
-
-
   <div *ngIf="loading" style="padding: 2rem; text-align: center;">
     <h3>Searching posts...</h3>
   </div>
