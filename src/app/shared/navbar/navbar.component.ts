@@ -25,6 +25,9 @@ export class NavbarComponent implements OnInit {
   menuList;
   selMenuItemIdx: number = -1;
 
+  // On falsely navbar activation
+  simulation = false;
+
   constructor(
     private navbarService: NavbarService,
     private tokenService: TokenService,
@@ -36,8 +39,10 @@ export class NavbarComponent implements OnInit {
     this.navbarList = navbarList(this.tokenService);
     // When going back, update navbar
     location.onPopState(() => {
-      this.loadDetectChangeUrl(window.location.pathname);
-  });
+      if (!this.menuList) {
+        this.loadDetectChangeUrl(window.location.pathname);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -63,18 +68,30 @@ export class NavbarComponent implements OnInit {
     return this._allUrls.find(url => url[0] === path)  || [null, -1, -1];
   }
 
+  // private listAllUrl(items) {
+  //   return items.reduce((acc, r, rIdx) => {
+  //     console.log(acc)
+  //     return acc.concat(r.children ? 
+  //       r.children.map((c, cIdx) => [r.path+c.path, rIdx, cIdx]) : 
+  //       [[r.path, rIdx, -1]])
+  //   }, []);
+  // }
+
   private listAllUrl(items) {
-    return items.reduce((acc, r, rIdx) => {
-      return acc.concat(r.children ? 
-        r.children.map((c, cIdx) => [r.path+c.path, rIdx, cIdx]) : 
-        [[r.path, rIdx, -1]])
+    return items.reduce((acc1, p, pIdx) => {
+      const main = [p.path].concat(p.activation || []);
+      return acc1.concat(main.reduce((acc2, r, rIdx) => {
+        return acc2.concat(p.children ? 
+          p.children.map((c, cIdx) => [r+c.path, pIdx, cIdx]) : 
+          [[r, pIdx, -1]]);
+      }, []));
     }, []);
   }
 
-  changeItem(url: [string, number, number]) {
-    // Load children
-    if (url[0]) this.menuList = this.navbarList[url[1]].children;
 
+  changeItem(url: [string, number, number], skipMenu=false) {
+    // Load children
+    if (url[0] && !skipMenu) this.menuList = this.navbarList[url[1]].children;
     // Set Index
     this.selNavbarItemIdx = url[1];
     this.selMenuItemIdx = url[2];
@@ -114,13 +131,11 @@ export class NavbarComponent implements OnInit {
     this.router.navigate([url[0]]);
   }
 
-  changeMenuItem(menuItemIdx, menuItem, navbarItem) {
+  changeMenuItem(menuItemIdx, menuItem?) {
+    menuItem = this.menuList[menuItemIdx];
     // Keep if same path
     if (menuItemIdx === this.selMenuItemIdx) return;
-
-    // Close all modals before changing location
-    this.modalService.forceClose(0);
-
+    
     // Change location
     this.locationService.removeItemFromStack();
     this.locationService.addItemToStack(menuItem.name);
@@ -133,14 +148,31 @@ export class NavbarComponent implements OnInit {
       this.modalService.changeComponent(menuItem.component);
     }
     else {
-      const route = navbarItem.path.concat(menuItem.path);
+      let route;
+      // Some menus do not have their origin from navbar
+      // If it is a simulation, skip navbar path
+      const navbarItem = this.navbarList[this.selNavbarItemIdx];
+      if (navbarItem && !menuItem.activated) {
+        route = navbarItem.path.concat(menuItem.path)
+      }
+      else {
+        route = menuItem.path;
+      }
+
       this.router.navigate([route]);
     }
   }
 
   loadCustomMenu(menu, selItemIdx) {
-    this.menuList = menu;
-    this.selMenuItemIdx = selItemIdx;
+    // Compare
+    if (!this.menuList || !this.menuList[0].activated || this.selMenuItemIdx !== selItemIdx) {
+      this.menuList = menu;
+      this.selMenuItemIdx = selItemIdx;
+
+      // Change location
+      this.locationService.removeItemFromStack();
+      this.locationService.addItemToStack(menu[selItemIdx].name);
+    }
   }
 
   saveState() {

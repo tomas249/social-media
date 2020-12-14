@@ -107,10 +107,16 @@ export class ModalService {
     if (this._actives.list.length === 0) return;
 
     if (!end) {
-      const type = this._actives.getCurrent()
-      const modal = this._modals[type];
-      // modal.wrapper.display = false;
-      modal.wrapper.hideModal();
+      const currentType = this._actives.getCurrent()
+      const currentModal = this._modals[currentType];
+      currentModal.wrapper.hideModal();
+
+      // Display if previous modal exists
+      const previousType = this._actives.list[this._actives.list.length-2];
+      if (previousType) {
+        const previousModal = this._modals[previousType];
+        previousModal.wrapper.displayModal();
+      }
     }
 
     // Check if response callback fn was given
@@ -144,6 +150,13 @@ export class ModalService {
       const modal = this._modals[type];
       modal.core.onClose();
     }
+  }
+
+  closeByType(type) {
+    
+    if (!this._actives.list.includes(type)) return;
+    const modal = this._modals[type];
+    modal.core.onClose();
   }
 
 
@@ -184,6 +197,9 @@ export class ModalService {
   close(type) {
     // If nothing to close, return
     if (!type) return;
+
+    // Remove response callback
+    this._responses.pop();
 
     // Restore location & menu
     this.locationService.restoreState();

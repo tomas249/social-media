@@ -1,124 +1,150 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ProfileService } from '../profile.service';
-import { delay } from 'rxjs/operators';
-import { LocationService } from 'src/app/services/location.service';
-import { Location } from '@angular/common';
-import { TokenService } from 'src/app/services/token.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { filter, first, flatMap, map, tap } from 'rxjs/operators';
+import { ModalService } from 'src/app/shared/modal/modal.service';
+import { NavbarService } from 'src/app/shared/navbar/navbar.service';
+import { ProfileService } from '../../profile/profile.service';
 
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.css']
 })
-export class ProfilePageComponent implements OnInit {
+export class ProfilePageComponent implements OnInit, OnDestroy {
 
-  @ViewChild('tabContent',  { read: ViewContainerRef }) tabContent: ViewContainerRef;
   user;
   selectedTab;
-  tabs = [{name:'Posts'}, {name:'Replies'}, {name:'Media'}];
-  tabsContent = {};
+  tabs = {
+    posts: {
+      name: 'Posts',
+      queryUrl: (uid) => `/posts?owner=${uid}&parent[size]=0&childLevel=0`
+    },
+    replies: {
+      name: 'Replies',
+      queryUrl: (uid) => `/posts?owner=${uid}&parent[not][size]=0&childLevel=0`
+    },
+    media: {
+      name: 'Media',
+      queryUrl: (uid) => `/posts?owner=${uid}&media[gte][size]=1&childLevel=0`
+    },
+    getIdx: (name) => ['posts', 'replies', 'media'].indexOf(name),
+    isValid: (name) => ['posts', 'replies', 'media'].includes(name)
+  }
+  queryUrl;
+  params$;
+
+  menu;
 
   constructor(
-    private route: ActivatedRoute,
     private profileService: ProfileService,
-    private resolver: ComponentFactoryResolver,
-    private locationService: LocationService,
-    private location: Location,
-    private token: TokenService,
-    private router: Router
+    private route: ActivatedRoute,
+    private navbarService: NavbarService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const capitalUsername = params.username[0].toUpperCase() + params.username.slice(1).toLowerCase();
-      // this.locationService.addChildLoc('Posts', {extend: false, parentLoc: capitalUsername, useNav: false});
-      const storedUser = this.profileService.getStoredUser();
-      if (storedUser) {
-        this.user = storedUser;
-        this.profileService.getUserById(storedUser._id).subscribe(
-          res => {
-            this.user = res.data;
-            this.selectByUrlParam(params);
-          }
-        )
-      } else {
-        const currentUserId = this.token.getUserId();
-        if (params.username === 'me' && currentUserId) {
-          this.profileService.getUserById(currentUserId).pipe(delay(0)).subscribe(
-            res => {
-              this.user = res.data[0];
-              this.selectByUrlParam(params);
-            }
+    this.params$ = this.route.params.pipe(
+      // Fix & set incorrect tab param
+      map(p => {
+        // If incorrect, just select 'posts'
+        // Later on, interacting with the menu it will be fixed automatically
+        const tab = this.tabs.isValid(p.tab) ? p.tab : 'posts';
+        // Set new tab
+        this.selectedTab = tab;
+        return { byData: p.byData, tab }
+      }),
+      // USER
+      flatMap(p => {
+        // First load or new user -> let's get user data
+        if (!this.user || this.user?.username !== p.byData) {
+
+          const byData = p.byData;
+          const type = this.checkDataType(byData);
+          return this.profileService.getUser(byData, type).pipe(
+            map(profile => {
+              return {
+                first: !this.user,
+                tab: p.tab,
+                user: profile,
+              };
+            })
           );
         }
-        else if (params.username === 'me' && !currentUserId) {
-          this.router.navigate(['/explore']);
-        }
+        // If user altready loaded and this params changed
+        // means that only tab was changed
         else {
-          this.profileService.getUserByUsername(params.username).pipe(delay(0)).subscribe(
-            res => {
-              this.user = res.data;
-              // cosole.log(this.user)
-              this.selectByUrlParam(params);
-            },
-            err => {
-              this.router.navigate(['/explore']);
-            }
-          );
+          return of({
+            first: false,
+            tab: p.tab,
+            user: false,
+          });
         }
-      }
+      }),
+      tap(p => {
+        // If p.user exists means that user is new
+        if (p.user) {
+          // this.user = {...p.user};
+          this.user = p.user;
+        }
+        this.menu = this.getMenu(p.user?.username || this.user.username);
+        this.menu.selChildIdx = this.tabs.getIdx(p.tab);
+        this.navbarService.loadMenu(this.menu);
+
+        // If this page is opened via navbar there is no need to trigger the menu
+        // byData == 'me' == 'local'
+      }),
+      // CONTENT
+      tap(p => {
+        this.queryUrl = this.tabs[p.tab].queryUrl(p.user?._id || this.user._id);
+      }),
+    ).subscribe(content => {
     });
   }
 
-  private selectByUrlParam(params) {
-    if (params.tab) {
-      this.selectTab(this.tabs.map(t => t.name.toLowerCase()).indexOf(params.tab));
-    } else {
-      this.selectTab(0);
+  changeTab(tab) {
+    const itemIdx = this.tabs.getIdx(tab);
+    this.navbarService.changeMenuItem(itemIdx);
+  }
+
+  private checkDataType(byData) {
+    switch (true) {
+      case /^[a-z0-9]{24}$/.test(byData):
+        return 0;
+      case /^.+[0-9]{4}[A-Z]{1}$/.test(byData):
+        return 1;
+      default:
+        return null;
     }
   }
 
-  async selectTab(i) {
-    // Replies not working yet
-    if (i === 1) {
-      console.error('Replies tab not working yet');
-      return;
-    }
-    if (this.selectedTab === i) return;
-    await this.loadModule(this.tabs[i]);
-    if (this.selectedTab || this.selectedTab === 0) {
-      // this.locationService.removeChildLoc(true);
-      // this.locationService.addChildLoc(this.tabs[i].name, {extend: true});
-    }
-    // this.location.go(this.tabs[i].name);
-    this.selectedTab = i;
-  }
-
-  module = {
-    Posts: {
-      import: async () => (await import('src/app/modules/posts/posts.module')).PostsModule,
-      component: 'PostsListComponent'
-    },
-    Media: {
-      import: async () => (await import('src/app/modules/auth/auth.module')).AuthModule,
-      component: 'LogoutComponent'
+  private getMenu(uname) {
+    return {
+      root: 'Profile',
+      name: [`@${uname}`],
+      children: [
+        { name: ['Posts'], activated: true, path: `/u/${uname}/` },
+        { name: ['Replies'], activated: true, path: `/u/${uname}/replies` },
+        { name: ['Media'], activated: true, path: `/u/${uname}/media` }
+      ],
+      activated: true,
+      selChildIdx: 0
     }
   }
 
-  async loadModule(tab) {
-    const selectedModule = this.module[tab.name];
-    const activeModule = await selectedModule.import();
-    this.changeComponent(tab.name, activeModule, selectedModule.component);
+  ngOnDestroy(): void {
+    this.params$.unsubscribe()
   }
 
-  changeComponent(tabName, loadedModule, componentName) {
-    this.tabContent.remove();
-    const component = loadedModule.components[componentName];
-    const componentFct = this.resolver.resolveComponentFactory(component);
-    this.tabsContent[tabName] = this.tabContent.createComponent(componentFct);
-    const searchParams = '?parent[size]=0&childLevel=0&owner=' + this.user._id;
-    Object.assign(this.tabsContent[tabName].instance, {searchParams});
+  getFollowers() {
+    const content = [
+      { title: 'Followers' },
+      { module: 'Profile', component: 'UsersList',
+        params: {userId: this.user._id, populate: 'followers'} }
+    ];
+    const modal = {type: 'default', content};
+    const location = {action:'add', name:[]};
+    this.modalService.open(modal, location);
   }
 
 }

@@ -1,136 +1,107 @@
 import { Injectable } from '@angular/core';
+import { forkJoin, iif, of } from 'rxjs';
+import { flatMap, map, tap } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 import { TokenService } from 'src/app/services/token.service';
-import { map, catchError, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
-// import { UploadFileService } from 'src/app/shared/uploadFile.service';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
 
-  selectedUser;
-  followsList;
-  currentUserId;
+  uid;
+  uFollowing = [];
 
   constructor(
     private api: ApiService,
-    private token: TokenService,
-    // private uploadFile: UploadFileService
+    private tokenService: TokenService,
+    private location: Location,
+    private router: Router
   ) {
-    this.currentUserId = this.token.getUserId();
-  }
-
-  setUser(user) {
-    this.selectedUser = user;
-  }
-
-  removeUser() {
-    this.selectedUser = null;
-  }
-
-  getStoredUser() {
-    return this.selectedUser || false;
-  }
-
-  getUserById(userId) {
-    return this.api.get('/users/' + userId);
-  }
-
-  getUserByUsername(username) {
-    return this.api.get('/users/u/' + username);
-  }
-
-  getFollowsFromUser(userId, field=null) {
-    return this.api.get('/users/' + userId + '/followList/' + field);
-  }
-
-  followUser(userId) {
-    if (this.followsList) {
-      if (this.followsList.following.includes(userId)) {
-        this.followsList.following = this.followsList.following.filter(uid => uid !== userId);
-      } else {
-        this.followsList.following.push(userId);
-      }
-    };
-    return this.api.get('/users/' + userId + '/follow');
-  }
-
-  checkIfFollows(userId) {
-    if (!this.currentUserId) {
-      return of(false);
-    }
-    else if (this.currentUserId === userId) {
-      return of(null);
-    }
-    else if (this.followsList) {
-      return of(this.followsList.following.includes(userId));
-    }
-    else {
-      return this.api.get(`/users/${this.currentUserId}/followList`).pipe(
-        map(res => {
-          this.followsList = res.data[0];
-          return this.followsList.following.includes(userId);
-        })
-      );
+    if (this.tokenService.isLogged()) {
+      this.uid = this.tokenService.getUserId();
+      // this.getFollows(this.uid).subscribe(f => {
+      //   this.uFollowing = f.following;
+      // });
     }
   }
 
-  checkIfFollowsByList(userId) {
-    if (!this.currentUserId) {
-      return false;
-    }
-    else if (this.currentUserId === userId) {
-      return null;
-    }
-    else if (this.followsList) {
-      return this.followsList.following.includes(userId);
-    }
-    else {
-      return this.api.get(`/users/${userId}/followList`).pipe(
-        map(res => {
-          this.followsList = res.data[0];
-          return this.followsList.following.includes(userId);
-        })
-      );
-    }
-  }
-
-  updateUserData(updatedUser) {
-    return this.api.post('/users/updateProfile', {updatedUser});
-  }
-
-  updateAvatar(newImage) {
-    const fd = new FormData();
-    fd.append('avatar', newImage);
-
-    // const opt = this.uploadFile.getOptions();
-    
-    // Upload all images to get their url
-    // return this.api.post('/files/updateAvatar', fd, opt).pipe(
-    //   map(event => {
-
-    //     // const res = this.uploadFile.getProgress(event);
-    //     // if (!res.completedUpload) {
-    //     //   return res;
-    //     // }
-    //     // else {
-    //     //   // Expected response is an array of all images
-    //     //   // with their new filename
-    //     //   const galleryFilename = res.data;
   
-    //     //   return {
-    //     //     completed: true,
-    //     //     message: res.message,
-    //     //     avatarPath: galleryFilename
-    //     //   };
-    //     // }
 
-    //   }
-    // ));
+  // Get user data
+  getUser(byData, type) {
+    const tknUID = this.tokenService.getUserId();
+    const user:any = this.tokenService.getUserData();
 
-    // return this.api.post('/files/updateAvatar', fd);
+    // // If used 'me', replace by username
+    // if (byData === 'me') {
+    //   const url = this.router.url.replace('me', user.username);
+    //   this.location.go(url);
+    // }
+
+    const allPaths = [
+      (uid) => `/users/${uid}`,
+      (uname) => `/users/u/${uname}`
+    ];
+
+    const path = allPaths[type](byData);
+
+    return this.api.get(path).pipe(
+      tap(profile => {
+        // If uid used then change url by username
+        if (type === 0) {
+          const url = this.router.url.replace(byData, profile.username);
+          this.location.go(url);
+        }
+      })
+    );
   }
 
+  getFollows(uid, populate?) {
+    return this.api.get(`/users/${uid}/followList/${populate}`);
+  }
+
+  isFollowing(followerUID) {
+    if (followerUID === this.uid) {
+      return of([false, true]);
+    }
+    else if (this.uid) {
+      return this.getFollows(this.uid).pipe(
+        map(f => [f.following.includes(followerUID), false])
+      );
+    }
+    else {
+      // Not following and not owner
+      return of([false, false]);
+    }
+  }
+
+  isFollowingFromList(uid, populate) {
+    // Get populated list
+    return forkJoin({
+      f: this.getFollows(uid, populate),
+      u: iif(() => this.uid, this.getFollows(this.uid), of({following: []}))
+    }).pipe(
+      map(r => {
+        const uFwing = r.u.following;
+        const fList = r.f[populate];
+        return fList.reduce((acc, f) => {
+          return acc.concat({
+            isOwner: f._id === this.uid,
+            isFollowing: uFwing.includes(f._id),
+            user: f
+          });
+        }, []);
+      })
+    );
+  }
+
+  follow(uid) {
+    return this.api.get(`/users/${uid}/follow`);
+  }
+
+  // Get followers
+  // /posts?owner=5fcf56658faf9c10f57638f2&parent[exists]=true&parent[not][size]=0
 }

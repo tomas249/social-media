@@ -5,7 +5,6 @@ const advancedResults = (cb, find, model, populate) => asyncHandler(async (req, 
    */
   let query;
   const reqQuery = {...req.query};
-  console.log(reqQuery)
 
   /**
    * Clean reqQuery
@@ -28,16 +27,23 @@ const advancedResults = (cb, find, model, populate) => asyncHandler(async (req, 
   // const regex = /\"[\$]?(?<key>[-_a-z]+)\"\:\"(?<value>(?<int>[0-9]+)|(?<str>[-_a-z0-9]+))\"/g
 
   // Start operators with $
-  const regexOperators = /\b(gt|gte|lt|lte|in|size|not)\b/g;
+  const regexOperators = /\b(gt|gte|lt|lte|in|ne|exists|size|not)\b/g;
   reqQueryStr = reqQueryStr.replace(regexOperators, match => `$${match}`);
+  
   // Parse to Int
   const regexInt = /\"(?<value>[0-9]+)\"/g;
   reqQueryStr = reqQueryStr.replace(regexInt, match => {
     return match.split('').slice(1,-1).join('');
   });
 
+  // Parse to real null
+  reqQueryStr = reqQueryStr.replace(/'null'/g, match => {
+    return null;
+  });
+  
   // Parse again to object
   reqQueryStr = JSON.parse(reqQueryStr);
+  console.log(reqQueryStr)
 
   /**
    * 1. Query without excluded fields

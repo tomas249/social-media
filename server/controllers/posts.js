@@ -10,7 +10,7 @@ const Follow = require('../models/Follow');
 // @access    Private
 exports.publishPost = asyncHandler(async (req, res, next) => {
   if (!req.body.text) throw new ErrorResponse(400, 'Introduce some text');
-  console.log(req.body.media)
+
   const post = await Post.create({
     owner: req.user._id,
     text: req.body.text,
@@ -20,6 +20,8 @@ exports.publishPost = asyncHandler(async (req, res, next) => {
   // Instead of populating owner, use data that we already have
   let postRes = post.toObject({ getters: true });
   postRes.owner = (({_id, name, username, description, count, avatar}) => ({_id, name, username, description, count, avatar}))(req.user);
+  // Increment by 1 current count as we are not getting updated user
+  postRes.owner.count.posts++;
 
   // Increase posts count
   await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': 1} });
@@ -42,8 +44,6 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
   const replyRef = parentModel.replyRef.concat(parentModel.owner.username);
 
   // Get parent field from parent post and add itself
-  console.log(req.body.text)
-  console.log(req.body.media)
   const reply = await Post.create({
     owner: req.user._id,
     text: req.body.text,
@@ -149,7 +149,12 @@ exports.deletePost = asyncHandler(async (req, res, next) => {
   if (post.parent && post.parent.length !==0) {
     const parentId = post.parent[post.parent.length-1];
     await Post.findByIdAndUpdate(parentId, { $pull: { child: post._id } });
+  } else {
+    // If it is a post (not reply)
+    // Decrease posts count if it is a post (not reply)
+    await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': -1} });
   }
+
 
   res.status(204).json({
     success: true

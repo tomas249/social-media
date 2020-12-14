@@ -104,6 +104,6 @@ exports.getFollowList = asyncHandler(async (req, res, next) => {
 
   res.status(201).json({
     success: true,
-    data: followList
+    data: followList[0]
   });
 });

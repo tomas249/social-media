@@ -85,7 +85,7 @@ export class ModalTooltipComponent implements OnInit {
   }
 
   onClose() {
-    this.modalService.forceClose();
+    this.modalService.closeByType(this.type);
   }
 
 }

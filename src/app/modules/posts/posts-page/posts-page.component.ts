@@ -44,7 +44,6 @@ export class PostsPageComponent implements OnInit, OnDestroy {
     // this.postsList$ = this.postsService.posts$;
     this.route.params.subscribe(v => {
       this.queryUrl = queryUrls[v.page];
-      console.log(this.queryUrl)
       // this.queryUrl = v.queryUrl;
       // const path = this.queryUrl || v.queryUrl;
       // this.postsService.getPostsList(path).subscribe(res =>{

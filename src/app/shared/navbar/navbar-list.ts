@@ -24,7 +24,14 @@ export const navbarList = (token) => {
     },
     {
       name: ['Profile'],
-      path: '/u/me',
+      path: `/u/${token.getUserId()}`,
+      activation: [`/u/${token.getUserData().username}`],
+      children: [
+        { name: ['Posts'], path: '/' },
+        { name: ['Replies'], path: '/replies' },
+        { name: ['Media'], path: '/media' }
+      ],
+      selChildIdx: 0,
       protected: true,
       checkAvailability: token.user$,
       expectingRes: true

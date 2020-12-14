@@ -1,82 +1,66 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
-import { ProfileService } from '../profile.service';
-// import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
-import { TokenService } from 'src/app/services/token.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { first } from 'rxjs/operators';
 import { ModalService } from 'src/app/shared/modal/modal.service';
+import { NavbarService } from 'src/app/shared/navbar/navbar.service';
+import { ProfileService } from '../profile.service';
 
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.css']
 })
-export class UsersListComponent implements OnInit {
+export class UsersListComponent implements OnInit, OnDestroy {
 
-  loading = true;
-  usersList;
-
-  currentUserId = null;
   userId = null;
-  usersField = null;
+  populate = null;
+  list;
+
+  count = 0;
 
   constructor(
     private profileService: ProfileService,
-    // private tooltip: TooltipService,
-    private token: TokenService,
-    private modal: ModalService
+    private modalService: ModalService,
+    private navbarService: NavbarService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.profileService.getFollowsFromUser(this.userId, this.usersField)
-    .subscribe(res => {
-      this.usersList = res.data[0][this.usersField];
-      this.loading = false;
+
+
+    this.profileService.isFollowingFromList(this.userId, this.populate)
+    .pipe(first())
+    .subscribe(list => {
+      this.list = list;
     });
+      // this.list = f[this.populate].map(u => {
+        
+      //   // const [isFollowing, isOwner] = this.profileService.isFollowing(u._id);
+      //   // return {
+      //   //   isOwner,
+      //   //   isFollowing,
+      //   //   user: u
+      //   // };
+      // });
+
   }
 
-  // @ViewChild('img') img:ElementRef
-  @ViewChildren('img') img: QueryList<ElementRef>
-  image;
-  openTooltip(user, i) {
-    this.image = this.img.toArray()[i];
-    this.image.nativeElement.style.zIndex = '10';
-    const a = this.image.nativeElement.getBoundingClientRect();
-    const start = a.y;
-    const X = a.x + a.width / 2;
-    const Y = a.y + a.height;
-    // this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user});
+  follow(item) {
+    item.isFollowing = !item.isFollowing;
+    item.user.count.followers += !item.isFollowing ? -1 : 1 ;
+    this.count += !item.isFollowing ? -1 : 1 ;
+    this.profileService.follow(item.user._id).pipe(first()).subscribe();
   }
 
-  closeTooltip() {
-    // this.tooltip.close();
-    this.image.nativeElement.style.zIndex = '2';
+  go(uid) {
+    // Close tooltip if exists
+    // this.modalService.closeByType('tooltip');
+    this.modalService.forceClose();
+    this.navbarService.go(`/u/${uid}/`);
   }
 
-  doesItFollow(userId) {
-    return this.profileService.checkIfFollowsByList(userId);
-  }
-
-  followUser(user) {
-    if (!this.checkAuth('In order to follow someone you need to be logged in')) return;
-    const follows = this.doesItFollow(user._id);
-    if (follows) user.count.followers -= 1;
-    else user.count.followers += 1;
-    // this.follows = !this.follows;
-    this.profileService.followUser(user._id).subscribe(res => {
-      // this.user = res.followingCount;
-      // console.log(res);
-    })
-  }
-
-
-  checkAuth(message) {
-    if (!this.token.isLogged()) {
-      // this.tooltip.close(true);
-      // this.modal.addMessage(message);
-      // this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
-      return false;
-    } else {
-      return true;
-    }
+  ngOnDestroy(): void {
+    this.modalService.emitResponse(false, this.count);
   }
 
 }

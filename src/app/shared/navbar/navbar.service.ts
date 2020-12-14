@@ -19,14 +19,34 @@ export class NavbarService {
     this.navcomponent = component;
   }
 
-  loadMenu(menu, current) {
-    if (!menu.trigger.includes(current.component)) return;
+  loadMenu(menu, current?) {
+    // Check if menu has components or paths
+    let idx;
+    let locStack = [];
+    if (current) {
+      if (!menu.trigger.includes(current.component)) return;
+      idx = menu.children.map(c => c.component).indexOf(current.component);
+    }
+    else {
+      idx = menu.selChildIdx;
+      // If root name provided, use it do define root location
+      if (menu.name) {
+        locStack.push(menu.name);
+      }
+    }
 
-    const idx = menu.children.map(c => c.component).indexOf(current.component);
     this.navcomponent.loadCustomMenu(menu.children, idx);
 
-    // Append to location
-    this.locationService.addItemToStack(menu.children[idx].name);
+    // Set location only if it is not a reactivation
+    if (!menu.activated) {
+      locStack.push(menu.children[idx].name)
+      this.locationService.setStack(locStack);
+    }
+
+  }
+
+  changeMenuItem(menuItemIdx) {
+    this.navcomponent.changeMenuItem(menuItemIdx);
   }
 
   saveState() {
@@ -37,12 +57,23 @@ export class NavbarService {
     this.navcomponent.restoreState();
   }
 
-  go(path) {
+  compareAndSelect(route, skipMenu=false) {
+    this.navcomponent.simulation = true;
+
+    const url = this.navcomponent.detectUrl(route);
+    this.navcomponent.changeItem(url, skipMenu);
+  }
+
+  go(path, skipMenu=false) {
+    // Deactivate simulation if it was activated
+    this.navcomponent.simulation = false;
+
     // Navigate
     this.router.navigate([path]);
     const url = this.navcomponent.detectUrl(path);
     // Change selected navbar item and load menu list
-    this.navcomponent.changeItem(url);
+
+    this.navcomponent.changeItem(url, skipMenu);
     // Change location
     this.locationService.setStack(this.navcomponent.getPathNames(url));
   }
