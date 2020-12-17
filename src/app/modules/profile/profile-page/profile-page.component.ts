@@ -30,7 +30,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     },
     getIdx: (name) => ['posts', 'replies', 'media'].indexOf(name),
     isValid: (name) => ['posts', 'replies', 'media'].includes(name)
-  }
+  };
   queryUrl;
   params$;
 
@@ -72,7 +72,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
           );
         }
         // If user altready loaded and this params changed
-        // means that only tab was changed
+        // means that only tab has changed
         else {
           return of({
             first: false,
@@ -82,17 +82,17 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
         }
       }),
       tap(p => {
-        // If p.user exists means that user is new
+        // If p.user exists means that the user is new and has to be updated
         if (p.user) {
-          // this.user = {...p.user};
           this.user = p.user;
         }
+        // Even if this page is reached by navbar items, there is a needed to send 
+        // again the menu because of the custom routes (they include user id)
+        // No worries about performance because the navbar component identifies this
+        // activity and only updates the routes and not the entire menu
         this.menu = this.getMenu(p.user?.username || this.user.username);
         this.menu.selChildIdx = this.tabs.getIdx(p.tab);
         this.navbarService.loadMenu(this.menu);
-
-        // If this page is opened via navbar there is no need to trigger the menu
-        // byData == 'me' == 'local'
       }),
       // CONTENT
       tap(p => {
@@ -143,7 +143,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
         params: {userId: this.user._id, populate: 'followers'} }
     ];
     const modal = {type: 'default', content};
-    const location = {action:'add', name:[]};
+    const location = {action:'add', stack:[]};
     this.modalService.open(modal, location);
   }
 

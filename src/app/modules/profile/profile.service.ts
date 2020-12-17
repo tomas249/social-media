@@ -5,6 +5,8 @@ import { ApiService } from 'src/app/services/api.service';
 import { TokenService } from 'src/app/services/token.service';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { UploadFileService } from 'src/app/services/upload-file.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,8 @@ export class ProfileService {
     private api: ApiService,
     private tokenService: TokenService,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private uploadFile: UploadFileService
   ) {
     if (this.tokenService.isLogged()) {
       this.uid = this.tokenService.getUserId();
@@ -102,6 +105,40 @@ export class ProfileService {
     return this.api.get(`/users/${uid}/follow`);
   }
 
-  // Get followers
-  // /posts?owner=5fcf56658faf9c10f57638f2&parent[exists]=true&parent[not][size]=0
+  updateUserData(updatedUser) {
+    return this.api.post('/users/updateProfile', {updatedUser});
+  }
+
+
+  updateAvatar(newImage) {
+    const fd = new FormData();
+    fd.append('avatar', newImage);
+
+    const opt = this.uploadFile.getOptions();
+    
+    // Upload all images to get their url
+    return this.api.post('/files/updateAvatar', fd, opt).pipe(
+      map(event => {
+
+        const res = this.uploadFile.getProgress(event);
+        if (!res.completedUpload) {
+          return res;
+        }
+        else {
+          const avatarPath = res.data;
+          const avatar = {
+            filename: avatarPath,
+            relativePath: `/a/${avatarPath}`,
+            fullPath: `${environment.baseUrl}/a/${avatarPath}`
+          };
+          return {
+            completed: true,
+            message: res.message,
+            avatar
+          };
+        }
+      },
+    ));
+  }
+
 }

@@ -1,4 +1,12 @@
 <p (click)="go(user._id)">Name: {{ user.username }}</p>
+<div>
+  <img class="acc-photo" [src]="user.avatar.fullPath">
+  <span>{{ user.name }}</span>
+  <p>{{ user.description }}</p>
+</div>
+<div *ngIf="allowEdit && isOwner">
+  <button (click)="onEditAccount()">EDIT Account</button>
+</div>
 <p>
   <button *ngIf="!isOwner" (click)="follow()">
     <span *ngIf="isFollowing">Following</span>

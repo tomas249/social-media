@@ -12,6 +12,10 @@ import { ProfileService } from '../profile.service';
 })
 export class ProfileCardComponent implements OnInit {
 
+  // When using this component as modal, there is usually
+  // no need to edit the account
+  @Input() allowEdit = true;
+
   isFollowing;
   isOwner = true;
 
@@ -56,7 +60,7 @@ export class ProfileCardComponent implements OnInit {
         params: {queryUrl} }
     ];
     const modal = {type: 'default', content};
-    const location = {action:'add', name:['Posts']};
+    const location = {action:'add', stack:['Posts']};
     this.modalService.open(modal, location);
   }
 
@@ -72,7 +76,7 @@ export class ProfileCardComponent implements OnInit {
         params: {userId, populate} }
     ];
     const modal = {type: 'default', content};
-    const location = {action:'add', name:['List']};
+    const location = {action:'add', stack:['List']};
     this.modalService.open(modal, location, (c) => {
       this.user.count.following += c;
     });
@@ -90,6 +94,19 @@ export class ProfileCardComponent implements OnInit {
     
     this.navbarService.go(`/u/${uid}/`);
     // this.router.navigate(['/u/'+uid]);
+  }
+
+  onEditAccount() {
+    const aroba = `@${this.user.username}`;
+    const content = [
+      { title: `Editing ${aroba} profile` },
+      { module: 'Profile', component: 'ProfileEdit', params: {user: this.user}}
+    ];
+    const modal = {type: 'extended', content};
+    const location = {action:'add', stack:['Edit'], remove:1};
+    this.modalService.open(modal, location, (updatedUser) => {
+      this.user = Object.assign(this.user, updatedUser);
+    });
   }
 
 }
