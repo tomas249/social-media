@@ -34,7 +34,7 @@ exports.verifyToken = asyncHandler(async (req, res, next) => {
  * Roles are treated as levels because each parent inherit
  * the privileges from the child
  * Example: Moderator has User's privilages
- * Example: Admin has Moderator & User's privilages
+ * Example: Admin has Moderator's & User's privilages
  */
 exports.authorize = (role) => (req, res, next) => {
   const rolesByLevel = ['user', 'moderator', 'admin'];

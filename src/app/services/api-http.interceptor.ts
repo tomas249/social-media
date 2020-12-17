@@ -23,13 +23,13 @@ export class ApiHttpInterceptor implements HttpInterceptor {
       const login = '/api/auth/login';
       const register = '/api/auth/register';
       
-      // if (req.url.search(login) != -1 ||
-      //     req.url.search(register) != -1
-      //     ){
-      //     return next.handle(req);
-      // }
+      if (req.url.search(login) != -1 ||
+          req.url.search(register) != -1
+          ){
+          return next.handle(req);
+      }
       
-      // Send request with Access-Token
+      // Send request with AccessToken
       if (this.token.getAccessToken() && this.token.getRefreshToken()) {
         req = this.addToken(req, this.token.getAccessToken());
       } else {
@@ -38,12 +38,12 @@ export class ApiHttpInterceptor implements HttpInterceptor {
       
       return next.handle(req).pipe(
         catchError(err => {
-          if (!navigator.onLine) {
-            return throwError({error: 'Could not get response. Check your connection.'});
-          }
-          else {
-            return throwError(err);
-          }
+          // if (!navigator.onLine) {
+          //   return throwError({error: 'Could not get response. Check your connection.'});
+          // }
+          // else {
+          //   return throwError(err);
+          // }
           if (err instanceof HttpErrorResponse && err.status === 401) {
             return this.handle401Error(req, next);
           } else {
@@ -87,7 +87,7 @@ export class ApiHttpInterceptor implements HttpInterceptor {
               switchMap(res => {
                 return next.handle(this.addToken(request, res.accessToken));
               }));
-            }
           }
+      }
           
-        }
+}
