@@ -48,7 +48,7 @@ export class ApiService {
       content.push({html: mssg});
     }
     const modal = {type: 'extended', content};
-    const location = {action: 'set', name: ['Unhandled Error']};
+    const location = {action: 'set', stack: ['Unhandled Error']};
     modalService.open(modal, location);
     return of(null);
   }

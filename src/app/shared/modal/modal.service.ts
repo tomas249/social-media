@@ -45,7 +45,7 @@ export class ModalService {
    */
   // open(type, content, params?, location?, menu?) {
   async open(modal: {type:string, content:any, params?:any, keepOpened?:boolean},
-       location: {action:string, name:Array<string>}, responseCb?) {
+       location: {action:string, stack?:Array<string>, remove?:number}, responseCb?) {
     /*
         Check actives:
           -empty:                            (3)loadContent, (4)displayNew
@@ -74,7 +74,7 @@ export class ModalService {
 
     // (*3) Save current location before loading new modal
     this.locationService.saveState();
-    this.locationService.changeStackByAction(location.action, location.name);
+    this.locationService.changeStackByAction(location);
     // (*3) Save navbar menu sate
     this.navbarService.saveState();
 

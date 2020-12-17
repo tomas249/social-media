@@ -33,12 +33,19 @@ export class LocationService {
     this.joinStackAndSend(this._locationStack);
   }
 
-  changeStackByAction(action, stack?) {
+  changeStackByAction(config:{action:string, stack?:Array<string>, remove?:number}) {
+    const {action, stack, remove} = config;
+
     if (action === 'none') return;
+
     const actions = {
       set: (stack) => this.setStack(stack),
       add: (stack) => this.addItemToStack(stack)
     };
+    // Remove stack if specified
+    if (remove) {
+      this.removeItemFromStack(remove);
+    }
     actions[action](stack);
   }
 
@@ -47,7 +54,9 @@ export class LocationService {
   }
 
   saveState() {
-    this._states.push(this._locationStack);
+    // Must be a copy because otherwise methods like pop, slice...
+    // will affect the saved state
+    this._states.push([...this._locationStack]);
   }
 
   restoreState() {

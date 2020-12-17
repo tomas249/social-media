@@ -245,7 +245,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
       { module: 'Posts', component:'PostPublish', params}
     ];
     const modal = {type: 'default', content};
-    const location = {action: 'add', name: ['Publish', 'Reply']};
+    const location = {action: 'add', stack: ['Publish', 'Reply']};
     this.modalService.open(modal, location, (res) => {
       if (!res) {
 
@@ -331,7 +331,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     const top = 2
     const params = {objDimensions: a};
     const modal = {type: 'tooltip', content, params, keepOpened:true};
-    const location = {action: 'set', name: ['ACCOUNT']};
+    const location = {action: 'set', stack: ['ACCOUNT']};
     this.modalService.open(modal, location);
   }
 
@@ -349,7 +349,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     ]
 
     const modal = {type: 'extended', content};
-    const location = {action: 'add', name: ['Media']};
+    const location = {action: 'add', stack: ['Media']};
     this.modalService.open(modal, location);
   }
 

@@ -203,7 +203,7 @@ export class PostPublishComponent implements OnInit {
       this.modalService.open(
         {type: 'default', content: [{title: 'Media error'},
                                     {html: '<p>You can only attach 5 media files per post!</p>'}]},
-        {action: 'add', name:['Media', 'Error']});
+        {action: 'add', stack:['Media', 'Error']});
       return;
     }
 
@@ -215,7 +215,7 @@ export class PostPublishComponent implements OnInit {
           {type: 'default', content: [{title: 'Media error'},
                                       {html: filter.message}, 
                                       {html: '<p>Try with images or short videos!</p>'}]},
-          {action: 'add', name:['Media', 'Error']});
+          {action: 'add', stack:['Media', 'Error']});
         // Stop function
         return;
       };

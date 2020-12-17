@@ -55,7 +55,7 @@ export class TokenService {
     if (this.isLogged()) {
       return JSON.parse(localStorage.getItem('userData'));
     } else {
-      return null;
+      return false;
     }
   }
 

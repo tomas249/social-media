@@ -39,7 +39,7 @@ export class TooltipWrapperComponent implements OnInit, AfterViewInit {
     ];
     const params = {objDimensions: a};
     const modal = {type: 'tooltip', content, params, keepOpened:true};
-    const location = {action: 'set', name: ['ACCOUNT']};
+    const location = {action: 'set', stack: ['ACCOUNT']};
     this.modalService.open(modal, location);
   }
 

@@ -53,7 +53,7 @@ export class ApiHttpInterceptor implements HttpInterceptor {
               { html:  `<p>${JSON.stringify(err.error.message)}</p>` }
             ];
             const modal = {type: 'default', content};
-            const location = {action: 'set', name: ['Unhandled Error']};
+            const location = {action: 'set', stack: ['Unhandled Error']};
             this.modalService.open(modal, location);
             return throwError(err.error.message);
           }
