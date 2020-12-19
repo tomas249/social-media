@@ -21,6 +21,7 @@
         <div class="h-item h-post">
           <div class="h-post-bttn" (click)="openPostModal()">
             Post
+            <span *ngIf="uploadProgress !== null"> ({{ uploadProgress }} %)</span>
           </div>
         </div>
         <!-- end POST BUTTON -->

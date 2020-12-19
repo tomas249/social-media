@@ -50,6 +50,7 @@ export class MainComponent implements OnInit {
     this.navbarService.go(url);
   }
 
+  uploadProgress = null;
   openPostModal() {
     const destination = ['/home', '/explore'].includes(window.location.pathname) ? 1 : 0 ;
     const destinationConfig = {destination, parentIndex: 0};
@@ -58,7 +59,22 @@ export class MainComponent implements OnInit {
       content: [{ module: 'Posts', component: 'PostPublish', params: {destinationConfig} }]
     };
     const location = {action: (destination ? 'add': 'set'), stack: ['Post']};
-    this.modalService.open(modal, location);
+    this.modalService.open(modal, location, (res) => {
+      if (!res) {
+        // Now, reply is being published, so we can change location to indicate that
+        this.locationService.changeStackByAction({
+          action: 'add',
+          stack: ['Publishing...'],
+          remove: 1
+        });
+      } 
+      else if (res && res.hasOwnProperty('progress')) {
+        this.uploadProgress = res.progress;
+      }
+      else {
+        this.uploadProgress = null;
+      }
+    });
   }
 
   modal1() {

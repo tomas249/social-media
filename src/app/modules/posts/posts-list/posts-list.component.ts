@@ -21,7 +21,6 @@ export class PostsListComponent implements OnInit, OnDestroy {
   _queryUrl: string;
   @Input()
     set queryUrl(queryUrl) {
-      console.log(queryUrl)
       this.loading = true;
       this.postsService.getPostsList(queryUrl).pipe(first()).subscribe(res =>{
         this.loading = false;
