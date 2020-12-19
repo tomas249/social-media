@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { filter, first, flatMap, map, tap } from 'rxjs/operators';
+import { catchError, filter, first, flatMap, map, tap } from 'rxjs/operators';
+import { LocationService } from 'src/app/services/location.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { NavbarService } from 'src/app/shared/navbar/navbar.service';
 import { ProfileService } from '../../profile/profile.service';
@@ -40,7 +41,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     private profileService: ProfileService,
     private route: ActivatedRoute,
     private navbarService: NavbarService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private locationService: LocationService
   ) { }
 
   ngOnInit(): void {
@@ -62,6 +64,13 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
           const byData = p.byData;
           const type = this.checkDataType(byData);
           return this.profileService.getUser(byData, type).pipe(
+            tap(res => { 
+              if (!res) {
+                this.locationService.setStack(['User not found']);
+                this.user = false;
+              } 
+            }),
+            filter(res => res),
             map(profile => {
               return {
                 first: !this.user,

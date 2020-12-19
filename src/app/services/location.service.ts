@@ -24,6 +24,7 @@ export class LocationService {
 
   setStack(stack) {
     if (!stack) return;
+
     this._locationStack = stack;
     this.joinStackAndSend(this._locationStack);
   }
@@ -38,14 +39,15 @@ export class LocationService {
 
     if (action === 'none') return;
 
-    const actions = {
-      set: (stack) => this.setStack(stack),
-      add: (stack) => this.addItemToStack(stack)
-    };
     // Remove stack if specified
     if (remove) {
       this.removeItemFromStack(remove);
     }
+
+    const actions = {
+      set: (stack) => this.setStack(stack),
+      add: (stack) => this.addItemToStack(stack)
+    };
     actions[action](stack);
   }
 

@@ -21,7 +21,7 @@ export class ProfileService {
     private tokenService: TokenService,
     private location: Location,
     private router: Router,
-    private uploadFile: UploadFileService
+    private uploadFile: UploadFileService,
   ) {
     if (this.tokenService.isLogged()) {
       this.uid = this.tokenService.getUserId();
@@ -35,8 +35,7 @@ export class ProfileService {
 
   // Get user data
   getUser(byData, type) {
-    const tknUID = this.tokenService.getUserId();
-    const user:any = this.tokenService.getUserData();
+    if (type === null) { return of(false) }
 
     // // If used 'me', replace by username
     // if (byData === 'me') {

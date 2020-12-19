@@ -44,7 +44,7 @@ export class ModalService {
    * 
    */
   // open(type, content, params?, location?, menu?) {
-  async open(modal: {type:string, content:any, params?:any, keepOpened?:boolean},
+  open(modal: {type:string, content:any, params?:any, keepOpened?:boolean},
        location: {action:string, stack?:Array<string>, remove?:number}, responseCb?) {
     /*
         Check actives:

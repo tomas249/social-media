@@ -36,12 +36,12 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     location: PlatformLocation
   ) {
-    this.navbarList = navbarList(this.tokenService);
+    this.tokenService.user$.subscribe(_ => {
+      this.navbarList = navbarList(this.tokenService);
+    });
     // When going back, update navbar
     location.onPopState(() => {
-      if (!this.menuList) {
-        this.loadDetectChangeUrl(window.location.pathname);
-      }
+      this.loadDetectChangeUrl(window.location.pathname);
     });
   }
 

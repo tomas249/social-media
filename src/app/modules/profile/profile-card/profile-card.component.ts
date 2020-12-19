@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { TokenService } from 'src/app/services/token.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { NavbarService } from 'src/app/shared/navbar/navbar.service';
 import { ProfileService } from '../profile.service';
@@ -41,6 +42,7 @@ export class ProfileCardComponent implements OnInit {
     private modalService: ModalService,
     private profileService: ProfileService,
     private navbarService: NavbarService,
+    private tokenService: TokenService,
     private router: Router
   ) { }
 
@@ -83,6 +85,7 @@ export class ProfileCardComponent implements OnInit {
   }
 
   follow() {
+    if (!this.checkAuth('In order to follow someone you need to be logged in')) return;
     this.isFollowing = !this.isFollowing;
     this.user.count.followers += !this.isFollowing ? -1 : 1 ;
     this.profileService.follow(this.user._id).pipe(first()).subscribe();
@@ -107,6 +110,24 @@ export class ProfileCardComponent implements OnInit {
     this.modalService.open(modal, location, (updatedUser) => {
       this.user = Object.assign(this.user, updatedUser);
     });
+  }
+
+  private checkAuth(message) {
+    if (this.tokenService.isLogged()) {
+      return true;
+    }
+    else {
+      // Close tooltip if exists
+      this.modalService.closeByType('tooltip');
+      // Open auth modal
+      const modal = {type: 'default', content: [
+        { title: message },
+        { module: 'Auth', component: 'Login', params: {navigateEnd: false} }
+      ]};
+      const location = {action: 'add', stack: ['Login']};
+      this.modalService.open(modal, location);
+      return false
+    }
   }
 
 }

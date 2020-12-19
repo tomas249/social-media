@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     private token: TokenService,
     private router: Router,
     private navbarService: NavbarService,
-    private modal: ModalService
+    private modalService: ModalService
   ) {
 
     this.loginForm = this.fb.group({
@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit {
     // Send request to API
     this.auth.login(payload).subscribe(
     res => {
-      this.modal.emitResponse(true);
+      this.modalService.emitResponse(true, true);
       if (this.navigateEnd) this.navbarService.go('/explore');
     },
     err => {

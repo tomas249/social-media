@@ -18,12 +18,14 @@
     <div class="notLogged">
       <span class="auth-text"></span>
       <div>
-        <button class="bttn" (click)="auth('LoginComponent')">Login</button>
+        <button class="bttn" (click)="auth('Login')">Login</button>
         &nbsp;or&nbsp;
-        <button class="bttn" (click)="auth('RegisterComponent')">Register</button>
+        <button class="bttn" (click)="auth('Register')">Register</button>
       </div>
     </div>
   </ng-template>
 
-  <app-posts-list [queryUrl]="queryUrl"></app-posts-list>
+  <ng-container *ngIf="!needsLogin && needsLogin !== null">
+    <app-posts-list [queryUrl]="queryUrl"></app-posts-list>
+  </ng-container>
 </div>

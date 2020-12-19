@@ -296,51 +296,55 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   checkAuth(message) {
-    if (!this.token.isLogged()) {
-      // this.modal.addMessage(message);
-      // this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
-      return false;
-    } else {
+    if (this.token.isLogged()) {
       return true;
+    }
+    else {
+      const modal = {type: 'default', content: [
+        { title: message },
+        { module: 'Auth', component: 'Login', params: {navigateEnd: false} }
+      ]};
+      const location = {action: 'add', stack: ['Login']};
+      this.modalService.open(modal, location);
+      return false
     }
   }
 
-  @ViewChild('img') img:ElementRef
-  openTooltip(event) {
-    const a = this.img.nativeElement.getBoundingClientRect();
-    console.log(a)
+  // @ViewChild('img') img:ElementRef
+  // openTooltip(event) {
+  //   const a = this.img.nativeElement.getBoundingClientRect();
+  //   console.log(a)
 
-    // this.img.nativeElement.style.zIndex = '10';
-    // const start = a.y;
-    // const x = a.x + a.width / 2;
-    // const y = a.y + a.height;
-    // console.log(X, Y, start)
-    // this.tooltip.open(event.clientX, event.clientY, 'AuthModule', 'LoginComponent');
-    // this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user: this.post.owner});
-    // this.tooltip.open(start, X, Y, 'AuthModule', 'LogoutComponent', {user: this.post.owner});
-    // this.tooltip.open(start, X, Y, 'PostsModule', 'PostComponent', {post: this.post});
+  //   // this.img.nativeElement.style.zIndex = '10';
+  //   // const start = a.y;
+  //   // const x = a.x + a.width / 2;
+  //   // const y = a.y + a.height;
+  //   // console.log(X, Y, start)
+  //   // this.tooltip.open(event.clientX, event.clientY, 'AuthModule', 'LoginComponent');
+  //   // this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user: this.post.owner});
+  //   // this.tooltip.open(start, X, Y, 'AuthModule', 'LogoutComponent', {user: this.post.owner});
+  //   // this.tooltip.open(start, X, Y, 'PostsModule', 'PostComponent', {post: this.post});
 
-    const content = [
-      // { title: 'You have nothing to do here' },
-      { module: 'Profile', component:'ProfileCard', params: {user: this.post.owner}}
-      // { module: 'Auth', component:'Logout'}
-    ];
-    // const params = {wS:300, hS:200, top:a.top, left:a.left};
-    const wS = a.width+30;
-    const hS = a.height+30;
-    const top = 2
-    const params = {objDimensions: a};
-    const modal = {type: 'tooltip', content, params, keepOpened:true};
-    const location = {action: 'set', stack: ['ACCOUNT']};
-    this.modalService.open(modal, location);
-  }
+  //   const content = [
+  //     // { title: 'You have nothing to do here' },
+  //     { module: 'Profile', component:'ProfileCard', params: {user: this.post.owner}}
+  //     // { module: 'Auth', component:'Logout'}
+  //   ];
+  //   // const params = {wS:300, hS:200, top:a.top, left:a.left};
+  //   const wS = a.width+30;
+  //   const hS = a.height+30;
+  //   const top = 2
+  //   const params = {objDimensions: a};
+  //   const modal = {type: 'tooltip', content, params, keepOpened:true};
+  //   const location = {action: 'set', stack: ['ACCOUNT']};
+  //   this.modalService.open(modal, location);
+  // }
 
-  closeTooltip(a) {
-    console.log(a)
-    return;
-    // this.tooltip.close();
-    this.img.nativeElement.style.zIndex = '2';
-  }
+  // closeTooltip(a) {
+  //   return;
+  //   // this.tooltip.close();
+  //   this.img.nativeElement.style.zIndex = '2';
+  // }
 
   openMedia(src) {
     const content = [

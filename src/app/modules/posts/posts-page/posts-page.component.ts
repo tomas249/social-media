@@ -25,25 +25,33 @@ export class PostsPageComponent implements OnInit, OnDestroy {
   pageInfo;
 
   loading = true;
+  needsLogin;
   isLogged$;
 
   constructor(
     private postsService: PostsService,
     private locationService: LocationService,
     private token: TokenService,
-    private modal: ModalService,
+    private modalService: ModalService,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    const queryUrls = {
-      explore: '/posts?parent[size]=0&childLevel=0&[limit]=10',
-      home: '/posts/user'
+    const pages = {
+      explore: {
+        query: '/posts?parent[size]=0&childLevel=0&[limit]=10',
+        auth: false
+      },
+      home: {
+        query: '/posts/user',
+        auth: true
+      }
     };
     this.isLogged$ = this.token.user$.pipe(map(user => !!user));
     // this.postsList$ = this.postsService.posts$;
-    this.route.params.subscribe(v => {
-      this.queryUrl = queryUrls[v.page];
+    this.route.params.subscribe(p => {
+      this.needsLogin = pages[p.page].auth;
+      this.queryUrl = pages[p.page].query;
       // this.queryUrl = v.queryUrl;
       // const path = this.queryUrl || v.queryUrl;
       // this.postsService.getPostsList(path).subscribe(res =>{
@@ -86,10 +94,13 @@ export class PostsPageComponent implements OnInit, OnDestroy {
     // this.postsList$.unsubscribe();
   }
 
-  auth(componentName) {
-    // this.modal.open('default', [{module: 'AuthModule', component: componentName}]);
-    // this.modal.addMessage('Auth in order to post');
-    // this.modal.open('AuthModule', componentName, {navigateEnd: false});
+  auth(component) {
+    const modal = {type: 'default', content: [
+      { title: 'Auth in order to post' },
+      { module: 'Auth', component, params: {navigateEnd: false} }
+    ]};
+    const location = {action: 'add', stack: [component]};
+    this.modalService.open(modal, location);
   }
 
 

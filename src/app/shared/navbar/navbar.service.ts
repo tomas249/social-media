@@ -38,9 +38,10 @@ export class NavbarService {
     this.navcomponent.loadCustomMenu(menu.children, idx);
 
     // Set location only if it is not a reactivation
-    if (!menu.activated) {
+    if (menu.activated) {
       locStack.push(menu.children[idx].name)
       this.locationService.setStack(locStack);
+      // this.locationService.addItemToStack(locStack);
     }
 
   }
