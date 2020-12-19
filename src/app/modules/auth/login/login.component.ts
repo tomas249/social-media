@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { TokenService } from 'src/app/services/token.service';
 import { FormGroup, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
+import { filter, take } from 'rxjs/operators';
+import { NavbarService } from 'src/app/shared/navbar/navbar.service';
 
 @Component({
   selector: 'app-login',
@@ -26,8 +28,8 @@ export class LoginComponent implements OnInit {
     private auth: AuthService,
     private token: TokenService,
     private router: Router,
-    private locationService: LocationService,
-    private modal: ModalService
+    private navbarService: NavbarService,
+    private modalService: ModalService
   ) {
 
     this.loginForm = this.fb.group({
@@ -46,13 +48,8 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.locationService.addChildLoc('Login', {extend:false, parentLoc:'Auth', useNav:true});
+    // this.locationService.finishComposition();
   }
-
-  ngOnDestroy() {
-    this.locationService.removeChildLoc(true);
-  }
-
 
   errorMessages(field, keyError, extra=null) {
     field = field.charAt(0).toUpperCase() + field.slice(1);
@@ -80,6 +77,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
+
   onLogin() {
     this.getFormValidationErrors();
     if (this.loginForm.invalid) return;
@@ -92,14 +90,13 @@ export class LoginComponent implements OnInit {
     // Send request to API
     this.auth.login(payload).subscribe(
     res => {
-      this.modal.emitResponse(true);
-      if (this.navigateEnd) this.router.navigate(['/']);
+      this.modalService.emitResponse(true, true);
+      if (this.navigateEnd) this.navbarService.go('/explore');
     },
     err => {
       this.success = false;
       this.messageList.push(err);
     });
-    
   }
   
 }

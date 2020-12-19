@@ -1,41 +1,51 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { tap, map } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
 
-  accountSubject = new BehaviorSubject<any>('');
-  account = '';
+  private _user = new BehaviorSubject<any>(false);
+
+  user$ = this._user.asObservable();
 
   constructor(
-    private api: ApiService
-  ) { }
+    private api: ApiService,
+  ) {
+    // Check tokens existence
+    const refreshToken = localStorage.getItem('refreshToken');
+    const accessToken = localStorage.getItem('accessToken');
 
-  subscribeAcc() {
-    const acc = this.getUserData();
-    this.account = acc;
-    this.accountSubject.next(this.account);
-    return this.accountSubject.asObservable();
+    if (refreshToken && accessToken) {
+      const storedUserData = this.getUserData();
+      this._user.next(storedUserData);
+    }
+    else if (refreshToken && !accessToken) {
+      console.error('AutoUpdate must be implemented');
+    }
+    else {
+      console.error('No auth');
+    }
   }
+
 
   setTokens(refreshToken: string, accessToken: string) {
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('accessToken', accessToken);
 
-    const userData = atob(accessToken.split('.')[1]);
-    const userParsed = JSON.parse(userData);
-    this.account = userParsed;
-    this.accountSubject.next(userParsed);
-    localStorage.setItem('userData', userData);
+    const userJWT = atob(accessToken.split('.')[1]);
+    const userParsed = JSON.stringify(JSON.parse(userJWT));
+
+    localStorage.setItem('userData', userParsed);
+  
+    this._user.next(JSON.parse(userJWT));
   }
 
   removeTokens() {
-    this.account = '';
-    this.accountSubject.next('');
+    this._user.next(false);
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userData');
@@ -45,7 +55,7 @@ export class TokenService {
     if (this.isLogged()) {
       return JSON.parse(localStorage.getItem('userData'));
     } else {
-      return null;
+      return false;
     }
   }
 
@@ -58,7 +68,7 @@ export class TokenService {
   }
 
   isLogged() {
-    return !!this.getRefreshToken();
+    return !!this.getAccessToken();
   }
 
   getUserId() {
@@ -105,9 +115,10 @@ export class TokenService {
     const currentUser = this.getUserData();
     const newUser = Object.assign(currentUser, newData);
 
-    this.account = newUser;
-    this.accountSubject.next(newUser);
+    // this.account = newUser;
+    // this.accountSubject.next(newUser);
     localStorage.setItem('userData', JSON.stringify(newUser));
+    this._user.next(newUser);
   }
 
 }

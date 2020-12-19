@@ -1,0 +1,29 @@
+<div (mouseleave)="onClose()" [style.display]="display ? 'block' : 'none'" >
+  <div
+  class="container-back"
+  [style.width]="maskWidth + 'px'"
+  [style.height]="maskHeight + 'px'"
+  [style.top]="maskTop + 'px'"
+  [style.left]="maskLeft + 'px'">
+  <!-- <span style="color:black; font-size: small; margin:0">This background will be removed</span> -->
+  </div>
+
+<!-- <div class="tooltip"
+(mouseleave)="onClose()"
+[style.display]="display ? 'block' : 'none'"
+[style.min-width]="wS + 'px'"
+[style.min-height]="hS + 'px'">
+  <modal-core [type]="type"></modal-core>
+</div> -->
+
+
+  <div class="tooltip"
+    [style.width]="tltpWidth + 'px'"
+    [style.min-height]="tltpHeigthMin + 'px'"
+    [style.top]="tltpTop + 'px'"
+    [style.bottom]="tltpBottom + 'px'"
+    [style.left]="tltpLeft + 'px'"
+    [style.right]="tltpRight + 'px'">
+    <modal-core [type]="type"></modal-core>
+  </div>
+</div>

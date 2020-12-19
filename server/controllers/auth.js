@@ -1,8 +1,10 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const User = require('../models/User');
+const Token = require('../models/Token');
 const SocketUser = require('../models/SocketUser');
-
+const Sniffr = require('sniffr');
+const sniff = new Sniffr();
 /**
  * 
  * **IMPORTANT**
@@ -59,9 +61,9 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!matches) throw new ErrorResponse(401, 'Invalid credentials');
 
   // Activate SocketUser
-  await SocketUser.findByIdAndUpdate(user.socketId, { active: true });
+  // await SocketUser.findByIdAndUpdate(user.socketId, { active: true });
 
-  sendTokenResponse(user, 200, res);
+  sendTokenResponse(req, user, 200, res);
 });
 
 
@@ -69,6 +71,17 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @route     GET /api/auth/logout
 // @access    Private
 exports.logout = asyncHandler(async (req, res, next) => {
+  // Check if RefreshToken is provided
+  const refreshToken = req.body.refreshToken;
+  if (!refreshToken) throw new ErrorResponse('Please provide a RefreshToken');
+
+  // Check if RefreshToken exists and belongs to the right user
+  const validate = await Token.findOneAndDelete({
+    belongsTo: req.uid,
+    token: refreshToken
+  });
+  if (!validate) throw new ErrorResponse('RefreshToken does not exists');
+
   // Deactivate SocketUser
   await SocketUser.findByIdAndUpdate(req.user.socketId, { active: false });
   res.status(200).json({
@@ -101,9 +114,25 @@ exports.deactivateSocketIO = asyncHandler(async (req, res, next) => {
 
 
 // Get token from model and send response
-const sendTokenResponse = (user, statusCode, res) => {
-  // Create token
-  const token = user.getSignedJwtToken();
+const sendTokenResponse = async (req, user, statusCode, res) => {
+  // For each login, new Refresh/AccessToken are created:
+
+  // Create RefreshToken's title
+  sniff.sniff(req.headers['user-agent']);
+  const usedOS = sniff.os.name[0].toUpperCase() + sniff.os.name.slice(1);
+  const usedBrowser = sniff.browser.name[0].toUpperCase() + sniff.browser.name.slice(1);
+  const newTitle = `${usedBrowser} on ${usedOS}`;
+
+  // Create new RefreshToken
+  const newRefreshToken = new Token({
+    belongsTo: user._id,
+    title: newTitle
+  });
+  const refreshTokenDB = await newRefreshToken.save();
+  const refreshToken = refreshTokenDB._id;
+
+  // Create new AccesshToken
+  const accessToken = user.getSignedJwtToken();
 
   if (process.env.NODE_ENV === 'production') {
     options.secure = true;
@@ -111,6 +140,6 @@ const sendTokenResponse = (user, statusCode, res) => {
 
   res.status(statusCode).json({
     success: true,
-    token,
+    data: {refreshToken, accessToken},
   });
 };

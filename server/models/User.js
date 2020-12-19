@@ -67,10 +67,6 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  tokens: {
-    type: Array,
-    select: false,
-  },
   count: {
     posts: {
       type: Number,

@@ -13,7 +13,6 @@ export class AuthComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('auth component started')
     this.loadNav();
   }
 
@@ -22,8 +21,8 @@ export class AuthComponent implements OnInit {
       { name: 'Login', path: '/auth/login' },
       { name: 'Register', path: '/auth/register' }
     ]
-    this.locationService.changeNavItems(navItems);
-    this.locationService.changeRootLoc('Auth');
+    // this.locationService.changeNavItems(navItems);
+    // this.locationService.changeRootLoc('Auth');
   }
 
 }

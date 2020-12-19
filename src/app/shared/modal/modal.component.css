@@ -21,9 +21,10 @@
 .modal-content {
   background-color: #fefefe;
   margin: auto;
-  padding: 20px;
+  /* padding: 20px; */
+  padding: 12px 0;
   border-radius: 30px;
-  width: 70%;
+  /* width: 70%; */
   background-color: var(--background-color);
 }
 
@@ -45,5 +46,17 @@
 .message {
   padding: 1rem;
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1rem;
+}
+
+.text {
+  padding: 0 2rem;
+}
+
+.loading-state {
+  width: 100%;
+  padding: 2rem 0;
+  text-align: center;
+  color: gray;
+  font-size: 1.5rem;
 }

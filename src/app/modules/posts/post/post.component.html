@@ -3,28 +3,49 @@
   <h4>hooola</h4>
 </ng-template> -->
 
-<article *ngIf="post" [title]="post._id">
-  <div class="route" [routerLink]="['/post', post._id]"></div>
+<!-- <div class="bar-container">    
+  <div class="progress">
+    <div class="progress-bar" >
+    </div>                       
+  </div> 
+  <span>Uploading images - 85%</span>
+</div> -->
+
+<article *ngIf="post" [title]="post._id" [ngStyle]="config.loading && {'filter': 'blur(1.5px)'}">
+
+  
+  <div class="route" (click)="openReplyPage()"></div>
 
   <div class="post">
     <div class="a-profile">
       <div *ngIf="config.thread" class="thread-line"></div>
-      <tooltip-wrapper [params]="{user: post.owner}">
-        <img #tooltipContent [src]="post.owner.avatar.fullPath">
-      </tooltip-wrapper>
+      <div *ngIf="post.owner">
+        <tooltip-wrapper [params]="{user: post.owner}">
+          <img #obj [src]="post.owner.avatar.fullPath">
+        </tooltip-wrapper>
+      </div>
+      <div *ngIf="config.empty">
+        <img style="width: 3.2rem; height: 3.2rem; background-color: lightgray;" #tooltipContent>
+      </div>
+      <!-- <tooltip-wrapper [params]="{user: post.owner}">
+        <img #tooltipContent [src]="post.owner.avatar.fullPath" (click)="closeTooltip(post)">
+      </tooltip-wrapper> -->
     </div>
   
     <div class="a-content">
       <div class="a-acc">
-        <tooltip-wrapper [params]="{user: post.owner}">
+        <!-- <tooltip-wrapper [params]="{user: post.owner}">
           <span #tooltipContent class="a-name">{{ post.owner.name }}</span>
-        </tooltip-wrapper>
+        </tooltip-wrapper> -->
         <!-- <span class="a-name">{{ post.owner.name }}</span> -->
         <span class="a-username">
           <span>
-            <tooltip-wrapper [params]="{user: post.owner}">
-              <span #tooltipContent>@{{ post.owner.username }}</span>
-            </tooltip-wrapper> - {{ post.createdAt | dateAgo}}
+            <!-- <tooltip-wrapper [params]="{user: post.owner}">
+            </tooltip-wrapper>  -->
+            <span #tooltipContent>
+              @{{ post.owner.username }}
+              - {{ post.createdAt | dateAgo}}
+            </span>
           </span>
         </span>
         <span class="upper" style="margin-left: auto" *ngIf="config.owner && config.showOpt">
@@ -32,10 +53,11 @@
         </span>
       </div>
 
-      <div class="replyRef upper" *ngIf="post.replyRef.length !== 0">
+      <div class="replyRef upper" *ngIf="post.replyRef && post.replyRef.length !== 0">
         <span>Replying to&nbsp;</span>
         <div class="arobas" *ngFor="let user of post.replyRef; let i=index">
-          <span class="aroba">{{ user | user }}</span>
+          <!-- <span class="aroba">{{ user | user }}</span> -->
+          <span class="aroba">{{ user }}</span>
           <span *ngIf="i !== post.replyRef.length-1">&nbsp;>&nbsp;</span>
         </div>
       </div>
@@ -58,7 +80,8 @@
         </div>
 
         <div>
-          <img class="selected-media" [src]="post.media[post.media[0].selectedIndex].fullPath">
+          <img (click)="openMedia(post.media[post.media[0].selectedIndex].fullPath)"
+            class="selected-media" [src]="post.media[post.media[0].selectedIndex].fullPath">
         </div>
         <!-- <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
           <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">
@@ -82,6 +105,10 @@
           </div>
           <span class="a-bttn-count upper">
             {{ count.replies }} 
+            <span class="notify" style="color: orange" *ngIf="config.publishing">
+              ~ publishing
+              <span *ngIf="replyingProgress !== 0">&nbsp;({{replyingProgress}})</span>
+            </span>
             <span class="primary notify" *ngIf="config.replied">&nbsp;~ published</span>
             <!-- <span class="primary notify" *ngIf="config.deleted">&nbsp;~ deleted</span> -->
           </span>

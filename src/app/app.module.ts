@@ -10,19 +10,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // Services
 import { ApiHttpInterceptor } from './services/api-http.interceptor';
 
-// import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-// const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
- 
-
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     AppRoutingModule,
-    // SocketIoModule.forRoot(config)
+    HttpClientModule
   ],
   providers: [
     {

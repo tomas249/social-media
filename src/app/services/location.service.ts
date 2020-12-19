@@ -8,142 +8,107 @@ import { ModalService } from '../shared/modal/modal.service';
 })
 export class LocationService {
 
-  paths = {
-    Auth: {
-      navItems: [
-        { name: 'Login', path: '/auth/login', component: 'LoginComponent' },
-        { name: 'Register', path: '/auth/register', component: 'RegisterComponent' }
-      ],
-    },
-    Profile: {
-      navItems: [
-        { name: 'Posts', path: '../posts', component: 'PostsListComponent' },
-        { name: 'Media', path: '../media', component: 'LogoutComponent' }
-      ],
-    },
-    Notifications: {
-      navItems: [
-        { name: 'All', path: '/notifications/all', component: 'PostsListComponent' },
-        { name: 'Only unread', path: '/notifications/unread', component: 'LogoutComponent' }
-      ],
-    }
+  private _states = [];
+
+  private _location = new BehaviorSubject<string>('');
+  private _locationStack: Array<string> = [];
+
+  location$ = this._location.asObservable()
+
+  constructor() { }
+
+  private joinStackAndSend(stack) {
+    const location = stack.join(' > ');
+    this._location.next(location);
   }
 
-  location$ = new BehaviorSubject<string>('Main');
-  location: string[] = [];
-  navItems$ = new Subject<any>();
-  navItems: any[] = [];
+  setStack(stack) {
+    if (!stack) return;
 
-  frozenData;
-  fixed = false;
-
-  parentLoc;
-
-  constructor( ) {
-    // this.location$.subscribe(res => {
-    //   console.log('LOCATION >>', res)
-    // })
+    this._locationStack = stack;
+    this.joinStackAndSend(this._locationStack);
   }
 
-  subscribeLocation() {
-    if (this.fixed) return;
-    return this.location$.asObservable();
+  addItemToStack(stack) {
+    this._locationStack = this._locationStack.concat(stack);
+    this.joinStackAndSend(this._locationStack);
   }
 
-  subscribeNavItems() {
-    if (this.fixed) return;
-    return this.navItems$.asObservable();
-  }
+  changeStackByAction(config:{action:string, stack?:Array<string>, remove?:number}) {
+    const {action, stack, remove} = config;
 
-  changeRootLoc(location) {
-    if (this.fixed) return;
+    if (action === 'none') return;
 
-    this.location = [location];
-    this.location$.next(location);
-    this.parentLoc = location;
-    // this.modal.close();
-  }
-
-  changeNavItems(navItems, selected?) {
-    if (this.fixed) return;
-
-    this.navItems = navItems;
-    this.navItems$.next({
-      navItems: this.navItems,
-      modal: !!this.frozenData,
-      selected
-    });
-  }
-
-  addChildLoc(location, opt:{extend:boolean, parentLoc?:string, useNav?:boolean}) {
-
-    if (this.fixed) return;
-
-    const checkSameParent = this.parentLoc && opt.parentLoc === this.parentLoc;
-  
-    // Control NavBar
-    if (opt.useNav && !checkSameParent) {
-      this.changeNavItems(this.paths[opt.parentLoc].navItems, location);
-    } else if (!opt.useNav && !checkSameParent) {
-      this.changeNavItems([]);
+    // Remove stack if specified
+    if (remove) {
+      this.removeItemFromStack(remove);
     }
 
-    // If same parent, do not overwrite location
-    if (checkSameParent) {
-      opt.extend = true;
-    }
-
-    if (!opt.extend && !opt.parentLoc) {
-      this.changeRootLoc(location);
-    }
-    else if (!opt.extend && opt.parentLoc) {
-      this.changeRootLoc(opt.parentLoc);
-      this.location.push(location);
-      const newLoc = this.location.join(' > ');
-      this.location$.next(newLoc);
-    }
-    else if (opt.extend) {
-      this.location.push(location);
-      const newLoc = this.location.join(' > ');
-      this.location$.next(newLoc);
-    }
-  }
-
-  removeChildLoc(skip) {
-    if (this.fixed) return;
-
-    this.location.pop();
-    if (skip) return;
-    const newLoc = this.location.join(' > ');
-    this.location$.next(newLoc);
-  }
-
-  freeze() {
-    this.frozenData = {
-      location: this.location,
-      navItems: this.navItems,
-      parentLoc: this.parentLoc
+    const actions = {
+      set: (stack) => this.setStack(stack),
+      add: (stack) => this.addItemToStack(stack)
     };
+    actions[action](stack);
   }
 
-  restore() {
-    this.location = this.frozenData.location;
-    this.location$.next(this.location.join(' > '));
-    this.changeNavItems(this.frozenData.navItems);
-    this.parentLoc = this.frozenData.parentLoc;
-    this.frozenData = null;
+  removeItemFromStack(count=1) {
+    this._locationStack.splice(this._locationStack.length-count);
   }
 
-  getLocation() {
-    return this.location;
+  saveState() {
+    // Must be a copy because otherwise methods like pop, slice...
+    // will affect the saved state
+    this._states.push([...this._locationStack]);
   }
 
-  fixLocation() {
-    this.fixed = true;
+  restoreState() {
+    this._locationStack = this._states[this._states.length-1];
+    this.joinStackAndSend(this._locationStack);
+    this._states.pop();
   }
 
-  unfixLocation() {
-    this.fixed = false;
+
+
+
+
+
+
+
+
+
+  finishComposition(text?) {
+    // this.joinStackAndSend(this._locationStack);
+  }
+
+  // addItemToStack(item) {
+  //   if (Array.isArray(item)) {
+  //     item.forEach(l => this._locationStack.push(l))
+  //   }
+  //   else {
+  //     this._locationStack.push(item);
+  //   }
+  // }
+
+  // removeItemFromStack() {
+  //   this._locationStack.pop();
+  // }
+
+  changeStackRoot(item: string) {
+    // this._locationStack = [item];
+  }
+
+  changeItemAtIndex(item: string, i: number) {
+    // this._locationStack = this._locationStack.slice(0, i).concat(item);
+  }
+
+  replaceItemsFromEnd(position, items) {
+    // this._locationStack = this._locationStack.slice(0, -position);
+    // this._locationStack = this._locationStack.concat(items);
+  }
+
+  changeItemAtRoot(item: string, root: string) {
+    // const rootIndex = this._locationStack.indexOf(root);
+    // this.changeItemAtIndex(item, rootIndex+1);
   }
 
 }

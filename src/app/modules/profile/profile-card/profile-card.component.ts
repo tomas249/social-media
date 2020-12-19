@@ -1,97 +1,133 @@
-import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { ProfileService } from '../profile.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
-import { ModalService } from 'src/app/shared/modal/modal.service';
+import { first } from 'rxjs/operators';
 import { TokenService } from 'src/app/services/token.service';
+import { ModalService } from 'src/app/shared/modal/modal.service';
+import { NavbarService } from 'src/app/shared/navbar/navbar.service';
+import { ProfileService } from '../profile.service';
 
 @Component({
   selector: 'app-profile-card',
   templateUrl: './profile-card.component.html',
   styleUrls: ['./profile-card.component.css']
 })
-export class ProfileCardComponent implements OnInit, OnDestroy, OnChanges {
+export class ProfileCardComponent implements OnInit {
 
-  follows = null;
-  loadingFollows = true;
-  @Input() allowEdit = false;
-  @Input() allowRouter = true;
-  @Input() user;
+  // When using this component as modal, there is usually
+  // no need to edit the account
+  @Input() allowEdit = true;
+
+  isFollowing;
+  isOwner = true;
+
+  _user;
+  @Input() 
+  set user(user) {
+    this._user = {...user};
+
+    this.profileService.isFollowing(user._id).subscribe(([f, o]) => {
+      this.isFollowing = f;
+      this.isOwner = o;
+    });
+
+    
+  }
+  get user() {
+    return this._user;
+  }
+
+
 
   constructor(
+    private modalService: ModalService,
     private profileService: ProfileService,
-    private router: Router,
-    private tooltip: TooltipService,
-    private modal: ModalService,
-    private token: TokenService
+    private navbarService: NavbarService,
+    private tokenService: TokenService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    // this.user.avatar = `http://localhost:3000/a/${this.user.avatar}`;
-    this.profileService.checkIfFollows(this.user._id).subscribe(
-      res => {
-        this.follows = res;
-        this.loadingFollows = false;
-      }
-    )
   }
 
-  ngOnDestroy(): void {
-    this.profileService.removeUser();
+  openPosts() {
+    // Close tooltip if exists
+    this.modalService.closeByType('tooltip')
+
+    const uid = this.user._id;
+    const queryUrl = `/posts?owner=${uid}&parent[size]=0&childLevel=0`
+
+    const content = [
+      { title: 'Posts' },
+      { module: 'Posts', component: 'PostsList',
+        params: {queryUrl} }
+    ];
+    const modal = {type: 'default', content};
+    const location = {action:'add', stack:['Posts']};
+    this.modalService.open(modal, location);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.user && !changes.user.firstChange) {
-      this.follows = this.profileService.checkIfFollowsByList(changes.user.currentValue._id)
-    }
+  openList(populate) {
+    // Close tooltip if exists
+    this.modalService.closeByType('tooltip');
+
+    const userId = this.user._id;
+
+    const content = [
+      { title: populate[0].toUpperCase()+populate.slice(1)+' list' },
+      { module: 'Profile', component: 'UsersList',
+        params: {userId, populate} }
+    ];
+    const modal = {type: 'default', content};
+    const location = {action:'add', stack:['List']};
+    this.modalService.open(modal, location, (c) => {
+      this.user.count.following += c;
+    });
   }
 
-  goToUser(username) {
-    if (!this.allowRouter) return;
-    this.modal.close();
-    this.profileService.setUser(this.user);
-    this.tooltip.close(true);
-    this.router.navigate(['/u/' + username]);
-  }
-
-  openList(field) {
-    this.tooltip.close(true);
-    const currentUserId = this.token.getUserId();
-    // console.log({currentUserId, userId: this.user._id, usersField: field})
-    this.modal.open('ProfileModule', 'UsersListComponent', 
-    {currentUserId, userId: this.user._id, usersField: field});
-  }
-
-  followUser(userId) {
+  follow() {
     if (!this.checkAuth('In order to follow someone you need to be logged in')) return;
-    if (this.follows) this.user.count.followers -= 1;
-    else this.user.count.followers += 1;
-    this.follows = !this.follows;
-    this.profileService.followUser(userId).subscribe(res => {
-      // this.user = res.followingCount;
-      // console.log(res);
-    })
+    this.isFollowing = !this.isFollowing;
+    this.user.count.followers += !this.isFollowing ? -1 : 1 ;
+    this.profileService.follow(this.user._id).pipe(first()).subscribe();
   }
 
-  checkAuth(message) {
-    if (!this.token.isLogged()) {
-      this.tooltip.close(true);
-      this.modal.addMessage(message);
-      this.modal.open('AuthModule', 'LoginComponent', {navigateEnd: false});
-      return false;
-    } else {
+  go(uid) {
+    // Close tooltip if exists
+    this.modalService.closeByType('tooltip');
+    
+    this.navbarService.go(`/u/${uid}/`);
+    // this.router.navigate(['/u/'+uid]);
+  }
+
+  onEditAccount() {
+    const aroba = `@${this.user.username}`;
+    const content = [
+      { title: `Editing ${aroba} profile` },
+      { module: 'Profile', component: 'ProfileEdit', params: {user: this.user}}
+    ];
+    const modal = {type: 'extended', content};
+    const location = {action:'add', stack:['Edit'], remove:1};
+    this.modalService.open(modal, location, (updatedUser) => {
+      this.user = Object.assign(this.user, updatedUser);
+    });
+  }
+
+  private checkAuth(message) {
+    if (this.tokenService.isLogged()) {
       return true;
     }
-  }
-
-  onEditUser() {
-    this.modal.open('ProfileModule', 'UserEditComponent', {user: this.user});
-    this.modal.waitForResponse().subscribe(res => {
-      if (res) {
-        console.log(res.user)
-        Object.assign(this.user, res.user);
-      }
-    })
+    else {
+      // Close tooltip if exists
+      this.modalService.closeByType('tooltip');
+      // Open auth modal
+      const modal = {type: 'default', content: [
+        { title: message },
+        { module: 'Auth', component: 'Login', params: {navigateEnd: false} }
+      ]};
+      const location = {action: 'add', stack: ['Login']};
+      this.modalService.open(modal, location);
+      return false
+    }
   }
 
 }

@@ -14,11 +14,6 @@ const routes: Routes = [
     component: MainComponent,
     children: [
       {
-        path: '',
-        redirectTo: '/explore',
-        pathMatch: 'full'
-      },
-      {
         path: 'notifications',
         loadChildren: () => import('src/app/modules/notifications/notifications.module').then(m => m.NotificationsModule),
         canActivate: [LoggedInGuard]

@@ -28,17 +28,21 @@ export class NotificationsListComponent implements OnInit, OnDestroy {
     //   return [...arguments].reduce((p,c) => p.replace(/%s/,c), this);
     // };
     this.route.params.subscribe(params => {
-      this.locationService.removeChildLoc(true);
+      // this.locationService.removeChildLoc(true);
       this.notificationsFilter = params.notificationsFilter;
       if (['all', 'unread'].includes(this.notificationsFilter)) {
         const redirects = {
           all: 'All',
           unread: 'Only unread'
         }
-        this.locationService.addChildLoc(redirects[this.notificationsFilter], {extend:false, parentLoc:'Notifications', useNav:true});
+        // this.locationService.addChildLoc(redirects[this.notificationsFilter], {extend:false, parentLoc:'Notifications', useNav:true});
+        
+        // Change location
+        this.locationService.replaceItemsFromEnd(1, redirects[this.notificationsFilter]);
+        this.locationService.finishComposition();
 
         this.notifications.getNotifications(this.notificationsFilter === 'unread').subscribe(res => {
-          this.notificationsList = res.data.reverse();
+          this.notificationsList = res.reverse();
         });
         // this.notifications.sub().subscribe(res => {
         //   console.warn(res);
@@ -57,7 +61,7 @@ export class NotificationsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.locationService.removeChildLoc(true);
+    // this.locationService.removeChildLoc(true);
   }
 
   markAsRead(notification) {

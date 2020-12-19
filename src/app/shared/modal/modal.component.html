@@ -1,14 +1,34 @@
-<!-- The Modal -->
-<div #modalContainer class="modal" [style.display]="displayModal ? 'block' : 'none'">
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close" (click)="close()">&times;</span>
-    <!-- MODAL NG CONTENT -->
-    <div>
-      <div class="message" #message [style.display]="displayMessage ? 'block' : 'none'">
-        <hr>
-      </div>
-      <ng-container #content></ng-container>
-    </div>
-  </div>
+<!-- TEXT BEGIN -->
+<ng-container *ngFor="let renContent of content.begin">
+  <ng-template  [ngTemplateOutlet]="showText"
+                [ngTemplateOutletContext]="{$implicit: renContent}"></ng-template>
+</ng-container>
+
+
+<!-- COMPONENT -->
+<div [style.display]="loading ? 'block' : 'none'" class="loading-state">
+  Loading component...
 </div>
+<ng-template #contentCmp></ng-template>
+
+
+<!-- TEXT END -->
+<ng-container *ngFor="let renContent of content.end">
+  <ng-template  [ngTemplateOutlet]="showText"
+                [ngTemplateOutletContext]="{$implicit: renContent}"></ng-template>
+</ng-container>
+
+
+<!-- TEMPLATES -->
+<ng-template #showText let-element>
+  <!-- type: title -->
+  <div *ngIf="element.title" class="message">
+    <h2 [innerHTML]="element.title"></h2>
+    <hr>
+  </div>
+
+  <!-- type: html -->
+  <div *ngIf="element.html" class="text">
+    <div [innerHTML]="element.html"></div>
+  </div>
+</ng-template>

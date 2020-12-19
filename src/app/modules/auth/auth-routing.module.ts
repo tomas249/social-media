@@ -12,20 +12,26 @@ import { LoggedInGuard } from 'src/app/guards/logged-in.guard'
 import { LoggedOutGuard } from 'src/app/guards/logged-out.guard'
 
 const routes: Routes = [
-  { 
-    path: 'login',
-    component: LoginComponent,
-    canActivate: [LoggedOutGuard],
-  },
   {
-    path: 'register',
-    component: RegisterComponent,
-    canActivate: [LoggedOutGuard],
-  },
-  {
-    path: 'accounts', 
-    component: LogoutComponent,
-    canActivate: [LoggedInGuard],
+    path: '',
+    component: AuthComponent,
+    children: [
+      { 
+        path: 'login',
+        component: LoginComponent,
+        canActivate: [LoggedOutGuard],
+      },
+      {
+        path: 'register',
+        component: RegisterComponent,
+        canActivate: [LoggedOutGuard],
+      },
+      {
+        path: 'accounts', 
+        component: LogoutComponent,
+        canActivate: [LoggedInGuard],
+      }
+    ]
   }
 ];
 

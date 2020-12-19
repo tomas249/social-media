@@ -1,38 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
+
+import { ProfileRoutingModule } from './profile-routing.module';
 
 import { ProfileCardComponent } from './profile-card/profile-card.component';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
 import { UsersListComponent } from './users-list/users-list.component';
-import { UserEditComponent } from './user-edit/user-edit.component';
+import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 
-
-const routes: Routes = [
-  {
-    path: ':username',
-    component: ProfilePageComponent
-  },
-  {
-    path: ':username/:tab',
-    component: ProfilePageComponent
-  }
-]
+import { PostsModule } from '../posts/posts.module';
 
 @NgModule({
-  declarations: [ProfileCardComponent, ProfilePageComponent, UsersListComponent, UserEditComponent],
+  declarations: [ProfileCardComponent, ProfilePageComponent, UsersListComponent, ProfileEditComponent],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
-  ],
-  exports: [
-    ProfileCardComponent
+    ProfileRoutingModule,
+    PostsModule,
   ]
 })
 export class ProfileModule {
   static components = {
     ProfileCardComponent,
     UsersListComponent,
-    UserEditComponent
+    ProfileEditComponent
   }
 }

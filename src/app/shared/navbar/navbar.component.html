@@ -1,0 +1,22 @@
+<!-- Menu -->
+<div *ngIf="selMenuItemIdx !== -1">
+  <hr>
+  <div *ngFor="let item of menuList; let i=index">
+    <a
+      [ngStyle]="i === selMenuItemIdx && {'color':'green'}"
+      (click)="changeMenuItem(i)">
+      {{ item.name }}
+    </a>
+  </div>
+  <hr>
+</div>
+
+<!-- Navbar List -->
+<ng-container *ngFor="let item of navbarList; let i=index">
+  <div *ngIf="!item.protected || !!(item.checkAvailability | async) === item.expectingRes">
+    <a
+      [ngStyle]="i === selNavbarItemIdx && {'color':'green'}"
+      (click)="changeNavbarItem(i, item)">{{ item.name }}
+    </a>
+  </div>
+</ng-container>

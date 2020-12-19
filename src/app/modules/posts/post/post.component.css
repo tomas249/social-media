@@ -2,15 +2,38 @@ article {
   display: flex;
   flex-direction: column;
   position: relative;
+  /* filter: blur(3px); */
 }
 
 .route {
-  /* background-color: tomato; */
+  /* background-color: rgba(169, 169, 169, 0.418);
+  filter: blur(6px); */
+  /* z-index: 99; */
   position: absolute;
   width: 100%;
   height: 100%;
   cursor: pointer;
 }
+
+.bar-container {
+  /* z-index: 200; */
+  margin: 10px auto;
+  width: 80%;
+  text-align: center;
+}
+.progress {
+  padding: 3px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);  
+}
+
+.progress-bar {
+  height: 0.2rem;
+  border-radius: 30px;
+  width: 85%; 
+  background-color: #47ef6377;
+}
+
 
 .replyRef {
   margin-bottom: 0.3rem;
@@ -67,7 +90,7 @@ article {
   position: relative;
 }
 
-.a-profile img {
+.a-profile div img {
   width: 3.4rem;
   height: 3.4rem;
   border-radius:50%;

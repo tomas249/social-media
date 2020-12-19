@@ -15,12 +15,6 @@
     <!-- <textarea class="text-area" placeholder="What's happening?"></textarea> -->
     <div #postInput contenteditable="true" id="text-box" placeholder="What's happening?"></div>
 
-    <!-- <div style="width: 100%; height: 160px; background-color: aquamarine; border-radius: 30px;">
-      <div>
-        bla bla 
-      </div>
-    </div> -->
-
     <div class="a-buttons">
       <input #mediaSelect type="file" multiple (change)="onMediaSelect($event)" style="display: none;">
 
@@ -82,6 +76,10 @@
         </div> -->
       </div>
 
+      <div style="margin-left:auto" *ngIf="showUploadProgress">
+        Uploading {{ uploadProgress }}%
+      </div>
+
 
 
       <div class="bttn-post">
@@ -92,8 +90,7 @@
           Post
         </div>
       </div>
-
-
+      
     </div>
 
     <!-- MEDIA -->
@@ -110,11 +107,11 @@
         <span class="remove-bttn"><button (click)="onCancelSelectedMedia(selectedMediaIndex)">Remove media {{ selectedMediaIndex +1 }}</button></span>
       </div>
 
-      <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
+      <div *ngIf="selectedMediaBlob[selectedMediaIndex]?.format === 'image'">
         <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">
       </div>
 
-      <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'video'">
+      <div *ngIf="selectedMediaBlob[selectedMediaIndex]?.format === 'video'">
         <span><i>Video thumbnail</i></span>
         <video class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url"></video>
       </div>
@@ -122,3 +119,4 @@
     
   </div>
 </article>
+<hr style="width: 100%;">

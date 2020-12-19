@@ -26,7 +26,7 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
   const cb = (data) => {
     res.status(200).json({
       success: true,
-      data
+      data: data[0]
     });
   }
   await advancedResults(cb, find='byId', model=User)(req, res, next);

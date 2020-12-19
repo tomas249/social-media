@@ -1,32 +1,25 @@
 <div class="container">
-  <div class="post-list">
+  <!-- <div *ngIf="pageInfo">
+    <span>Count: {{ pageInfo.count }} | </span>
+    <span>Next page: {{ pageInfo.pagination.next.page }} | </span>
+    <span>Limit: {{  pageInfo.pagination.next.limit}}</span>
+    <hr>
+  </div> -->
 
-    <div *ngIf="!searchParams && isLogged">
-      <app-post-publish [destinationConfig]="{destination: 1}"></app-post-publish>
-    </div>
-    <div class="border auth-container" *ngIf="!searchParams && !isLogged">
-      <div class="notLogged">
-        <span class="auth-text">{{ noLoggedMssg }}</span>
-        <div>
-          <button class="bttn" (click)="auth('LoginComponent')">Login</button>
-          &nbsp;or&nbsp;
-          <button class="bttn" (click)="auth('RegisterComponent')">Register</button>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="postsList && postsList.length !== 0">
+  <div *ngIf="loading" style="padding: 2rem; text-align: center;">
+    <h3>Searching posts...</h3>
+  </div>
+  <!-- Post Component List -->
+  <div class="posts-list" *ngIf="postsList$ | async as postsList">
+    <div *ngIf="!loading && postsList && postsList.length !== 0">
       <div class="border" *ngFor="let post of postsList; let i=index">
         <app-post
-          [post]="post"
-          [publishConfig]="{destination: 0}"
-          [deleteConfig]="{destination: 1, parentIndex: i}">
+        [contextInfo]="{i:i, type:'list'}"
+        [publishConfig]="{destination:0}"
+        [deleteConfig]="{destination:1, parentIndex:i}"
+        [post]="post">
         </app-post>
       </div>
-    </div>
-
-    <div *ngIf="loading" style="padding: 2rem; text-align: center;">
-      <h3>Loading posts...</h3>
     </div>
 
     <div *ngIf="!loading && postsList.length === 0" style="padding: 2rem; text-align: center;">

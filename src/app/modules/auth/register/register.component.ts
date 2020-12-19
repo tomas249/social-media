@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private fb: FormBuilder,
     private locationService: LocationService,
-    private modal: ModalService
+    private modalService: ModalService
   ) {
     this.registerForm = this.fb.group({
       name: ['', [
@@ -46,11 +46,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.locationService.addChildLoc('Register', {extend:false, parentLoc:'Auth', useNav:true});
+    // this.locationService.finishComposition();
+    // this.locationService.addChildLoc('Register', {extend:false, parentLoc:'Auth', useNav:true});
   }
 
   ngOnDestroy() {
-    this.locationService.removeChildLoc(true);
+    // this.locationService.removeChildLoc(true);
   }
 
   private noEmail(control: FormControl) {
@@ -97,7 +98,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
   onRegister() {
     this.getFormValidationErrors();

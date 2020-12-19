@@ -10,7 +10,7 @@ const Follow = require('../models/Follow');
 // @access    Private
 exports.publishPost = asyncHandler(async (req, res, next) => {
   if (!req.body.text) throw new ErrorResponse(400, 'Introduce some text');
-  console.log(req.body.media)
+
   const post = await Post.create({
     owner: req.user._id,
     text: req.body.text,
@@ -20,6 +20,8 @@ exports.publishPost = asyncHandler(async (req, res, next) => {
   // Instead of populating owner, use data that we already have
   let postRes = post.toObject({ getters: true });
   postRes.owner = (({_id, name, username, description, count, avatar}) => ({_id, name, username, description, count, avatar}))(req.user);
+  // Increment by 1 current count as we are not getting updated user
+  postRes.owner.count.posts++;
 
   // Increase posts count
   await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': 1} });
@@ -42,8 +44,6 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
   const replyRef = parentModel.replyRef.concat(parentModel.owner.username);
 
   // Get parent field from parent post and add itself
-  console.log(req.body.text)
-  console.log(req.body.media)
   const reply = await Post.create({
     owner: req.user._id,
     text: req.body.text,
@@ -71,6 +71,7 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
 // @route     GET /api/posts
 // @access    Public
 exports.getPosts = asyncHandler(async (req, res, next) => {
+  console.log(req.query)
   // Parent select fields
   const parentSelect = req.query.parentSelect ? req.query.parentSelect.split(',').join(' ') : '';
   // Check for population level parameters
@@ -97,7 +98,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
   // Set parent find field
   // By default, search for all empty parent arrays, that is
   // to say for all posts (and not replies)
-  //
+
   // (skip for now)
   // req.query.parent = req.query.parent || { 'size': 0 };
 
@@ -140,25 +141,25 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/posts/:postId
 // @access    Private
 exports.deletePost = asyncHandler(async (req, res, next) => {
+  // The Schema hook will delete all children
+  // If it is a post, we only have to trigger the hook
   const post = await Post.findByIdAndDelete(req.params.postId);
-  if (post.child && post.child.length !== 0) deleteChildren(post.child);  
+  
+  // Otherwise, if it is a reply, we also need to remove it from the parent
+  if (post.parent && post.parent.length !==0) {
+    const parentId = post.parent[post.parent.length-1];
+    await Post.findByIdAndUpdate(parentId, { $pull: { child: post._id } });
+  } else {
+    // If it is a post (not reply)
+    // Decrease posts count if it is a post (not reply)
+    await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': -1} });
+  }
 
-  // Decrease posts count
-  await User.findByIdAndUpdate(req.user._id, { $inc: {'count.posts': -1} });
 
   res.status(204).json({
     success: true
   });
 });
-
-const deleteChildren = (children) => {
-  children.forEach(async child => {
-    const childPost = await Post.findByIdAndDelete(child);
-    if (childPost.child && childPost.child.length !== 0) {
-      deleteChildren(childPost.child);
-    }
-  })
-};
 
 
 // @desc      Like post
@@ -203,7 +204,7 @@ exports.likePost = asyncHandler(async (req, res, next) => {
 
 
 // @desc      Get posts from followers
-// @route     GET /api/posts/:userId
+// @route     GET /api/posts/user
 // @access    Private
 exports.getFollowersPosts = asyncHandler(async (req, res, next) => {
 
@@ -211,9 +212,18 @@ exports.getFollowersPosts = asyncHandler(async (req, res, next) => {
   const followingDB = await Follow.findOne({ user: userId });
   const followingArr = followingDB.following.concat(userId);
 
-  const followersPosts = await Post.find({ owner: { $in: followingArr } }).sort({'createdAt': -1});
-  res.status(200).json({
-    success: true,
-    data: followersPosts
-  });
+  req.query = { owner: { in: followingArr } }
+  
+  const cb = (data) => {
+    res.status(200).json({
+      success: true,
+      data
+    });
+  }
+
+  await advancedResults(
+    cb, 
+    find='all', 
+    model=Post,
+  )(req, res, next);
 });
