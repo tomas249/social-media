@@ -50,6 +50,17 @@ export class MainComponent implements OnInit {
     this.navbarService.go(url);
   }
 
+  openPostModal() {
+    const destination = ['/home', '/explore'].includes(window.location.pathname) ? 1 : 0 ;
+    const destinationConfig = {destination, parentIndex: 0};
+    const modal = {
+      type: 'default',
+      content: [{ module: 'Posts', component: 'PostPublish', params: {destinationConfig} }]
+    };
+    const location = {action: (destination ? 'add': 'set'), stack: ['Post']};
+    this.modalService.open(modal, location);
+  }
+
   modal1() {
     // this.postsService.publishPost({text: 'hey man', media: []}, {destination:1, parentIndex:0} )
     const content = [

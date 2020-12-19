@@ -25,7 +25,7 @@
     </div>
   </ng-template>
 
-  <ng-container *ngIf="!needsLogin && needsLogin !== null">
+  <ng-container *ngIf="!needsLogin && needsLogin !== null || (isLogged$ | async)">
     <app-posts-list [queryUrl]="queryUrl"></app-posts-list>
   </ng-container>
 </div>
