@@ -1,22 +1,77 @@
-<!-- Menu -->
-<div *ngIf="selMenuItemIdx !== -1">
-  <hr>
-  <div *ngFor="let item of menuList; let i=index">
-    <a
-      [ngStyle]="i === selMenuItemIdx && {'color':'green'}"
-      (click)="changeMenuItem(i)">
-      {{ item.name }}
-    </a>
-  </div>
-  <hr>
-</div>
+<div class="container">
 
-<!-- Navbar List -->
-<ng-container *ngFor="let item of navbarList; let i=index">
-  <div *ngIf="!item.protected || !!(item.checkAvailability | async) === item.expectingRes">
-    <a
-      [ngStyle]="i === selNavbarItemIdx && {'color':'green'}"
-      (click)="changeNavbarItem(i, item)">{{ item.name }}
-    </a>
+  <!-- TABLIST for mobile version -->
+  <div class="tablist" *ngIf="isMobile && selMenuItemIdx !== -1">
+    <div class="tab-item-container noselect" *ngFor="let item of menuList; let i=index">
+      <div class="item" (click)="changeMenuItem(i)">
+        <div class="item-content" [ngClass]="i === selMenuItemIdx && 'selected'">
+          <!-- ICON -->
+          <ng-container *ngIf="item.icon">
+            <span class="material-icons" [innerHTML]="item.icon"></span>
+          </ng-container>
+          <!-- NAME -->
+          <span class="menu-item-name">{{ item.name }}</span>
+        </div>
+      </div>
+    </div>
   </div>
-</ng-container>
+
+
+  <!-- LOGO -->
+  <div class="logo item-container">
+    <div class="item">
+      <div class="item-content">
+        <span class="material-icons">all_inclusive</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <ng-container *ngIf="selMenuItemIdx !== -1 && !isMobile">
+    <hr class="sep-top">
+    <div class="item-container noselect" *ngFor="let item of menuList; let i=index">
+      <div class="item" (click)="changeMenuItem(i)">
+        <div class="item-content" [ngClass]="i === selMenuItemIdx && 'selected'">
+          <!-- ICON -->
+          <ng-container *ngIf="item.icon">
+            <span class="material-icons" [innerHTML]="item.icon"></span>
+          </ng-container>
+          <!-- NAME -->
+          <span class="item-name">{{ item.name }}</span>
+        </div>
+      </div>
+    </div>
+    <hr class="sep-bottom">
+  </ng-container>
+
+  <!-- Navbar List -->
+  <ng-container *ngFor="let item of navbarList; let i=index">
+    <ng-container *ngIf="!item.protected || !!(item.checkAvailability | async) === item.expectingRes">
+
+      <div class="item-container noselect">
+        <div class="item" (click)="changeNavbarItem(i, item)">
+          <div class="item-content" [ngClass]="i === selNavbarItemIdx && 'selected'">
+            <!-- ICON -->
+            <ng-container *ngIf="item.icon">
+              <span class="material-icons" [innerHTML]="item.icon"></span>
+            </ng-container>
+            <!-- NAME -->
+            <span class="item-name">{{ item.name }}</span>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+  </ng-container>
+
+  <!-- Post button -->
+  <div class="nonative">
+    <ng-content select="[post]"></ng-content>
+  </div>
+  
+  <!-- Account -->
+  <div class="nonative">
+    <ng-content select="[account]"></ng-content>
+  </div>
+  
+</div>

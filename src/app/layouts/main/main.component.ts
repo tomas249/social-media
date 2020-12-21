@@ -79,12 +79,11 @@ export class MainComponent implements OnInit {
 
   modal1() {
     // this.postsService.publishPost({text: 'hey man', media: []}, {destination:1, parentIndex:0} )
-    const content = [
-      { module: 'Posts', component:'PostPublish'}
-    ];
-    const params = {destinationConfig: {destination: 1, parentIndex: 0}};
-    const modal = {type: 'default', content, params};
-    const location = {action: 'add', stack: ['Publish', 'Post']};
+    const modal = {type: 'default', content: [
+      { title: 'looohin amigo' },
+      { module: 'Auth', component: 'Login', params: {navigateEnd: false} }
+    ]};
+    const location = {action: 'add', stack: ['Login']};
     this.modalService.open(modal, location);
   }
 

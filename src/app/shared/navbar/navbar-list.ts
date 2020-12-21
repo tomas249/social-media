@@ -3,12 +3,14 @@ export const navbarList = (token) => {
     {
       name: ['Home'],
       path: '/home',
-      protected: false
+      protected: false,
+      icon: 'home'
     },
     {
       name: ['Explore'],
       path: '/explore',
-      protected: false
+      protected: false,
+      icon: 'language'
     },
     {
       name: ['Notifications'],
@@ -20,21 +22,23 @@ export const navbarList = (token) => {
       selChildIdx: 1,
       protected: true,
       checkAvailability: token.user$,
-      expectingRes: true
+      expectingRes: true,
+      icon: 'notifications'
     },
     {
       name: ['Profile'],
       path: `/u/${token.getUserId()}`,
       activation: [`/u/${token.getUserData().username}`],
       children: [
-        { name: ['Posts'], path: '/' },
-        { name: ['Replies'], path: '/replies' },
-        { name: ['Media'], path: '/media' }
+        { name: ['Posts'], path: '/', icon: 'text_snippet' },
+        { name: ['Replies'], path: '/replies', icon: 'reply' },
+        { name: ['Media'], path: '/media', icon: 'movie' }
       ],
       selChildIdx: 0,
       protected: true,
       checkAvailability: token.user$,
-      expectingRes: true
+      expectingRes: true,
+      icon: 'account_circle'
     },
     {
       name: ['Auth'],
@@ -46,14 +50,16 @@ export const navbarList = (token) => {
       selChildIdx: 0,
       protected: true,
       checkAvailability: token.user$,
-      expectingRes: false
+      expectingRes: false,
+      icon: 'account_circle'
     },
-    {
-      name: ['Accounts'],
-      path: '/auth/accounts',
-      protected: true,
-      checkAvailability: token.user$,
-      expectingRes: true
-    }
+    // {
+    //   name: ['Accounts'],
+    //   path: '/auth/accounts',
+    //   protected: true,
+    //   checkAvailability: token.user$,
+    //   expectingRes: true,
+    //   icon: 'group'
+    // }
   ]
 }

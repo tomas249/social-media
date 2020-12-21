@@ -1,84 +1,47 @@
-<modal-extended></modal-extended>
-<modal-tooltip></modal-tooltip>
-<div class="flex-container">
-  <!-- SIDEBAR -->
-  <header>
-    <div class="h-content">
-      <div class="h-top">
-        <!-- LOGO -->
-        <div class="h-item">
-          <div class="h-bttn h-logo" [routerLink]="['/home']">
-            <span class="material-icons">eco</span>
-          </div>
-        </div>
-        <!-- end LOGO -->
+<div class="container">
 
-        <!-- NAVBAR -->
-        <app-navbar></app-navbar>
-        <!-- end NAVBAR -->
+  <!-- HEADER -->
+  <div class="header-container">
+    <div class="header">
 
-        <!-- POST BUTTON -->
-        <div class="h-item h-post">
-          <div class="h-post-bttn" (click)="openPostModal()">
-            Post
-            <span *ngIf="uploadProgress !== null"> ({{ uploadProgress }} %)</span>
-          </div>
-        </div>
-        <!-- end POST BUTTON -->
-      </div>
+      <!-- NAVBAR -->
+      <app-navbar>
 
-      <!-- SELECTED ACCOUNT -->
-      <div class="h-item h-bottom">
-        <a class="h-bttn h-acc">
-          <div class="acc-container">
-            <ng-container *ngIf="user$ | async as user; else loggedOut">
-              <img class="acc-photo" [src]="user.avatar.fullPath">
-              <div class="acc-names">
-                <span class="acc-name">{{ user.name }}</span>
-                <span class="acc-username">@{{ user.username }}</span>
-              </div>
-              <span class="material-icons">keyboard_arrow_down</span>
-            </ng-container>
-            <ng-template #loggedOut>
-              <div class="acc-auth" (click)="goTo('/auth/login')">
-                Login/Register
-              </div>
-            </ng-template>
+        <!-- Post button -->
+        <button post (click)="openPostModal()" class="solid-bttn post-bttn noselect">
+          Post
+        </button>
+
+        <!-- Account -->
+        <ng-container account *ngIf="user$ | async as user">
+          <div (click)="goTo('/auth/accounts')"  class="empty-wrapper noselect acc-wrapper">
+            <img class="acc-avatar" [src]="user.avatar.fullPath">
+            <div class="acc-names">
+              <span class="acc-name">{{ user.name }}</span>
+              <span class="acc-username">@{{ user.username }}</span>
+            </div>
           </div>
-        </a>
-      </div>
-      <!-- end SELECTED ACCOUNT -->
+        </ng-container>
+        
+
+      </app-navbar>
+      
     </div>
-  </header>
-  <!-- end SIDEBAR -->
+  </div>
 
   <!-- CONTENT -->
-  <main style="position: relative;">
-    <div class="m-content">
-      <div class="m-content-main">
-        <div class="m-column">
-          <div class="title-container">
-            <div class="title">
-              {{ location$ | async }}
-              <!-- {{ location }} -->
-            </div>
-          </div>
-          <div class="m-list">
-            <modal-default></modal-default>
-            <div *ngIf="isShowingRouteLoadIndicator"
-              style="width:100%; padding: 5rem 0; text-align: center;">
-              Loading module, please wait
-            </div>
-            <div [hidden]="isShowingRouteLoadIndicator">
-              <router-outlet></router-outlet>
-            </div>
-          </div>
+  <div class="main-container">
+    <div class="main">
+      
+      <div class="main-location">{{ location$ | async }}</div>
+      <div class="main-content">
+        <modal-default></modal-default>
+        <div class="main-content-list">
+          <router-outlet></router-outlet>
         </div>
       </div>
-      <!-- <div class="m-content-board">
-        NEWS
-      </div> -->
+
     </div>
-  </main>
-  <!-- end CONTENT -->
+  </div>
+
 </div>
