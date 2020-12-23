@@ -61,7 +61,7 @@ article {
   outline: 0;
 }
 .icon-box:hover {
-  background-color: var(--hover-color);
+  background-color: var(--hover-empty-color);
 }
 .opt-icon {
   color: var(--primary-color);
