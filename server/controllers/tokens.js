@@ -1,7 +1,6 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const Token = require('../models/Token');
 
 // @desc      Refresh token
@@ -13,12 +12,12 @@ exports.refresh = asyncHandler(async (req, res, next) => {
       
   // Get AccessToken from header
   const rawHeader = req.header('Authorization');
-  if (!rawHeader) throw new ErrorResponse('AccessToken no provided');
+  if (!rawHeader) throw new ErrorResponse(401, 'AccessToken no provided');
   const accessToken = rawHeader.split('Bearer ')[1];
 
   // Verify given token and find UID
   const uid = await jwt.verify(accessToken, process.env.TOKEN_SECRET, (err, decoded) => {
-    if (decoded) throw new ErrorResponse('Token up to date');
+    if (decoded) throw new ErrorResponse(401, 'Token up to date');
     if (err.name === 'TokenExpiredError') return jwt.decode(accessToken).uid;
     throw new ErrorResponse('Invalid AccessToken');
   });
@@ -28,7 +27,7 @@ exports.refresh = asyncHandler(async (req, res, next) => {
     belongsTo: uid,
     token: refreshToken
   });
-  if (!validate) throw new ErrorResponse('Invalid RefreshToken');
+  if (!validate) throw new ErrorResponse(401, 'Invalid RefreshToken');
 
   // Create new AccessToken
   const newAccessToken = await jwt.sign({
@@ -55,7 +54,7 @@ exports.remove = asyncHandler(async (req, res, next) => {
     _id: req.body.refreshTokenId,
     belongsTo: req.uid
   });
-  if (!verified) throw new ErrorResponse('RefreshToken does not exists');
+  if (!verified) throw new ErrorResponse(401, 'RefreshToken does not exists');
 
   res.status(204).send({
     success: true

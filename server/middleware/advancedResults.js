@@ -43,7 +43,6 @@ const advancedResults = (cb, find, model, populate) => asyncHandler(async (req, 
   
   // Parse again to object
   reqQueryStr = JSON.parse(reqQueryStr);
-  console.log(reqQueryStr)
 
   /**
    * 1. Query without excluded fields

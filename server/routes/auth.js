@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// Controllers
+
+// Middlewares
 const { verifyToken, authorize } = require('../middleware/protect');
+// Controllers
 const { register, login, logout } = require('../controllers/auth');
 
 router.post('/register', register);

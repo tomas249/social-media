@@ -79,11 +79,6 @@ const PostSchema = new mongoose.Schema({
  * 2nd level  -> 1 result,
  * 3rd level  -> 1 result
  * 
- * 
- * *TODO*
- * May add select values per each level of population;
- * however, for now is unnecessary
- * 
  */
 PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
   // Level = 0 does populate nothing
@@ -115,7 +110,7 @@ PostSchema.statics.nestedPopulate = function (level=0, limit, obj) {
 };
 
 // Autopopulate owner field
-// Because of this, whether this field is selected or not selected,
+// Because of this, whether this field is selected or not
 // it will be returned. To avoid this, it has to be explicitly
 // excluded like this: www.example.com/route?select=-owner
 const populateOwner = function(next) {
@@ -129,7 +124,6 @@ PostSchema.
 
 
 PostSchema.post('findOneAndDelete', async function(post) {
-  console.log('--------- child is being removed')
   // Remove all children
   await post.child.forEach(async child => {
     await this.model.findByIdAndDelete(child)

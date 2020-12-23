@@ -1,6 +1,5 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const advancedResults = require('../middleware/advancedResults');
 const Follow = require('../models/Follow');
 const User = require('../models/User');
 const Notification = require('../models/Notification');

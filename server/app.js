@@ -4,7 +4,6 @@ const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
-const fileupload = require('express-fileupload');
 const fs = require('fs');
 
 
@@ -24,10 +23,7 @@ const app = express();
 app.use(express.json({ limit: '20MB' }));
 
 // Enable CORS
-app.use(cors({
-  origin: 'http://localhost:4200',
-  credentials: true
-}));
+app.use(cors());
 
 // Run server
 const PORT = process.env.PORT || 3000;
@@ -35,18 +31,6 @@ const server = app.listen(
   PORT,
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
 );
-
-// Load SocketIO
-// const io = require('./middleware/sockets').listen(server);
-// app.use((req, res, next) => {
-//   req.io =  require('./middleware/sockets').listen(server, req, res, next);
-//   next();
-// });
-// const socketio = require('./routes/socketio');
-// app.use('/socketio', (req, res, next) => {
-//   console.log('socketiooo')
-//   req.server = server;
-// } ,socketio)
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -83,15 +67,6 @@ app.use('/:filetype/:filename', (req, res, next) => {
       res.sendFile(filepath);
     }
   });
-
-  // fs.exists(filePath, (exists) => {
-  //   if (exists) {
-  //     res.sendFile(filePath);
-  //   } else {
-  //     const defaultImg = path.join(__dirname, 'public', 'avatars', 'imageNotFound.png');
-  //     res.sendFile(defaultImg);
-  //   }
-  // });
 });
 
 // Index route
