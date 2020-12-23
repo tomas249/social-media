@@ -59,7 +59,7 @@ export class ProfileCardComponent implements OnInit {
     const content = [
       { title: `@${this.user.username} Posts List` },
       { module: 'Posts', component: 'PostsList',
-        params: {queryUrl} }
+        params: {queryUrl, showOptPosts: false} }
     ];
     const modal = {type: 'default', content};
     const location = {action:'add', stack:['List', 'Posts'], remove: 1};
@@ -101,6 +101,7 @@ export class ProfileCardComponent implements OnInit {
   }
 
   onEditAccount() {
+    this.modalService.closeByType('tooltip');
     const aroba = `@${this.user.username}`;
     const content = [
       { title: `Editing ${aroba} profile` },

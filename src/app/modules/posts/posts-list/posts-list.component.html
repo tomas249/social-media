@@ -14,6 +14,7 @@
     <div *ngIf="!loading && postsList && postsList.length !== 0">
       <div class="border" *ngFor="let post of postsList; let i=index">
         <app-post
+        [inputConfig]="{showOpt: showOptPosts, openPage: true}"
         [contextInfo]="{i:i, type:'list'}"
         [publishConfig]="{destination:0}"
         [deleteConfig]="{destination:1, parentIndex:i}"

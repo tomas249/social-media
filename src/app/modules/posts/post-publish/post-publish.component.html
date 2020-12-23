@@ -1,5 +1,5 @@
 <div *ngIf="postReply" class="toReply">
-  <app-post [inputConfig]="{showOpt:false, thread:true, tooltip: false}" [post]="postReply"></app-post>
+  <app-post [inputConfig]="{showOpt:false, thread:true, openPage: false}" [post]="postReply"></app-post>
 </div>
 <article>
   <div class="a-profile">
@@ -86,7 +86,7 @@
         <!-- <div class="save-bttn" (click)="publishPost()">
           Save Draft
         </div> -->
-        <div class="post-bttn" (click)="publishPost()">
+        <div class="post-bttn noselect" (click)="publishPost()">
           Post
         </div>
       </div>

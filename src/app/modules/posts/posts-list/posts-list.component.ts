@@ -19,6 +19,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   // @Input() allowExploreSearch = true;
   // @Input() noLoggedMssg = 'Auth in order to post';
   _queryUrl: string;
+  @Input() showOptPosts = true;
   @Input()
     set queryUrl(queryUrl) {
       this.loading = true;

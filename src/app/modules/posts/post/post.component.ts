@@ -126,6 +126,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
 
   config = {
     showOpt: true,
+    openPage: true,
     owner: false,
     replied: false,
     publishing: false,
@@ -299,7 +300,8 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   openReplyPage() {
-    if (!this.config.showOpt) return;
+    if (!this.config.openPage) return;
+    this.modalService.forceClose();
     this.postsService.setMainPost({...this.post}, this.contextInfo);
     this.navbarService.go('/post/'+this.post._id);
   }

@@ -34,7 +34,7 @@
   <div class="accounts">
     <span class="acc-name" (click)="goToUser(user._id)">{{ user.name }}</span>
     <span class="acc-username" (click)="goToUser(user._id)">@{{ user.username }}</span>
-    <span class="acc-edit" (click)="onEditAccount()">Edit profile</span>
+    <span class="acc-edit" (click)="onEditAccount()" *ngIf="isOwner">Edit profile</span>
   </div>
 
   <div>{{ user.description }}</div>

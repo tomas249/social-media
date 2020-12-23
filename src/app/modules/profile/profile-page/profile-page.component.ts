@@ -94,14 +94,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
         // If p.user exists means that the user is new and has to be updated
         if (p.user) {
           this.user = p.user;
+
+          this.menu = this.getMenu(p.user?.username || this.user.username);
+          this.menu.selChildIdx = this.tabs.getIdx(p.tab);
+          this.navbarService.loadMenu(this.menu);
         }
-        // Even if this page is reached by navbar items, there is a needed to send 
-        // again the menu because of the custom routes (they include user id)
-        // No worries about performance because the navbar component identifies this
-        // activity and only updates the routes and not the entire menu
-        this.menu = this.getMenu(p.user?.username || this.user.username);
-        this.menu.selChildIdx = this.tabs.getIdx(p.tab);
-        this.navbarService.loadMenu(this.menu);
       }),
       // CONTENT
       tap(p => {
@@ -132,9 +129,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
       root: 'Profile',
       name: [`@${uname}`],
       children: [
-        { name: ['Posts'], activated: true, path: `/u/${uname}/` },
-        { name: ['Replies'], activated: true, path: `/u/${uname}/replies` },
-        { name: ['Media'], activated: true, path: `/u/${uname}/media` }
+        { name: ['Posts'], activated: true, path: `/u/${uname}/`, icon: 'text_snippet' },
+        { name: ['Replies'], activated: true, path: `/u/${uname}/replies`, icon: 'reply' },
+        { name: ['Media'], activated: true, path: `/u/${uname}/media`, icon: 'movie' }
       ],
       activated: true,
       selChildIdx: 0

@@ -66,9 +66,6 @@ export class NavbarService {
   }
 
   go(path, skipMenu=false) {
-    // Deactivate simulation if it was activated
-    this.navcomponent.simulation = false;
-
     // Navigate
     this.router.navigate([path]);
     const url = this.navcomponent.detectUrl(path);
