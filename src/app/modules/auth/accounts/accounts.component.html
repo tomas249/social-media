@@ -1,1 +1,19 @@
-<p>accounts works!</p>
+<div class="container">
+  <table>
+    <tr>
+      <td>Name:</td>
+      <td>{{ user.name }}</td>
+    </tr>
+    <tr>
+      <td>Username:</td>
+      <td>@{{ user.username }}</td>
+    </tr>
+    <tr>
+      <td>Id:</td>
+      <td>{{ user.id }}</td>
+    </tr>
+    <tr>
+      <td colspan="2"><button (click)="logout()" style="width: 100%;">Logout</button></td>
+    </tr>
+  </table>
+</div>

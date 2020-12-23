@@ -1,0 +1,30 @@
+.tabs-row {
+  display: flex;
+  border-top: 1.5px solid var(--primary-color);
+  border-bottom: 1.5px solid var(--primary-color);
+}
+
+.tab-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.tab-container + .tab-container {
+  border-left: 1.5px solid var(--primary-color);
+}
+
+.tab-container:hover {
+  background-color: var(--hover-empty-color);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+}
+
+.selected {
+  background-color: var(--hover-empty-color);
+}

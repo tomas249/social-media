@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnChanges, ChangeDetectorRef, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnChanges, ChangeDetectorRef, ElementRef, OnDestroy, Renderer2 } from '@angular/core';
 import { PostsService } from '../posts.service';
 // import { TimeService } from 'src/app/utils/time.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
@@ -70,6 +70,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
         this.countData(post);
         // Check if liked/shared
         this._post = this.auth(post, this.token.getUserId());
+        this._post = {...post};
       }
     }
     get post() {
@@ -156,7 +157,8 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     private locationService: LocationService,
     // private lazyLoader: LazyLoaderService,
     private cd: ChangeDetectorRef,
-    private navbarService: NavbarService
+    private navbarService: NavbarService,
+    private renderer: Renderer2
     // private tooltip: TooltipService
   ) { }
 
@@ -216,13 +218,19 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     // Set owner only if uid corresponds and is not overwritten by inputConfig
     this.config.owner = (post.owner._id === uid) && 
                         (!this.inputConfig.hasOwnProperty('owner') || this.inputConfig.owner);
+    this.config.liked = post.whoLiked.includes(uid);
     if (uid) {
       post.confirm = {
-        owner: post.owner._id === uid,
-        liked: post.whoLiked.includes(uid)
+        owner: this.config.owner,
+        liked: this.config.liked
       }
     }
     return post;
+  }
+
+  goToUser(uid) {
+    if (!this.config.showOpt) return;
+    this.navbarService.go(`/u/${uid}`);
   }
 
   replyingProgress = 0;
@@ -245,7 +253,7 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
       { module: 'Posts', component:'PostPublish', params}
     ];
     const modal = {type: 'default', content};
-    const location = {action: 'add', stack: ['Publish', 'Reply']};
+    const location = {action: 'add', stack: ['Reply']};
     this.modalService.open(modal, location, (res) => {
       if (!res) {
 
@@ -291,8 +299,41 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   openReplyPage() {
+    if (!this.config.showOpt) return;
     this.postsService.setMainPost({...this.post}, this.contextInfo);
     this.navbarService.go('/post/'+this.post._id);
+  }
+
+  onShare() {
+    const url = `${window.location.host}/p/${this.post._id}`; 
+    const modal = {type: 'default', content: [
+      { title: 'Share a post' },
+      { html: `<p align="center">${url}</p>` }
+    ]};
+    const location = {action: 'add', stack: ['Share']};
+    this.modalService.open(modal, location);
+  }
+
+  @ViewChild('avatarAnimation') avatarAnimation: ElementRef;
+  triggerTooltip = null;
+  tooltipOpened = false;
+  onOpenUser() {
+    if (this.tooltipOpened || !this.config.showOpt) return;
+    this.triggerTooltip = true;
+  }
+
+  onCloseUser() {
+    this.triggerTooltip = false;
+  }
+
+  checkTooltipStatus(event) {
+    this.tooltipOpened = event;
+    if (event) {
+      this.avatarAnimation.nativeElement.className = 'loading-avatar';
+    }
+    else {
+      this.renderer.removeClass(this.avatarAnimation.nativeElement, 'loading-avatar');
+    }
   }
 
   checkAuth(message) {

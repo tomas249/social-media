@@ -1,4 +1,4 @@
-<p (click)="go(user._id)">Name: {{ user.username }}</p>
+<!-- <p (click)="go(user._id)">Name: {{ user.username }}</p>
 <div>
   <img class="acc-photo" [src]="user.avatar.fullPath">
   <span>{{ user.name }}</span>
@@ -17,4 +17,77 @@
   <button (click)="openPosts()">Posts {{ user.count.posts }}</button>
   <button (click)="openList('followers')">Followers {{ user.count.followers }}</button>
   <button (click)="openList('following')">Following {{ user.count.following }}</button>
+</div> -->
+
+
+
+<div class="container">
+  <div class="row">
+    <img class="acc-photo" [src]="user.avatar.fullPath" (click)="goToUser(user._id)">
+    <ng-container *ngIf="!isOwner">
+      <div class="follow-bttn" (click)="follow()"
+        [ngClass]="isFollowing ? 'following' : 'not-following'">
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="accounts">
+    <span class="acc-name" (click)="goToUser(user._id)">{{ user.name }}</span>
+    <span class="acc-username" (click)="goToUser(user._id)">@{{ user.username }}</span>
+    <span class="acc-edit" (click)="onEditAccount()">Edit profile</span>
+  </div>
+
+  <div>{{ user.description }}</div>
+
+  <div class="row count-row">
+    <div class="column">
+      <span class="section">Posts</span>
+      <span class="section-count" (click)="openPosts()">{{ user.count.posts }}</span>
+    </div>
+    <div class="column">
+      <span class="section">Followers</span>
+      <span class="section-count" (click)="openList('followers')">{{ user.count.followers }}</span>
+    </div>
+    <div class="column">
+      <span class="section">Following</span>
+      <span class="section-count" (click)="openList('following')">{{ user.count.following }}</span>
+    </div>
+  </div>
+
 </div>
+
+
+<!-- <div class="container">
+  <div class="row">
+    <img class="acc-photo" [src]="user.avatar.fullPath" (click)="goToUser(user.username)">
+    <div *ngIf="follows !== null && loadingFollows" class="follow-bttn" (click)="followUser(user._id)">
+      Loading...
+    </div>
+    <div *ngIf="follows !== null && !loadingFollows"
+      class="follow-bttn" (click)="follow(user._id)"
+      [ngClass]="follows ? 'following' : 'not-following'"></div>
+  </div>
+  <div class="accounts">
+    <span class="acc-name" (click)="goToUser(user.username)">{{ user.name }}</span>
+    <span class="acc-username" (click)="goToUser(user.username)">@{{ user.username }}</span>
+    <span class="acc-edit" (click)="onEditUser()">Edit profile</span>
+  </div>
+  <div>
+    <p>{{ user.description }}</p>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="column">
+      <span class="section">Posts</span>
+      <span class="section-count">{{ user.count.posts }}</span>
+    </div>
+    <div class="column">
+      <span class="section">Followers</span>
+      <span class="section-count" (click)="openList('followers')">{{ user.count.followers }}</span>
+    </div>
+    <div class="column">
+      <span class="section">Following</span>
+      <span class="section-count" (click)="openList('following')">{{ user.count.following }}</span>
+    </div>
+  </div>
+</div> -->

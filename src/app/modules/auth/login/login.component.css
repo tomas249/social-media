@@ -8,6 +8,7 @@
 .auth {
   display: flex;
   flex-direction: column;
+  width: 700%;
 }
 
 .title {
@@ -19,7 +20,6 @@
 .input {
   margin-top: 1rem;
   padding: 1rem;
-  width: 25rem;
   font-size: 1rem;
   border-radius: 16px;
   outline: 0;

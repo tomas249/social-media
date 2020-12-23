@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocationService } from 'src/app/services/location.service';
 import { TokenService } from 'src/app/services/token.service';
@@ -28,6 +28,13 @@ export class NavbarComponent implements OnInit {
   // On falsely navbar activation
   simulation = false;
 
+  isMobile;
+
+  @HostListener("window:resize", [])
+  onResize() {
+    this.isMobile = window.innerWidth < 770;
+  }
+
   constructor(
     private navbarService: NavbarService,
     private tokenService: TokenService,
@@ -46,6 +53,8 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Check screen size
+    this.isMobile = window.innerWidth < 770;
     // Give access to service
     this.navbarService.init(this);
     this.loadDetectChangeUrl(window.location.pathname);
@@ -190,6 +199,11 @@ export class NavbarComponent implements OnInit {
     this.menuList = oldData.menuList;
     this.selMenuItemIdx = oldData.selMenuItemIdx;
     this._states.pop();
+  }
+
+  splitStr(str) {
+    console.log(str)
+    return str.split('');
   }
 
 }

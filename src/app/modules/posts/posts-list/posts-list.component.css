@@ -5,7 +5,7 @@
 }
 
 .border {
-  border-bottom: 0.15rem solid var(--primary-color);
+  border-bottom: 1.5px solid var(--primary-color);
 }
 
 .auth-container {

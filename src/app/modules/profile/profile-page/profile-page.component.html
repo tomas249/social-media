@@ -1,31 +1,29 @@
 <div *ngIf="user">
   <app-profile-card [user]="user"></app-profile-card>
 
-  <hr>
-  <div>
-    <button (click)="changeTab('posts')">Posts</button>
-    <span *ngIf="selectedTab === 'posts'">selected</span>
+  <div class="tabs-row noselect">
+    <div class="tab-container" (click)="changeTab('posts')"
+    [ngClass]="selectedTab === 'posts' && 'selected'">
+      <span class="tab" >Posts</span>
+    </div>
+  
+    <div class="tab-container" (click)="changeTab('replies')"
+    [ngClass]="selectedTab === 'replies' && 'selected'">
+      <span class="tab">Replies</span>
+    </div>
+  
+    <div class="tab-container" (click)="changeTab('media')"
+    [ngClass]="selectedTab === 'media' && 'selected'">
+      <span class="tab">Replies</span>
+    </div>
   </div>
-
-  <div>
-    <button (click)="changeTab('replies')">Replies</button>
-    <span *ngIf="selectedTab === 'replies'">selected</span>
-  </div>
-
-  <div>
-    <button (click)="changeTab('media')">Media</button>
-    <span *ngIf="selectedTab === 'media'">selected</span>
-  </div>
-
-  <hr>
-
 
   <div *ngIf="queryUrl">
     <app-posts-list [queryUrl]="queryUrl"></app-posts-list>
   </div>
 </div>
 
-<div *ngIf="user === false">
+<div *ngIf="user === false" style="padding: 2rem">
   User not found
 </div>
 

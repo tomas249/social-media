@@ -1,12 +1,10 @@
 <div *ngIf="notificationsList">
   <div *ngFor="let notification of notificationsList">
     <div class="notification">
-      <!-- <tooltip-wrapper [params]="{user: notification.responsible}">
-        <div #tooltipContent class="acc-profile">
-          <img class="acc-photo" [src]="notification.responsible.avatar.fullPath">
-          <span class="responsible">@{{ notification.responsible.name }}</span>
-        </div>
-      </tooltip-wrapper> -->
+      <span class="responsible" (click)="goToUser(notification.responsible._id)">
+        {{ notification.responsible.name }}
+        &nbsp;(@{{ notification.responsible.username }})
+      </span>
       <span>&nbsp;{{ notification.text }} - {{ notification.createdAt | dateAgo }}</span>
       <button
         *ngIf="!notification.read"

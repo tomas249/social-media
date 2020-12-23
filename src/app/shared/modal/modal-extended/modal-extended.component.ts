@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ModalService } from '../modal.service';
 
 @Component({
@@ -7,6 +7,8 @@ import { ModalService } from '../modal.service';
   styleUrls: ['./modal-extended.component.css']
 })
 export class ModalExtendedComponent implements OnInit {
+
+  @ViewChild('modalContainer') modalContainer: ElementRef;
 
   type = 'extended';
   display = false;
@@ -17,6 +19,14 @@ export class ModalExtendedComponent implements OnInit {
   
   ngOnInit(): void {
     this.modalService.initType(this.type, this);
+  }
+
+  // Close when clicking outside modal
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (event.target === this.modalContainer.nativeElement) {
+      this.onClose();
+    }
   }
 
   onClose() {

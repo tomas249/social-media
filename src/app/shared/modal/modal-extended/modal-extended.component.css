@@ -1,26 +1,23 @@
 .modal-container {
-  position: absolute; /* Stay in place */
-  z-index: 4; /* Sit on top */
-  padding-top: 10rem; /* Location of the box */
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  /* Avoid affecting height */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;         /* Opera/IE 8+ */
-  background-color: rgba(0, 255, 255, 0.356);
+  cursor: pointer;
 }
 
 /* Modal Content */
 .modal {
-  background-color: #fefefe;
-  margin: auto;
+  cursor: default;
   padding: 20px;
   border-radius: 30px;
   width: 70%;

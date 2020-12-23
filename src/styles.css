@@ -3,19 +3,17 @@
 :root {
   --primary-color: rgb(23, 191, 99);
   --secondary-color: rgb(136, 153, 166);
-  --hover-color: rgba(0, 255, 0, 0.1);
+  --hover-empty-color: rgba(0, 255, 0, 0.1);
+  --hover-solid-color: rgb(21, 172, 89);
   --background-color: rgb(23, 37, 51);
   --text-color: #ffffff;
 }
 
-/* :root {
-  --primary-color: rgb(23, 191, 99);
-  --secondary-color: rgb(0, 145, 255);
-  --hover-color: rgba(0, 255, 0, 0.1);
-  --background-color: rgb(250, 250, 250);
-  --text-color: #000000;
-} */
-  
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   margin: 0px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
@@ -23,24 +21,61 @@ body {
   color: var(--text-color);
 }
 
-div:focus {
+.solid-bttn {
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 500px;
   outline: 0;
+  border: 0;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: var(--text-color);
 }
 
-a:focus {
-  outline: 0;
-}
-
-button {
- outline: 0;
+.solid-bttn:hover {
+  background-color: var(--hover-solid-color);
 }
 
 .primary {
   color: var(--primary-color);
 }
 
+.empty-wrapper {
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 500px;
+  outline: 0;
+  border: 2px solid var(--primary-color);
+  cursor: pointer;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+}
+
+.empty-wrapper:hover {
+  background-color: var(--hover-empty-color);
+}
+
+.selected {
+  color: var(--primary-color);
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+div:focus, a:focus, button {
+  outline: 0;
+}
+
 hr {
-  border: 2px solid var(--secondary-color);
-  background-color: var(--secondary-color);
-  border-radius: 10px;
+  border: 1.5px solid  var(--primary-color);
+  background-color: var(--primary-color);
 }

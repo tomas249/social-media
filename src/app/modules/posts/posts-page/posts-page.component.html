@@ -16,11 +16,11 @@
   
   <ng-template #notLogged class="border auth-container">
     <div class="notLogged">
-      <span class="auth-text"></span>
-      <div>
-        <button class="bttn" (click)="auth('Login')">Login</button>
+      <span class="auth-text">In order to post you need to be logged in!</span>
+      <div class="bttn-group">
+        <button class="bttn solid-bttn" (click)="auth('Login')">Login</button>
         &nbsp;or&nbsp;
-        <button class="bttn" (click)="auth('Register')">Register</button>
+        <button class="bttn solid-bttn" (click)="auth('Register')">Register</button>
       </div>
     </div>
   </ng-template>

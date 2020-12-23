@@ -1,8 +1,8 @@
 <div class="auth-container">
   <form class="auth" [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <span class="title">Sign in</span>
-    <input formControlName="email" class="input" type="text" placeholder="Email">
-    <input formControlName="password"class="input" type="password" placeholder="Password">
+    <input formControlName="email" autocomplete="on" class="input" type="text" placeholder="Email">
+    <input formControlName="password" autocomplete="on" class="input" type="password" placeholder="Password">
     <button class="input button btn" type="submit">Login</button>
     <div class="message" *ngIf="messageList.length !== 0">
       <p [ngClass]="success ? 'success' : 'error'" 
