@@ -1,14 +1,20 @@
-<div *ngIf="list">
-  <div *ngFor="let item of list">
-    <span (click)="go(item.user._id)">{{ item.user.username }}</span>
-    <span *ngIf="item.isOwner"> -- You</span>
-    <div *ngIf="!item.isOwner" (click)="follow(item)">
-      <span *ngIf="item.isFollowing">
-        <button>Following</button>
-      </span>
-      <span *ngIf="!item.isFollowing">
-        <button>Not following</button>
-      </span>
-    </div>
-    
+<div *ngIf="list?.length === 0">
+  <span>No users</span>
 </div>
+
+<ng-container *ngIf="list">
+  <div *ngFor="let item of list; let i=index; let isLast=last">
+    <div class="container" >
+      <img  class="acc-photo" [src]="item.user.avatar.fullPath">
+      <div class="acc-names">
+        <span class="acc-name">{{ item.user.name }}</span>
+        <span class="acc-username">@{{ item.user.username }}</span>
+      </div>
+      <button *ngIf="!item.isOwner; else itIsYou" class="follow-bttn"
+      [ngClass]="item.isFollowing ? 'following' : 'not-following'"
+      (click)="follow(item)"></button>
+      <ng-template #itIsYou><span class="push-right">You</span></ng-template>
+    </div>
+    <hr class="divider" *ngIf="!isLast">
+  </div>
+</ng-container>

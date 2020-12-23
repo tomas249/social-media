@@ -9,7 +9,6 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { LogoutComponent } from './logout/logout.component';
 import { AccountsComponent } from './accounts/accounts.component';
 
 // Modules
@@ -19,7 +18,6 @@ import { ModalModule } from 'src/app/shared/modal/modal.module';
   declarations: [
     LoginComponent,
     RegisterComponent,
-    LogoutComponent,
     AuthComponent,
     AccountsComponent
   ],
@@ -36,7 +34,6 @@ export class AuthModule {
     AuthComponent,
     LoginComponent,
     RegisterComponent,
-    LogoutComponent,
     AccountsComponent
   };
 

@@ -57,12 +57,12 @@ export class ProfileCardComponent implements OnInit {
     const queryUrl = `/posts?owner=${uid}&parent[size]=0&childLevel=0`
 
     const content = [
-      { title: 'Posts' },
+      { title: `@${this.user.username} Posts List` },
       { module: 'Posts', component: 'PostsList',
         params: {queryUrl} }
     ];
     const modal = {type: 'default', content};
-    const location = {action:'add', stack:['Posts']};
+    const location = {action:'add', stack:['List', 'Posts'], remove: 1};
     this.modalService.open(modal, location);
   }
 
@@ -72,13 +72,14 @@ export class ProfileCardComponent implements OnInit {
 
     const userId = this.user._id;
 
+    const listName = populate[0].toUpperCase()+populate.slice(1);
     const content = [
-      { title: populate[0].toUpperCase()+populate.slice(1)+' list' },
+      { title: `@${this.user.username} ${listName} list` },
       { module: 'Profile', component: 'UsersList',
         params: {userId, populate} }
     ];
     const modal = {type: 'default', content};
-    const location = {action:'add', stack:['List']};
+    const location = {action:'add', stack:['List', listName], remove: 1};
     this.modalService.open(modal, location, (c) => {
       this.user.count.following += c;
     });
@@ -91,7 +92,7 @@ export class ProfileCardComponent implements OnInit {
     this.profileService.follow(this.user._id).pipe(first()).subscribe();
   }
 
-  go(uid) {
+  goToUser(uid) {
     // Close tooltip if exists
     this.modalService.closeByType('tooltip');
     

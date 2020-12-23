@@ -52,6 +52,8 @@ export class MainComponent implements OnInit {
 
   uploadProgress = null;
   openPostModal() {
+    if (!this.checkAuth('In order to post you need to be logged in')) return;
+
     const destination = ['/home', '/explore'].includes(window.location.pathname) ? 1 : 0 ;
     const destinationConfig = {destination, parentIndex: 0};
     const modal = {
@@ -77,38 +79,18 @@ export class MainComponent implements OnInit {
     });
   }
 
-  modal1() {
-    // this.postsService.publishPost({text: 'hey man', media: []}, {destination:1, parentIndex:0} )
-    const modal = {type: 'default', content: [
-      { title: 'looohin amigo' },
-      { module: 'Auth', component: 'Login', params: {navigateEnd: false} }
-    ]};
-    const location = {action: 'add', stack: ['Login']};
-    this.modalService.open(modal, location);
-  }
-
-  data = 0;
-  modal2() {
-    const content = [
-      { title: 'PUBLISH' },
-      { module: 'Posts', component:'PostPublish'},
-      { title: 'We hope you like it'}
-    ];
-    const modal = {type: 'extended', content};
-    const location = {action: 'add', stack: ['PublishContent']};
-    this.modalService.open(modal, location);
-  }
-
-  modal3() {
-    const content = [
-      { title: 'You have nothing to do here' },
-      // { module: 'Auth', component:'Logout'}
-    ];
-    const modal = {type: 'tooltip', content, keepOpened:true};
-    const location = {action: 'set', stack: ['ACCOUNT']};
-    this.modalService.open(modal, location, (res) => {
-      console.log('3) this is callback:', res);
-      this.data = res;
-    });
+  checkAuth(message) {
+    if (this.tokenService.isLogged()) {
+      return true;
+    }
+    else {
+      const modal = {type: 'default', content: [
+        { title: message },
+        { module: 'Auth', component: 'Login', params: {navigateEnd: false} }
+      ]};
+      const location = {action: 'add', stack: ['Login']};
+      this.modalService.open(modal, location);
+      return false
+    }
   }
 }

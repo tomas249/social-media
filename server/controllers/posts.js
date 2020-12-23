@@ -19,7 +19,8 @@ exports.publishPost = asyncHandler(async (req, res, next) => {
 
   // Instead of populating owner, use data that we already have
   let postRes = post.toObject({ getters: true });
-  postRes.owner = (({_id, name, username, description, count, avatar}) => ({_id, name, username, description, count, avatar}))(req.user);
+  postRes.owner = (({_id, name, username, description, count, avatar}) => 
+  ({_id, name, username, description, count, avatar}))(req.user);
   // Increment by 1 current count as we are not getting updated user
   postRes.owner.count.posts++;
 

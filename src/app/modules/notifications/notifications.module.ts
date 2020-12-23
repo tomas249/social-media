@@ -15,7 +15,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
   imports: [
     CommonModule,
     NotificationsRoutingModule,
-    PipesModule,
+    PipesModule
   ],
   exports: [NotificationsComponent]
 })

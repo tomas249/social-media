@@ -1,9 +1,11 @@
 <div class="modal-container" [style.display]="display ? 'flex' : 'none'">
-  <div class="modal">
-    <!-- Close button -->
-    <span class="close" (click)="onClose()">&times;</span>
-    <div class="content">
-      <modal-core [type]="type"></modal-core>
+  <div class="positioning" #modalContainer>
+    <div class="modal">
+      <!-- Close button -->
+      <span class="close" (click)="onClose()">&times;</span>
+      <div class="content">
+        <modal-core [type]="type"></modal-core>
+      </div>
     </div>
   </div>
 </div>

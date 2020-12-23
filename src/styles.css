@@ -9,16 +9,6 @@
   --text-color: #ffffff;
 }
 
-/* :root {
-  --primary-color: rgb(23, 191, 99);
-  --secondary-color: rgb(0, 145, 255);
-  --hover-color: rgba(0, 255, 0, 0.1);
-  --background-color: rgb(250, 250, 250);
-  --text-color: #000000;
-
-  rgb(21, 172, 89);
-} */
-
 html, body {
   height: 100%;
   margin: 0;
@@ -47,6 +37,9 @@ body {
   background-color: var(--hover-solid-color);
 }
 
+.primary {
+  color: var(--primary-color);
+}
 
 .empty-wrapper {
   font-size: 1.1rem;
@@ -78,28 +71,11 @@ body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
-
-
-/* div:focus {
+div:focus, a:focus, button {
   outline: 0;
-}
-
-
-a:focus {
-  outline: 0;
-}
-
-button {
- outline: 0;
-}
-
-.primary {
-  color: green;
-  font-size: bold;
 }
 
 hr {
-  border: 2px solid var(--secondary-color);
-  background-color: var(--secondary-color);
-  border-radius: 10px;
-} */
+  border: 1.5px solid  var(--primary-color);
+  background-color: var(--primary-color);
+}

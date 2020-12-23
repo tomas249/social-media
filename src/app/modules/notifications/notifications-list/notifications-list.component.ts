@@ -3,6 +3,7 @@ import { NotificationsService } from '../notifications.service';
 import { LocationService } from 'src/app/services/location.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TokenService } from 'src/app/services/token.service';
+import { NavbarService } from 'src/app/shared/navbar/navbar.service';
 
 @Component({
   selector: 'app-notifications-list',
@@ -20,7 +21,8 @@ export class NotificationsListComponent implements OnInit, OnDestroy {
     private notifications: NotificationsService,
     private router: Router,
     private locationService: LocationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private navbarService: NavbarService
   ) { }
 
   ngOnInit(): void {
@@ -42,13 +44,12 @@ export class NotificationsListComponent implements OnInit, OnDestroy {
         this.locationService.finishComposition();
 
         this.notifications.getNotifications(this.notificationsFilter === 'unread').subscribe(res => {
+          console.log(res)
           this.notificationsList = res.reverse();
         });
         // this.notifications.sub().subscribe(res => {
         //   console.warn(res);
         // })
-      } else {
-        this.router.navigate(['/notifications/unread']);
       }
     });
     
@@ -73,9 +74,9 @@ export class NotificationsListComponent implements OnInit, OnDestroy {
     this.notifications.markAsRead(notification._id).subscribe();
   }
 
-
-
-
+  goToUser(uid) {
+    this.navbarService.go(`/u/${uid}`);
+  }
 
 
 
