@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const ErrorResponse = require('../utils/errorResponse');
+const fs = require('fs');
+const path = require('path');
 
 const PostSchema = new mongoose.Schema({
   owner: {
@@ -124,9 +126,19 @@ PostSchema.
 
 
 PostSchema.post('findOneAndDelete', async function(post) {
+  // Remove media
+  if (post.media && post.media.length !== 0) {
+    post.media.forEach(file => {
+      const p = path.join(__dirname, '..', 'public', 'posts', file.filename);
+      fs.unlink(p, (err) => {
+        if (err) { throw new ErrorResponse(500, err); }
+      });
+    });
+  }
+
   // Remove all children
   await post.child.forEach(async child => {
-    await this.model.findByIdAndDelete(child)
+    await this.model.findByIdAndDelete(child);
   });
 
 });

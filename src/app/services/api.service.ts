@@ -23,19 +23,15 @@ export class ApiService {
 
   get(url: string) {
     return this.http.get<any>(`${this.baseUrl}${url}`).pipe(
-      filter(res => res.success || throwError('Unsuccessful request')),
-      map(res => res.data),
-      catchError(err => this.errorHandler(this.modalService, err)));
+      map(res => res.data));
   }
 
   patch(url: string, payload: object) {
-    return this.http.patch<any>(`${this.baseUrl}${url}`, payload)
-      .pipe(catchError(err => this.errorHandler(this.modalService, err)));
+    return this.http.patch<any>(`${this.baseUrl}${url}`, payload);
   }
 
   delete(url: string) {
-    return this.http.delete<any>(`${this.baseUrl}${url}`)
-      .pipe(catchError(err => this.errorHandler(this.modalService, err)));
+    return this.http.delete<any>(`${this.baseUrl}${url}`);
   }
 
   errorHandler(modalService, err) {

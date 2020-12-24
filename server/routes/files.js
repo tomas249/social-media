@@ -1,9 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
+// MiddleWares
+const { verifyToken, authorize } = require('../middleware/protect');
+// Utils
 const upload = require('../utils/imagePath');
 
 
+/**
+ * Functions too short to be added into a controller
+ */
 function returnAvatar(req, res) {
   try {
     const file = req.file.filename;
@@ -38,8 +44,8 @@ function returnGallery(req, res) {
   }
 }
 
-router.post('/updateAvatar', upload.single('avatar'), returnAvatar);
-router.post('/uploadGallery', upload.array('gallery', 5), returnGallery);
+router.post('/updateAvatar', verifyToken, upload.single('avatar'), returnAvatar);
+router.post('/uploadGallery', verifyToken, upload.array('gallery', 5), returnGallery);
 
 
 module.exports = router;
