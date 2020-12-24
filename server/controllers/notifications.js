@@ -7,7 +7,9 @@ const Notification = require('../models/Notification');
 // @route     POST /api/notifications/:userDestinationId
 // @access    Private
 exports.sendNotification = asyncHandler(async (req, res, next) => {
-
+  /**
+   * TODO
+   */
 });
 
 

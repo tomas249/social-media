@@ -20,8 +20,6 @@ export class IsAdminGuard implements CanActivate {
       return true;
     } else {
       this.router.navigate(['/home']);
-      // this.modal.addMessage('In order to visit this page, please login');
-      // this.modal.open('AuthModule', 'LoginComponent');
       return false;
 		}
 

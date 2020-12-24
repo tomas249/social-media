@@ -4,8 +4,6 @@ const router = require('express').Router();
 const { refresh, remove } = require('../controllers/tokens');
 const { verifyToken } = require('../middleware/protect');
 
-// Helpers
-
 router.post('/refresh', refresh);
 router.post('/remove', verifyToken, remove);
 

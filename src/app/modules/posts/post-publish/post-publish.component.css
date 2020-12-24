@@ -4,12 +4,6 @@ article {
   border-bottom: 3px solid var(--primary-color);
 }
 
-/* article {
-  display: flex;
-  padding: 1rem 1rem 0;
-  border-bottom: 0.15rem solid var(--primary-color);
-} */
-
 .replyRef {
   margin-bottom: 0.3rem;
   color: var(--secondary-color);
@@ -101,21 +95,6 @@ article {
 .save-bttn:hover {
   background-color:  rgb(21, 172, 89);
 }
-
-/* .text-area {
-  font-size: 1.5rem;
-  width: 100%;
-  min-height: 5rem;
-  background-color: transparent;
-  color: var(--text-color);
-  border: none;
-  overflow: auto;
-  outline: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  resize: none;
-} */
 
 .toReply {
   margin-bottom: 0.5rem;

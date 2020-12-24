@@ -28,6 +28,4 @@ NotificationSchema.
   pre('findOne', populateResponsible).
   pre('find', populateResponsible);
 
-// NotificationSchema.pre('save', populateResponsible);
-
 module.exports = mongoose.model('Notification', NotificationSchema);

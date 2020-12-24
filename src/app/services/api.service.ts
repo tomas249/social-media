@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { catchError, delay, filter, map } from 'rxjs/operators';
+import { catchError, delay, filter, map, tap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 
@@ -40,7 +40,7 @@ export class ApiService {
 
   errorHandler(modalService, err) {
     const content = [
-      { title: 'Unhandled Error' },
+      { title: 'Error' },
       { html: '<p>Got the following error:</p>' },
     ];
     for (let key in err) {

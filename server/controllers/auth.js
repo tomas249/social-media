@@ -5,27 +5,13 @@ const Token = require('../models/Token');
 const SocketUser = require('../models/SocketUser');
 const Sniffr = require('sniffr');
 const sniff = new Sniffr();
-/**
- * 
- * **IMPORTANT**
- * 
- * This controller is temporal and not definitive because
- * eventually it will use different strategy for authentication
- * 
- * For now, it uses JsonWebToken as access tokens that do
- * not expire and there is not refresh token to compensate
- * 
- * Because of this, this controller is not explained and
- * it is composed only by the fundamental functions
- * 
- */
-
 
 // @desc      Register user
 // @route     POST /api/auth/register
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
+
   // Create user
   const user = new User({
     name: name,

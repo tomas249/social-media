@@ -6,8 +6,6 @@ const upload = require('../utils/imagePath');
 
 function returnAvatar(req, res) {
   try {
-    // if (!req.file) throw new Error('Image could not be uploaded');
-
     const file = req.file.filename;
 
     res.status(201).send({
@@ -25,7 +23,6 @@ function returnAvatar(req, res) {
 
 function returnGallery(req, res) {
   try {
-    // if (!req.file) throw new Error('Image could not be uploaded');
     const file = req.files;
 
     res.status(201).send({

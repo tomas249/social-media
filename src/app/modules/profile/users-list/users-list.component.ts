@@ -26,23 +26,11 @@ export class UsersListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-
-
     this.profileService.isFollowingFromList(this.userId, this.populate)
     .pipe(first())
     .subscribe(list => {
       this.list = list;
     });
-      // this.list = f[this.populate].map(u => {
-        
-      //   // const [isFollowing, isOwner] = this.profileService.isFollowing(u._id);
-      //   // return {
-      //   //   isOwner,
-      //   //   isFollowing,
-      //   //   user: u
-      //   // };
-      // });
-
   }
 
   follow(item) {
@@ -53,8 +41,6 @@ export class UsersListComponent implements OnInit, OnDestroy {
   }
 
   go(uid) {
-    // Close tooltip if exists
-    // this.modalService.closeByType('tooltip');
     this.modalService.forceClose();
     this.navbarService.go(`/u/${uid}/`);
   }

@@ -39,6 +39,7 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(400, message);
   }
 
+  
   res.status(error.statusCode || 500).json({
     success: false,
     message: error.message.replace(/\r?\n|\r/g, '') || 'Server Error',

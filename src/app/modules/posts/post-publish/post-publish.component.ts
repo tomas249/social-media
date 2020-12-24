@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit, AfterViewChecked, ElementRef, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import { PostsService } from '../posts.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { LocationService } from 'src/app/services/location.service';
 import { TokenService } from 'src/app/services/token.service';
-// import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
-import { map, switchMap, takeLast, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { map, takeLast, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post-publish',
@@ -23,42 +21,12 @@ export class PostPublishComponent implements OnInit {
   constructor(
     private postsService: PostsService,
     private modalService: ModalService,
-    private locationService: LocationService,
     private token: TokenService,
-    // private tooltip: TooltipService
   ) { }
 
   ngOnInit(): void {
     this.user = this.token.getUserData();
-    if (!this.destinationConfig) {
-
-      // const loc = this.locationService.getLocation();
-      // if (loc[0] === 'Explore') {
-      //   this.destinationConfig = {destination: 1};
-      // }
-      // else if (loc[0] !== 'Explore' && !this.postReply) {
-      //   this.destinationConfig = {destination: 0};
-      // }
-    }
   }
-
-  // publishPost() {
-  //   const input = this.postInput.nativeElement.innerText;
-  //   if (!input) return;
-
-  //   // Clear input
-  //   this.postInput.nativeElement.innerText = '';
-  //   // Check if it is a post or a reply
-  //   if (this.postReply) {
-  //     this.postsService.replyPost(this.postReply._id, input, this.destinationConfig);
-  //   } else {
-  //     this.postsService.publishPost(input, this.destinationConfig);
-  //   }
-    
-  //   this.modal.emitResponse(true);
-  //   // Close modal (if it exists)
-  //   this.modal.close();
-  // }
 
   publishPost() {
     const input = this.postInput.nativeElement.innerText;
@@ -93,83 +61,6 @@ export class PostPublishComponent implements OnInit {
 
     // Empty input and media
     this.clear();
-
-
-    // if (this.selectedMedia.length !== 0) {
-
-    //   // Check if it is a post or a reply
-    //   if (this.postReply) {
-    //     this.postsService.replyPost(this.postReply._id, {text: input, media: this.selectedMedia},
-    //       this.destinationConfig)
-    //     .subscribe(res => {
-    //       // console.log('got it')
-
-    //       // console.log(res)
-          
-
-    //     }, err => {
-    //       console.log('error amig')
-    //       console.log(err)
-    //     });
-    //   } else {
-    //     this.postsService.publishPost({text: input, media: this.selectedMedia}, this.destinationConfig)
-    //     .subscribe(res => {
-    //       // console.log(res)
-    //       this.modalService.emitResponse(!res.hasOwnProperty('progress'), res);
-    //     });
-    //   }
-
-
-    //   return;
-    //   this.getGalleryUrl().pipe(
-    //     map(res => {
-    //       return res.gallery.map(image => {
-    //         return {
-    //           filename: image.filename,
-    //           relativePath: `/p/${image.filename}`,
-    //           fullPath: `${environment.baseUrl}/p/${image.filename}`
-    //         }
-    //       });
-    //     })
-    //   ).subscribe(res => {
-    //     // Check if it is a post or a reply
-    //     const post = {text: input, media: res};
-    //     if (this.postReply) {
-    //       this.postsService.replyPost(this.postReply._id, post, this.destinationConfig)
-    //       .subscribe(res => {
-    //         this.modalService.emitResponse(true, res);
-    //       });
-    //     } else {
-    //       this.postsService.publishPost(post, this.destinationConfig)
-    //       .subscribe(res => {
-    //         this.modalService.emitResponse(true, res);
-    //       });
-    //     }
-    //     this.clear();
-    //     // this.modal.emitResponse(true);
-    //     // Close modal (if it exists)
-    //     // this.modal.close();
-    //   });
-    // } else {
-    //   // Check if it is a post or a reply
-    //   if (this.postReply) {
-    //     this.postsService.replyPost(this.postReply._id, {text: input, media: []}, this.destinationConfig)
-    //     .subscribe(res => {
-    //       this.modalService.emitResponse(true, res);
-    //     });
-    //   } else {
-    //     this.postsService.publishPost({text: input, media: []}, this.destinationConfig)
-    //     .subscribe(res => {
-    //       this.modalService.emitResponse(true, res);
-    //     });
-    //   }
-    //   // this.modal.emitResponse(true);
-    //   // Close modal (if it exists)
-    //   // this.modal.close();
-
-    // }
-    
-
   }
 
   clear() {
@@ -190,14 +81,6 @@ export class PostPublishComponent implements OnInit {
   selectedMediaBlob = [];
   selectedMediaIndex = -1;
   onMediaSelect(event) {
-    // this.modal.open('extended', [
-    //   {
-    //     title: 'Please login in order to post'
-    //   },{
-    //     module: 'Auth',
-    //     component: 'Login'
-    //   }]);
-    // this.tooltip.close();
     // Check number of media selected
     if (this.selectedMedia.length + event.target.files.length > 5) {
       this.modalService.open(
@@ -240,7 +123,6 @@ export class PostPublishComponent implements OnInit {
         this.selectedMediaIndex -= 1;        
       }
     }
-    // console.log(this.selectedMedia.length, this.selectedMediaBlob.length, this.selectedMediaIndex)
   }
 
 

@@ -25,9 +25,6 @@ export class NavbarComponent implements OnInit {
   menuList;
   selMenuItemIdx: number = -1;
 
-  // On falsely navbar activation
-  simulation = false;
-
   isMobile;
 
   @HostListener("window:resize", [])
@@ -76,15 +73,6 @@ export class NavbarComponent implements OnInit {
   detectUrl(path) {
     return this._allUrls.find(url => url[0] === path)  || [null, -1, -1];
   }
-
-  // private listAllUrl(items) {
-  //   return items.reduce((acc, r, rIdx) => {
-  //     console.log(acc)
-  //     return acc.concat(r.children ? 
-  //       r.children.map((c, cIdx) => [r.path+c.path, rIdx, cIdx]) : 
-  //       [[r.path, rIdx, -1]])
-  //   }, []);
-  // }
 
   private listAllUrl(items) {
     return items.reduce((acc1, p, pIdx) => {
@@ -199,11 +187,6 @@ export class NavbarComponent implements OnInit {
     this.menuList = oldData.menuList;
     this.selMenuItemIdx = oldData.selMenuItemIdx;
     this._states.pop();
-  }
-
-  splitStr(str) {
-    console.log(str)
-    return str.split('');
   }
 
 }
