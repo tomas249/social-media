@@ -67,48 +67,4 @@ export class LocationService {
     this._states.pop();
   }
 
-
-
-
-
-
-
-
-
-
-  finishComposition(text?) {
-    // this.joinStackAndSend(this._locationStack);
-  }
-
-  // addItemToStack(item) {
-  //   if (Array.isArray(item)) {
-  //     item.forEach(l => this._locationStack.push(l))
-  //   }
-  //   else {
-  //     this._locationStack.push(item);
-  //   }
-  // }
-
-  // removeItemFromStack() {
-  //   this._locationStack.pop();
-  // }
-
-  changeStackRoot(item: string) {
-    // this._locationStack = [item];
-  }
-
-  changeItemAtIndex(item: string, i: number) {
-    // this._locationStack = this._locationStack.slice(0, i).concat(item);
-  }
-
-  replaceItemsFromEnd(position, items) {
-    // this._locationStack = this._locationStack.slice(0, -position);
-    // this._locationStack = this._locationStack.concat(items);
-  }
-
-  changeItemAtRoot(item: string, root: string) {
-    // const rootIndex = this._locationStack.indexOf(root);
-    // this.changeItemAtIndex(item, rootIndex+1);
-  }
-
 }

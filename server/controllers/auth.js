@@ -11,6 +11,7 @@ const sniff = new Sniffr();
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
+
   // Create user
   const user = new User({
     name: name,

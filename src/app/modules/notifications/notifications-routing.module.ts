@@ -5,9 +5,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { NotificationsListComponent } from './notifications-list/notifications-list.component';
 
 const routes: Routes = [
-  { path: ':notificationsFilter', component: NotificationsListComponent },
-  // { path: 'all', component: NotificationsListComponent },
-  // { path: 'unread', component: NotificationsListComponent }
+  // { path: ':notificationsFilter', component: NotificationsListComponent },
+  { path: 'all', component: NotificationsListComponent, data: {filter: 'all'} },
+  { path: 'unread', component: NotificationsListComponent, data: {filter: 'unread'} }
 ];
 
 @NgModule({

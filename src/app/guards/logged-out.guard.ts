@@ -18,8 +18,6 @@ export class LoggedOutGuard implements CanActivate {
 	canActivate() {
 		
 		if (this.token.isLogged()) {
-			// this.router.navigate(['/accounts'], {relativeTo: this.activatedRoute});
-			// this.router.navigate(['/auth/accounts']);
 			return false;
 		} else {
 			return true;

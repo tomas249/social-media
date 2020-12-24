@@ -1,12 +1,8 @@
-import { Component, OnInit, HostListener, ViewChildren, ViewChild, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostsService } from '../posts.service';
 import { LocationService } from 'src/app/services/location.service';
-import { concatMap, defaultIfEmpty, filter, first, flatMap, map, mergeAll, mergeMap, skip, skipLast, switchMap, take, tap } from 'rxjs/operators';
-import { Subscription, Observable, BehaviorSubject, Subject, forkJoin, merge, pipe, of, iif, concat } from 'rxjs';
-import { TokenService } from 'src/app/services/token.service';
-import { ModalService } from 'src/app/shared/modal/modal.service';
-import { NavbarService } from 'src/app/shared/navbar/navbar.service';
+import { first, flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post-article',
@@ -28,10 +24,6 @@ export class PostArticleComponent implements OnInit, OnChanges, OnDestroy {
     private route: ActivatedRoute,
     private postsService: PostsService,
     private locationService: LocationService,
-    private cd: ChangeDetectorRef,
-    private token: TokenService,
-    private modal: ModalService,
-    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -83,7 +75,6 @@ export class PostArticleComponent implements OnInit, OnChanges, OnDestroy {
           // Set main post as copy because we do not want to
           // pass the child attribute by reference
           this.mainPost = {...fullPost};
-          // this.repliesList = post.child.reverse();
           this.loading = false;
         });
       }
@@ -109,10 +100,6 @@ export class PostArticleComponent implements OnInit, OnChanges, OnDestroy {
 
   checkParent(post) {
     return (post?.parent.length > 0 && typeof post?.parent[0] !== 'string');
-  }
-
-  check(value) {
-    // console.warn({...value})
   }
 
 }

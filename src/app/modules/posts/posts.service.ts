@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
-import { catchError, first, flatMap, map, mergeMap, switchMap, take, takeLast, tap } from 'rxjs/operators';
-import { throwError, BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { throwError, BehaviorSubject, Subject, of } from 'rxjs';
 import { TokenService } from 'src/app/services/token.service';
-import { HttpEvent } from '@angular/common/http';
-import { ModalService } from 'src/app/shared/modal/modal.service';
 import { UploadFileService } from 'src/app/services/upload-file.service';
 import { environment } from 'src/environments/environment';
 
@@ -34,9 +32,7 @@ export class PostsService {
     private api: ApiService,
     private token: TokenService,
     private uploadFile: UploadFileService
-  ) {
-    // this.posts$.subscribe(console.error)
-  }
+  ) { }
 
   getPostsList(queryUrl) {
     // if (!this.allowSearch) return;
@@ -59,12 +55,6 @@ export class PostsService {
   clearAll() {
     this._postsList = null;
     this._mainPost = null;
-    // this._post.complete();
-    // this._posts.complete();
-    // this._post = new BehaviorSubject(this._mainPost);
-    // this._posts = new Subject();
-    // this.posts$ = this._posts.asObservable();
-    // this.post$ = this._post.asObservable();
   }
 
   setMainPost(post, c) {
@@ -100,27 +90,11 @@ export class PostsService {
     // Browser sometimes saves data and avoids new list to be searched
     // Because of this, replace all child attribute data with nulls
     // We still need its length in order to show how many replies there are
-    // post.parent = Array(post.parent.length);
     post.child = Array(post.child.length);
 
     // Send new post
     this._mainPost = post;
     this._post.next(this._mainPost);
-
-
-    // this.getPostById(post._id);
-    // this.api.get(`/posts?_id=${post._id}&childLevel=2`).pipe(
-      //   // Filter always returns array and we are searching only 1 post
-      //   map(res => res.data[0]),
-      //   tap(aa => {
-        //     console.log(aa)
-        //     // this._mainPost = aa;
-        //     // this._post.next(this._mainPost);
-    //     this._postsList = aa.child.reverse();
-    //     this._posts.next(this._postsList);
-    //   }),
-    //   // first()
-    // ).subscribe();
   }
   
   getPostById(postId) {
@@ -132,20 +106,11 @@ export class PostsService {
         this._postsList = post.child.reverse();
         this._posts.next(this._postsList);
       })
-      // tap(post => {
-      //   if(setMainMenu) {
-      //     this._mainPost = {...post};
-      //     this._post.next(this._mainPost);
-      //   }
-
-        // this._postsList = post.child.reverse();
-        // this._posts.next(this._postsList);
     );
   }
 
 
   deletePost(postId, config) {
-    this.checkAuth();
     this.removeFromList(config);
 
     this.api.delete(`/posts/${postId}`).subscribe();
@@ -163,7 +128,6 @@ export class PostsService {
   }
 
   private universalPost(path, post, config) {
-    this.checkAuth();
     this.addToList(post, config);
     if (post.media) {
       return this.uploadGallery(post.media).pipe(
@@ -248,30 +212,7 @@ export class PostsService {
   }
 
   likePost(postId) {
-    this.checkAuth();
     this.api.get(`/posts/${postId}/like`).subscribe();
-  }
-
-
-  getPop(obj) {
-    if (!obj.child) {
-      return ' null '
-    }
-    else if (obj.child.length === 0) {
-      return ' empty ';
-    }
-    else {
-      return ` pop(${obj.child.length}) >` + this.getPop(obj.child[0])
-    }
-  }
-
-  checkAuth() {
-    if (!this.token.isLogged()) {
-      console.error('Please login');
-      // this.modal.addMessage('In order to reply or like, you need to login');
-      // this.modal.open('AuthModule', 'LoginComponent')
-      return throwError('');
-    }
   }
 
   uploadGallery(gallery) {

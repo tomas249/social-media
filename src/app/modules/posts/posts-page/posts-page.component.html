@@ -1,12 +1,4 @@
 <div class="container">
-  <!-- <div *ngIf="pageInfo">
-    <span>Count: {{ pageInfo.count }} | </span>
-    <span>Next page: {{ pageInfo.pagination.next.page }} | </span>
-    <span>Limit: {{  pageInfo.pagination.next.limit}}</span>
-    <hr>
-  </div> -->
-
-
   <!-- Publish Component -->
   <div *ngIf="isLogged$ | async; else notLogged">
     <app-post-publish

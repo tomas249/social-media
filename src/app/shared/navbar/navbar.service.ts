@@ -41,7 +41,6 @@ export class NavbarService {
     if (menu.activated) {
       locStack.push(menu.children[idx].name)
       this.locationService.setStack(locStack);
-      // this.locationService.addItemToStack(locStack);
     }
 
   }

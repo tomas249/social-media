@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { TokenService } from 'src/app/services/token.service';
 import { FormGroup, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
-import { LocationService } from 'src/app/services/location.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
-import { filter, take } from 'rxjs/operators';
 import { NavbarService } from 'src/app/shared/navbar/navbar.service';
 
 @Component({
@@ -48,7 +46,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.locationService.finishComposition();
   }
 
   errorMessages(field, keyError, extra=null) {
@@ -94,8 +91,9 @@ export class LoginComponent implements OnInit {
       if (this.navigateEnd) this.navbarService.go('/explore');
     },
     err => {
-      this.success = false;
-      this.messageList.push(err);
+      const e = err.error;
+      this.success = e.success;
+      this.messageList.push(e.message);
     });
   }
   

@@ -23,11 +23,8 @@ export class TokenService {
       const storedUserData = this.getUserData();
       this._user.next(storedUserData);
     }
-    else if (refreshToken && !accessToken) {
-      console.error('AutoUpdate must be implemented');
-    }
-    else {
-      console.error('No auth');
+    else if (!refreshToken || !accessToken) {
+      this.removeTokens();
     }
   }
 
@@ -86,7 +83,6 @@ export class TokenService {
     } else {
       return false;
     }
-    //return false;
   }
 
   isAdmin() {
@@ -96,7 +92,6 @@ export class TokenService {
     } else {
       return false;
     }
-    //return false;
   }
 
   refreshToken() {
@@ -114,9 +109,6 @@ export class TokenService {
   updateData(newData) {
     const currentUser = this.getUserData();
     const newUser = Object.assign(currentUser, newData);
-
-    // this.account = newUser;
-    // this.accountSubject.next(newUser);
     localStorage.setItem('userData', JSON.stringify(newUser));
     this._user.next(newUser);
   }

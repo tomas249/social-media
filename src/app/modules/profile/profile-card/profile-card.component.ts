@@ -97,7 +97,6 @@ export class ProfileCardComponent implements OnInit {
     this.modalService.closeByType('tooltip');
     
     this.navbarService.go(`/u/${uid}/`);
-    // this.router.navigate(['/u/'+uid]);
   }
 
   onEditAccount() {

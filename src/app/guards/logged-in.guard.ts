@@ -19,13 +19,8 @@ export class LoggedInGuard implements CanActivate {
 		if (this.token.isLogged()) {
       return true;
     } else {
-      // this.router.navigate(['/auth']);
-      // this.modal.addMessage('In order to visit this page, please login');
-      // this.modal.open('AuthModule', 'LoginComponent');
       if (!this.router.navigated) {
         this.router.navigate(['/explore']);
-        // this.modal.addMessage('In order to visit that page, please login');
-        // this.modal.open('AuthModule', 'LoginComponent');
       }
       return false;
 		}

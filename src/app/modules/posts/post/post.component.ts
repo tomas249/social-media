@@ -1,29 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnChanges, ChangeDetectorRef, ElementRef, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnChanges, ElementRef, OnDestroy, Renderer2 } from '@angular/core';
 import { PostsService } from '../posts.service';
-// import { TimeService } from 'src/app/utils/time.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { TokenService } from 'src/app/services/token.service';
-import { Router, Route, ActivatedRoute } from '@angular/router';
 import { NavbarService } from 'src/app/shared/navbar/navbar.service';
 import { LocationService } from 'src/app/services/location.service';
-// import { LazyLoaderService } from 'src/app/services/lazy-loader.service';
-// import { TooltipService } from 'src/app/shared/tooltip/tooltip.service';
 
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
-export class PostComponent implements OnInit, OnChanges, OnDestroy {
-  // _inputConfig;
-  // @Input()
-  // set inputConfig(inputConfig) {
-  //     this._inputConfig = inputConfig;
-  //     this.config = Object.assign(this.config, inputConfig);
-  // }
-  // get inputConfig() {
-  //   return this.inputConfig;
-  // }
+export class PostComponent implements OnInit, OnChanges {
+
   @Input() contextInfo = {i: 0, type:undefined};
   @Input() publishConfig: {destination, parentIndex?, childIndex?, end?};
   @Input() deleteConfig: {destination, parentIndex, childIndex?};
@@ -76,53 +64,6 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
     get post() {
       return this._post;
     }
-  // _post;
-  // @Input()
-  //   set post(post) {
-  //     // If incompleted use default values
-  //     if (!post._id) {
-  //       this.token.user$.subscribe(user => {
-  //         this.config.owner = true;
-  //         this.config.loading = true;
-  //         post['owner'] = user;
-  //         this._post = Object.assign({}, post);
-  //       })
-  //       return;
-  //     }
-  //     this.countData(post);
-  //     if (post.media && post.media.length !== 0 && !post.media[0].selectedIndex) {
-  //       post.media.unshift({selectedIndex: 1});
-  //     }
-  //     if (!this._post || (this._post && this.reload)) {
-  //       this._post = this.loadConfig(post);
-  //       this.reload = false;
-  //     } else {
-        
-  //       if (this._post.child.length > post.child.length) {
-  //         // this.config.replied = false;
-  //         this.config.deleted = true;
-  //       }
-  //       // else if (this._post.child.length < post.child.length) {
-  //       //   this.config.replied = true;
-  //       //   this.config.deleted = false;
-  //       // }
-  //       else if (this._post.child.length === post.child.length) {
-  //         // Change only if is not modified by service
-  //         if (this._post.child[0]._id) {
-  //           // this.config.replied = false;
-  //           // this.config.deleted = false;
-  //         }
-  //         else {
-  //           this.config.replied = true;
-  //           this.config.deleted = false;
-  //         }
-  //       }
-  //       this._post = Object.assign({}, post);
-  //     }
-  //   }
-  //   get post() {
-  //     return this._post;
-  //   }
 
   config = {
     showOpt: true,
@@ -150,17 +91,11 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private postsService: PostsService,
-    // private time: TimeService,
     private modalService: ModalService,
     private token: TokenService,
-    private router: Router,
-    private route: ActivatedRoute,
     private locationService: LocationService,
-    // private lazyLoader: LazyLoaderService,
-    private cd: ChangeDetectorRef,
     private navbarService: NavbarService,
     private renderer: Renderer2
-    // private tooltip: TooltipService
   ) { }
 
 
@@ -168,21 +103,9 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes) {
-
-    // console.group('--------------')
-    // for (let c in changes) {
-    //   if (!changes[c].firstChange) {
-    //     console.log('Prev:', changes[c].previousValue);
-    //     console.log('Curr:', changes[c].currentValue);
-    //   }
-    // }
-    // console.groupEnd();
-
-
     const different = changes.post?.previousValue?._id !== changes.post?.currentValue._id
     if (!changes.post?.firstChange && different) {
       // Reset values when changing posts
-      
       this.config = Object.assign(this.config, this._inputConfig);
 
       if (this._post.media && this._post.media.length !== 0 && !this._post.media.selectedIndex) {
@@ -192,20 +115,6 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
       this.config.deleted = false;
     }
   }
-
-  ngOnDestroy() {
-  }
-
-  // private loadConfig(data) {
-  //   const uid = this.token.getUserId();
-  //   data = this.auth(data, uid);
-
-  //   if (data.confirm) {
-  //     this.config = Object.assign(this.config, data.confirm);
-  //     this.config = Object.assign(this.config, this._inputConfig);
-  //   }
-  //   return data;
-  // }
 
   private countData(data) {
     this.count = {
@@ -237,17 +146,6 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
   replyingProgress = 0;
   onReply() {
     if (!this.checkAuth('In order to reply a post you need to be logged in')) return;
-    // this.modal.open('PostsModule', 'PostPublishComponent', 
-    //   {
-    //     postReply: this.post, 
-    //     destinationConfig: this.publishConfig
-    //   });
-    // this.modal.waitForResponse().subscribe(res => {
-    //   if (res) {
-    //     this.count.replies += 1;
-    //     this.config.replied = true;
-    //   }
-    // })
 
     const params = {postReply: this.post, destinationConfig: this.publishConfig};
     const content = [
@@ -352,42 +250,6 @@ export class PostComponent implements OnInit, OnChanges, OnDestroy {
       return false
     }
   }
-
-  // @ViewChild('img') img:ElementRef
-  // openTooltip(event) {
-  //   const a = this.img.nativeElement.getBoundingClientRect();
-  //   console.log(a)
-
-  //   // this.img.nativeElement.style.zIndex = '10';
-  //   // const start = a.y;
-  //   // const x = a.x + a.width / 2;
-  //   // const y = a.y + a.height;
-  //   // console.log(X, Y, start)
-  //   // this.tooltip.open(event.clientX, event.clientY, 'AuthModule', 'LoginComponent');
-  //   // this.tooltip.open(start, X, Y, 'ProfileModule', 'ProfileCardComponent', {user: this.post.owner});
-  //   // this.tooltip.open(start, X, Y, 'AuthModule', 'LogoutComponent', {user: this.post.owner});
-  //   // this.tooltip.open(start, X, Y, 'PostsModule', 'PostComponent', {post: this.post});
-
-  //   const content = [
-  //     // { title: 'You have nothing to do here' },
-  //     { module: 'Profile', component:'ProfileCard', params: {user: this.post.owner}}
-  //     // { module: 'Auth', component:'Logout'}
-  //   ];
-  //   // const params = {wS:300, hS:200, top:a.top, left:a.left};
-  //   const wS = a.width+30;
-  //   const hS = a.height+30;
-  //   const top = 2
-  //   const params = {objDimensions: a};
-  //   const modal = {type: 'tooltip', content, params, keepOpened:true};
-  //   const location = {action: 'set', stack: ['ACCOUNT']};
-  //   this.modalService.open(modal, location);
-  // }
-
-  // closeTooltip(a) {
-  //   return;
-  //   // this.tooltip.close();
-  //   this.img.nativeElement.style.zIndex = '2';
-  // }
 
   openMedia(src) {
     const content = [

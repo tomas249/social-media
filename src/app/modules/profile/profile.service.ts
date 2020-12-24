@@ -25,9 +25,6 @@ export class ProfileService {
   ) {
     if (this.tokenService.isLogged()) {
       this.uid = this.tokenService.getUserId();
-      // this.getFollows(this.uid).subscribe(f => {
-      //   this.uFollowing = f.following;
-      // });
     }
   }
 

@@ -1,15 +1,13 @@
-import { Component, OnInit, ɵConsole, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService} from '../auth.service';
 import { FormGroup, FormControl, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
-import { LocationService } from 'src/app/services/location.service';
-import { ModalService } from 'src/app/shared/modal/modal.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit, OnDestroy {
+export class RegisterComponent implements OnInit {
 
   public registerForm: FormGroup;
   messageList = [];
@@ -18,8 +16,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   constructor(
     private auth: AuthService,
     private fb: FormBuilder,
-    private locationService: LocationService,
-    private modalService: ModalService
   ) {
     this.registerForm = this.fb.group({
       name: ['', [
@@ -46,12 +42,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.locationService.finishComposition();
-    // this.locationService.addChildLoc('Register', {extend:false, parentLoc:'Auth', useNav:true});
-  }
-
-  ngOnDestroy() {
-    // this.locationService.removeChildLoc(true);
   }
 
   private noEmail(control: FormControl) {
@@ -111,13 +101,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     this.auth.register(newUser).subscribe(
       res => {
-        this.success = true;
+        console.warn(res)
+        this.success = res.success;
         this.messageList.push(res.message);
         this.registerForm.reset();
       },
       err => {
-        this.success = false;
-        this.messageList.push(err);
+        const e = err.error;
+        this.success = e.success;
+        this.messageList.push(e.message);
       })
   }
 }
