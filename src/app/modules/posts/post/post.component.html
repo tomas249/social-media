@@ -12,12 +12,12 @@
           [params]="{user: post.owner}"
           [trigger]="triggerTooltip"
           (status)="checkTooltipStatus($event)">
-            <img #obj class="a-avatar" (click)="goToUser(post.owner._id)" [src]="post.owner.avatar.fullPath">
+            <img #obj class="a-avatar" (click)="goToUser(post.owner._id)" [src]="post.owner.avatar.relativePath">
             <div #avatarAnimation (click)="goToUser(post.owner._id)"></div>
           </tooltip-wrapper>
         </ng-container>
         <ng-container *ngIf="!config.showOpt">
-          <img class="a-avatar" [src]="post.owner.avatar.fullPath">
+          <img class="a-avatar" [src]="post.owner.avatar.relativePath">
         </ng-container>
       </div>
       <div *ngIf="config.empty">
@@ -37,7 +37,7 @@
             </div>
           </span>
         </span>
-        <div class="delete-bttn" style="margin-left: auto" *ngIf="config.owner && config.showOpt">
+        <div class="delete-bttn" style="margin-left: auto" *ngIf="config.owner && config.showOpt && !config.loading">
           <span title="Delete post" class="material-icons" (click)="onDelete()">clear</span>
         </div>
       </div>
@@ -69,7 +69,7 @@
         </div>
 
         <img title="Click to open full screen" (click)="openMedia(post.media[post.media[0].selectedIndex].fullPath)"
-          class="selected-media" [src]="post.media[post.media[0].selectedIndex].fullPath">
+          class="selected-media" [src]="post.media[post.media[0].selectedIndex].relativePath">
         <!-- <div *ngIf="selectedMediaBlob[selectedMediaIndex].format === 'image'">
           <img class="selected-media" [src]="selectedMediaBlob[selectedMediaIndex].url">
         </div>

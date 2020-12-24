@@ -152,8 +152,6 @@ article {
 
 .a-text {
   position: relative;
-  display: flex;
-  width: 0;
 }
 
 .comment {

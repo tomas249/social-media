@@ -28,10 +28,6 @@ const UserSchema = new mongoose.Schema({
     relativePath: {
       type: String,
       default: '/a/default-avatar.png'
-    },
-    fullPath: {
-      type: String,
-      default: 'http://localhost:3000/a/default-avatar.png'
     }
   },
   password: {

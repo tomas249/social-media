@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <img class="acc-photo" [src]="user.avatar.fullPath" (click)="goToUser(user._id)">
+    <img class="acc-photo" [src]="user.avatar.relativePath" (click)="goToUser(user._id)">
     <ng-container *ngIf="!isOwner">
       <div class="follow-bttn" (click)="follow()"
         [ngClass]="isFollowing ? 'following' : 'not-following'">

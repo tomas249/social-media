@@ -103,7 +103,7 @@
         <a class="h-bttn h-acc" (click)="accountGoTo()">
           <div class="acc-container">
             <ng-container *ngIf="user; else loggedOut">
-              <img class="acc-photo" [src]="user.avatar.fullPath">
+              <img class="acc-photo" [src]="user.avatar.relativePath">
               <div class="acc-names">
                 <span class="acc-name">{{ user.name }}</span>
                 <span class="acc-username">@{{ user.username }}</span>

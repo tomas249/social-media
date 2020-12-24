@@ -5,7 +5,7 @@
 <ng-container *ngIf="list">
   <div *ngFor="let item of list; let i=index; let isLast=last">
     <div class="container" >
-      <img  class="acc-photo" [src]="item.user.avatar.fullPath">
+      <img  class="acc-photo" [src]="item.user.avatar.relativePath">
       <div class="acc-names">
         <span class="acc-name">{{ item.user.name }}</span>
         <span class="acc-username">@{{ item.user.username }}</span>

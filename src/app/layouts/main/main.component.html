@@ -16,7 +16,7 @@
         <!-- Account -->
         <ng-container account *ngIf="user$ | async as user">
           <div (click)="goTo('/auth/accounts')"  class="empty-wrapper noselect acc-wrapper">
-            <img class="acc-avatar" [src]="user.avatar.fullPath">
+            <img class="acc-avatar" [src]="user.avatar.relativePath">
             <div class="acc-names">
               <span class="acc-name">{{ user.name }}</span>
               <span class="acc-username">@{{ user.username }}</span>
