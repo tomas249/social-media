@@ -45,3 +45,4 @@ Thumbs.db
 
 # Public files
 /server/public
+/server/config/*

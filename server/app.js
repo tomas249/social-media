@@ -47,15 +47,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount routes
 app.use('/api', routes);
 
-// Route for images
-app.use('/:filetype/:filename', (req, res, next) => {
-  const allFileTypes = {
-    a: 'avatars',
-    p: 'posts'
-  };
-  const filetype = allFileTypes[req.params.filetype];
+// Provide media
+const mediaProvider = (filetype) => (req, res, next) => {
   const filename = req.params.filename;
-
   const filepath = path.join(__dirname, 'public', filetype, filename);
 
   fs.open(filepath, 'r', (err, file) => {
@@ -67,7 +61,9 @@ app.use('/:filetype/:filename', (req, res, next) => {
       res.sendFile(filepath);
     }
   });
-});
+};
+app.use('/a/:filename', mediaProvider('avatars'));
+app.use('/p/:filename', mediaProvider('posts'));
 
 // Index route
 app.get('*', (req, res) => {
