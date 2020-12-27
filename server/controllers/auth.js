@@ -119,11 +119,7 @@ const sendTokenResponse = async (req, user, statusCode, res) => {
 
   // Create new AccesshToken
   const accessToken = user.getSignedJwtToken();
-
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true;
-  }
-
+  
   res.status(statusCode).json({
     success: true,
     data: {refreshToken, accessToken},
