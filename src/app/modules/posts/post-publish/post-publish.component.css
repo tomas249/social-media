@@ -103,7 +103,7 @@ article {
 #text-box {
   min-height: 4rem;
   font-size: 1.5rem;
-
+  cursor: text;
   border: none;
   overflow: auto;
   outline: none;
