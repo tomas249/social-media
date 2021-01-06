@@ -31,4 +31,15 @@
   <div *ngIf="element.html" class="text">
     <div [innerHTML]="element.html"></div>
   </div>
+
+  <!-- type: buttons -->
+  <div *ngIf="element.buttons" class="buttons-container">
+    <div class="buttons">
+      <ng-container *ngFor="let bttn of element.buttons">
+        <button class="empty-wrapper" (click)="onButtonEmit(bttn.close, bttn.event)">
+          {{ bttn.title }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
 </ng-template>

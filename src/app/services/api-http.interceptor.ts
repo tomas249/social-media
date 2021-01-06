@@ -5,6 +5,7 @@ import { TokenService } from './token.service';
 import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
 import { catchError, filter, take, switchMap, retryWhen } from 'rxjs/operators';
 import { ModalService } from '../shared/modal/modal.service';
+import { NavbarService } from '../shared/navbar/navbar.service';
 
 @Injectable()
 export class ApiHttpInterceptor implements HttpInterceptor {
@@ -14,7 +15,8 @@ export class ApiHttpInterceptor implements HttpInterceptor {
   
   constructor(
     public token: TokenService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private navbarService: NavbarService
     ) { }
     
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -47,7 +49,21 @@ export class ApiHttpInterceptor implements HttpInterceptor {
           // }
           if (err instanceof HttpErrorResponse && err.status === 401) {
             return this.handle401Error(req, next);
-          } else {
+          }
+          else if (err instanceof HttpErrorResponse &&
+            err.error.message === 'Invalid RefreshToken') {
+            this.token.removeTokens();
+            this.navbarService.go('/explore');
+            const content = [
+              { title: 'Session revoked' },
+              { html:  `<p>Your sessions was revoked, login again please</p>` }
+            ];
+            const modal = {type: 'default', content};
+            const location = {action: 'set', stack: ['Error']};
+            this.modalService.open(modal, location);
+            return throwError('Session revoked');
+          }
+          else {
             const content = [
               { title: 'Error was found' },
               { html: '<p>Got the following error:</p>' },

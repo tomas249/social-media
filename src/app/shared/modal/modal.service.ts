@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Interface } from 'readline';
 import { LocationService } from 'src/app/services/location.service'; 
 import { NavbarService } from '../navbar/navbar.service';
 

@@ -5,6 +5,7 @@ const Token = require('../models/Token');
 const SocketUser = require('../models/SocketUser');
 const Sniffr = require('sniffr');
 const sniff = new Sniffr();
+const crypto = require('crypto');
 
 // @desc      Register user
 // @route     POST /api/auth/register
@@ -54,19 +55,20 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 
 // @desc      Logout user
-// @route     GET /api/auth/logout
+// @route     POST /api/auth/logout
 // @access    Private
 exports.logout = asyncHandler(async (req, res, next) => {
   // Check if RefreshToken is provided
   const refreshToken = req.body.refreshToken;
-  if (!refreshToken) throw new ErrorResponse('Please provide a RefreshToken');
+  if (!refreshToken) throw new ErrorResponse(400, 'Please provide a RefreshToken');
 
-  // Check if RefreshToken exists and belongs to the right user
+  // Check if RefreshToken exists and belongs to the right user 
+  // and finally delete it
   const validate = await Token.findOneAndDelete({
-    belongsTo: req.uid,
+    belongsTo: req.user._id,
     token: refreshToken
   });
-  if (!validate) throw new ErrorResponse('RefreshToken does not exists');
+  if (!validate) throw new ErrorResponse(400, 'RefreshToken does not exists');
 
   // Deactivate SocketUser
   await SocketUser.findByIdAndUpdate(req.user.socketId, { active: false });
@@ -109,10 +111,14 @@ const sendTokenResponse = async (req, user, statusCode, res) => {
   const usedBrowser = sniff.browser.name[0].toUpperCase() + sniff.browser.name.slice(1);
   const newTitle = `${usedBrowser} on ${usedOS}`;
 
+  // Create Token
+  const randToken = crypto.randomBytes(15).toString('hex'); 
+
   // Create new RefreshToken
   const newRefreshToken = new Token({
     belongsTo: user._id,
-    title: newTitle
+    title: newTitle,
+    token: randToken
   });
   const refreshTokenDB = await newRefreshToken.save();
   const refreshToken = refreshTokenDB.token;

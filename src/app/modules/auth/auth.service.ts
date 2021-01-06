@@ -33,8 +33,22 @@ export class AuthService {
   }
 
   logout() {
-    this.token.removeTokens();
-    this.router.navigate(['/explore']);
+    const refreshToken = this.token.getRefreshToken();
+    return this.api.post('/auth/logout', {refreshToken}).pipe(
+      tap(_ => {
+        this.token.removeTokens();
+        this.router.navigate(['/explore']);
+      })
+    );
+  }
+
+  getActiveAccounts() {
+    return this.api.get('/tokens/associated');
+  }
+
+  revokeToken(refreshToken) {
+    return this.api.post('/tokens/remove', {refreshToken})
+
   }
 
 }

@@ -1,0 +1,21 @@
+.buttons-container {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: right;
+}
+
+.buttons {
+  margin-left: auto;
+  display: flex;
+}
+
+.empty-wrapper {
+  display: block;
+  padding: 0.5rem 1.5rem;
+  margin-left: 1rem;
+  background-color: transparent;
+}
+
+.empty-wrapper:hover {
+  background-color: var(--hover-solid-color);
+}

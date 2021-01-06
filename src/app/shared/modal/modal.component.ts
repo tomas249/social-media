@@ -1,14 +1,5 @@
-import { Component, OnInit, ViewChild, Input, HostListener, ElementRef, ViewContainerRef, ComponentFactoryResolver, 
-OnChanges,
-SimpleChanges,
-Output,
-TemplateRef} from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { ModalService } from './modal.service';
-import { NgModuleFactory } from '@angular/core/src/r3_symbols';
-import { LocationService } from 'src/app/services/location.service';
-import { LoadChildren } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { EventEmitter } from 'protractor';
 import { NavbarService } from '../navbar/navbar.service';
 import { moduleList } from './module-list'
 
@@ -159,6 +150,10 @@ export class ModalComponent implements OnInit {
     const componentFct = this.resolveComponent(this._components, componentName);
     this.contentCmp.clear();
     this._componentRef = this.contentCmp.createComponent(componentFct);
+  }
+
+  onButtonEmit(close, event) {
+    this.modalService.emitResponse(close, event);
   }
 
   

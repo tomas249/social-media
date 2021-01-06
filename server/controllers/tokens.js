@@ -44,16 +44,31 @@ exports.refresh = asyncHandler(async (req, res, next) => {
 });
 
 
+// @desc      Get refresh tokens associated to user
+// @route     GET /api/tokens/associated
+// @access    Private
+exports.getAssociated = asyncHandler(async (req, res, next) => {
+  let tokens = await Token.find({belongsTo: req.user._id });
+
+  res.status(200).send({
+    success: true,
+    data: tokens
+  });
+});
+
+
 // @desc      Remove refresh token
 // @route     POST /api/tokens/remove
 // @access    Public
 exports.remove = asyncHandler(async (req, res, next) => {
+  const refreshToken = req.body.refreshToken;
+
   // Check if RefreshToken exists
   const verified = await Token.findOneAndDelete({
-    _id: req.body.refreshTokenId,
-    belongsTo: req.uid
+    token: refreshToken,
+    belongsTo: req.user._id
   });
-  if (!verified) throw new ErrorResponse(400, 'RefreshToken does not exists');
+  if (!verified) throw new ErrorResponse(400, 'RefreshToken does not exist');
 
   res.status(204).send({
     success: true

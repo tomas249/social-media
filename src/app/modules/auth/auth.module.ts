@@ -14,6 +14,9 @@ import { AccountsComponent } from './accounts/accounts.component';
 // Modules
 import { ModalModule } from 'src/app/shared/modal/modal.module';
 
+// Pipes
+import { PipesModule } from 'src/app/pipes/pipes.module';
+
 @NgModule({
   declarations: [
     LoginComponent,
@@ -24,6 +27,7 @@ import { ModalModule } from 'src/app/shared/modal/modal.module';
   imports: [
     CommonModule,
     AuthRoutingModule,
+    PipesModule,
     FormsModule,
     ReactiveFormsModule,
     ModalModule

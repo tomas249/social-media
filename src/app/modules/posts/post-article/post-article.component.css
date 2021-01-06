@@ -17,7 +17,10 @@
 .post-list::-webkit-scrollbar {
   display: none;
 }
-
+.post-list {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 .reply-container {
   border-bottom: 0.15rem solid var(--primary-color);
 }

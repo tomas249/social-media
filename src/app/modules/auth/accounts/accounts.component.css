@@ -1,3 +1,42 @@
 .container {
-  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}
+
+.token-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.token-item:hover {
+  background-color: var(--hover-empty-color);
+}
+
+.token-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-wrapper {
+  background-color: transparent;
+}
+
+.empty-wrapper:hover {
+  background-color: var(--hover-solid-color);
+}
+
+.revoke-bttn {
+  padding: 0.5rem 1rem;
+}
+
+.logout-bttn {
+  margin-top: 1rem;
+  padding: 0rem 2rem;
+  height: 3rem;
 }

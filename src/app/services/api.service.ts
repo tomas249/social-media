@@ -23,7 +23,7 @@ export class ApiService {
 
   get(url: string) {
     return this.http.get<any>(`${this.baseUrl}${url}`).pipe(
-      map(res => res.data));
+      map(res => res.data || res));
   }
 
   patch(url: string, payload: object) {

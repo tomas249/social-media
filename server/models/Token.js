@@ -1,19 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const crypto = require('crypto');
-
-// Create Token
-const randToken = crypto.randomBytes(15).toString('hex');
 
 const tokenSchema = new Schema({
   belongsTo: {
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  token: {
-    type: String,
-    default: randToken
-  },
+  token: String,
   title: {
     type: String,
     required: true

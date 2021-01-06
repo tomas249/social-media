@@ -46,6 +46,7 @@ export class PostsService {
   }
 
   refreshList() {
+    if (!this._postsList || this._postsList.length === 0) return;
     const newList = this._postsList.map(p => {
       return {...p}
     });
