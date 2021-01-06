@@ -6,5 +6,29 @@
   top: 0;
   left: 0;
   cursor: pointer;
-  z-index: -1;
+  z-index: 3;
+}
+
+.loading-avatar {
+  position: absolute;
+  z-index: 2;
+  width: 3.8rem;
+  height: 3.8rem;
+  top: 0;
+  border-radius: 50%;
+  /* animation-timing-function: linear; */
+  /* animation: 1.5s linear .1s example; */
+  background-color: rgba(23, 191, 99, 0.589);
+  animation: example 1.5s linear .1s;
+  animation-fill-mode: forwards;
+  /* -webkit-animation-timing-function: linear; */
+
+
+  /* animation-name: example;
+  animation-duration: 4s; */
+}
+
+@keyframes example {
+  0%   {width: 3.8rem; height: 3.8rem; left: 0; top: 0;}
+  100% {width: 0rem; height: 0rem; left: 1.9rem; top: 1.9rem;}
 }

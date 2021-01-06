@@ -9,11 +9,10 @@
       <div class="a-profile-avatar" *ngIf="post.owner">
         <ng-container *ngIf="config.showOpt">
           <tooltip-wrapper
+          (clicked)="goToUser($event)"
           [params]="{user: post.owner}"
-          [trigger]="triggerTooltip"
-          (status)="checkTooltipStatus($event)">
-            <img #obj class="a-avatar" (click)="goToUser(post.owner._id)" [src]="post.owner.avatar.relativePath">
-            <div #avatarAnimation (click)="goToUser(post.owner._id)"></div>
+          [trigger]="triggerTooltip">
+            <img #obj class="a-avatar" [src]="post.owner.avatar.relativePath">
           </tooltip-wrapper>
         </ng-container>
         <ng-container *ngIf="!config.showOpt">
@@ -30,7 +29,7 @@
         <span class="a-username">
           <span>
             <div>
-              <span class="aroba" (mouseenter)="onOpenUser()" (mouseleave)="onCloseUser()" (click)="goToUser(post.owner._id)">
+              <span class="aroba" #triggerTooltip>
                 @{{ post.owner.username }}
               </span>
               <span> - {{ post.createdAt | dateAgo}}</span>
