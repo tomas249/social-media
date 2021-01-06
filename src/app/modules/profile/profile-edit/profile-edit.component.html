@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <input #imageSelectInput type="file" (change)="onImageSelect($event)" style="display: none;">
   <table>
     <tr>
@@ -35,4 +35,44 @@
       </td>
     </tr>
   </table>
+</div> -->
+
+
+<div class="container">
+  <input #imageSelectInput type="file" (change)="onImageSelect($event)" style="display: none;">
+  <div class="row">
+    <div class="indicator">Avatar:</div>
+    <div class="data">
+      <img class="acc-photo" [src]="avatarUrl">
+      <input
+        *ngIf="selectedImg"
+        (click)="onCancelSelectedImage()"
+        class="acc-photo-change"
+        type="button"
+        value="Cancel">
+      <input
+        (click)="imageSelectInput.click()"
+        class="acc-photo-change"
+        type="button"
+        [value]="selectedImg ? 'Select new image' : 'Change profile image'">
+    </div>
+  </div>
+  <div class="row">
+    <div class="indicator">Name:</div>
+    <div class="data">
+      <input #name class="acc-name input" type="text" [value]="user.name">
+    </div>
+  </div>
+  <div class="row">
+    <div class="indicator">Description:</div>
+    <div class="data">
+      <textarea #description class="acc-description input" [value]="user.description"></textarea>
+    </div>
+  </div>
+  <div class="row">
+    <button [ngClass]="{'disabled': uploadProgress}" class="btn-save" (click)="onSave(name.value, description.value)">
+      <span>Save</span>
+      <span *ngIf="uploadProgress"> ({{ uploadProgress }} %)</span>
+    </button>
+  </div>
 </div>

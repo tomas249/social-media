@@ -45,7 +45,7 @@ export class ProfileEditComponent implements OnInit {
 
   onSave(name, description) {
     // Validate
-    if (!name || !description) return;
+    if (!name || !description || this.uploadProgress) return;
     let updatedUser = {name, description};
 
     // Different subscription if avatar is updated too
