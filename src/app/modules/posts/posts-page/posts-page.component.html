@@ -1,6 +1,6 @@
 <div class="container">
   <!-- Publish Component -->
-  <div *ngIf="isLogged$ | async; else notLogged">
+  <div *ngIf="isLogged; else notLogged">
     <app-post-publish
       [destinationConfig]="{destination:1, parentIndex:0}">
     </app-post-publish>
@@ -17,7 +17,7 @@
     </div>
   </ng-template>
 
-  <ng-container *ngIf="!needsLogin && needsLogin !== null || (isLogged$ | async)">
+  <ng-container *ngIf="!needsLogin && needsLogin !== null || isLogged">
     <app-posts-list [queryUrl]="queryUrl"></app-posts-list>
   </ng-container>
 </div>

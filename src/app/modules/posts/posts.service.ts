@@ -45,7 +45,12 @@ export class PostsService {
       catchError(e => of([])));
   }
 
-  /** EDITING */
+  refreshList() {
+    const newList = this._postsList.map(p => {
+      return {...p}
+    });
+    this._posts.next(newList);
+  }
 
   setList(list) {
     this._postsList = list.reverse();

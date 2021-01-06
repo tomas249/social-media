@@ -4,7 +4,8 @@ import { LocationService } from 'src/app/services/location.service';
 import { TokenService } from 'src/app/services/token.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { concatMap, map, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-posts-page',
@@ -19,7 +20,7 @@ export class PostsPageComponent implements OnInit {
 
   loading = true;
   needsLogin;
-  isLogged$;
+  isLogged;
 
   constructor(
     private postsService: PostsService,
@@ -40,7 +41,16 @@ export class PostsPageComponent implements OnInit {
         auth: true
       }
     };
-    this.isLogged$ = this.token.user$.pipe(map(user => !!user));
+    this.token.user$.pipe(
+      concatMap((value, index) => (index !== 0 && index !== 1)
+        ? of(value).pipe(
+            tap(_ => this.postsService.refreshList())
+          )
+        : of(value)
+      ),
+    ).subscribe(isLogged => {
+      this.isLogged = isLogged;
+    });
     this.route.params.subscribe(p => {
       this.needsLogin = pages[p.page].auth;
       this.queryUrl = pages[p.page].query;
