@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnChanges, ElementRef, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnChanges, ElementRef, OnDestroy, Renderer2, ViewChildren, ContentChild } from '@angular/core';
 import { PostsService } from '../posts.service';
 import { ModalService } from 'src/app/shared/modal/modal.service';
 import { TokenService } from 'src/app/services/token.service';
@@ -15,6 +15,8 @@ export class PostComponent implements OnInit, OnChanges {
   @Input() contextInfo = {i: 0, type:undefined};
   @Input() publishConfig: {destination, parentIndex?, childIndex?, end?};
   @Input() deleteConfig: {destination, parentIndex, childIndex?};
+
+  @ViewChild('triggerTooltip') triggerTooltip;
 
   _inputConfig;
   @Input()
@@ -212,28 +214,6 @@ export class PostComponent implements OnInit, OnChanges {
     ]};
     const location = {action: 'add', stack: ['Share']};
     this.modalService.open(modal, location);
-  }
-
-  @ViewChild('avatarAnimation') avatarAnimation: ElementRef;
-  triggerTooltip = null;
-  tooltipOpened = false;
-  onOpenUser() {
-    if (this.tooltipOpened || !this.config.showOpt) return;
-    this.triggerTooltip = true;
-  }
-
-  onCloseUser() {
-    this.triggerTooltip = false;
-  }
-
-  checkTooltipStatus(event) {
-    this.tooltipOpened = event;
-    if (event) {
-      this.avatarAnimation.nativeElement.className = 'loading-avatar';
-    }
-    else {
-      this.renderer.removeClass(this.avatarAnimation.nativeElement, 'loading-avatar');
-    }
   }
 
   checkAuth(message) {

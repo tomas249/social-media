@@ -9,16 +9,18 @@ import { ModalService } from '../../modal.service';
 })
 export class TooltipWrapperComponent implements OnInit, AfterViewInit {
 
+  @ViewChild('wrapper') wrapper: ElementRef;
+  @ViewChild('animation') animation: ElementRef;
+  @Output('clicked') clicked = new EventEmitter();
   @ContentChild('obj') obj:ElementRef;
   @Input() params;
 
   @Input()
   set trigger(trigger) {
-    if (trigger !== null) {
-      trigger ? this.checkDelay() : this.closeTooltip() ;
-    }
+    trigger.addEventListener('mouseenter', this.checkDelay.bind(this));
+    trigger.addEventListener('mouseleave', this.closeTooltip.bind(this));
+    trigger.addEventListener('click', this.onClick.bind(this));
   }
-  @Output() status = new EventEmitter<boolean>();
 
   constructor(
     private modalService: ModalService,
@@ -32,27 +34,28 @@ export class TooltipWrapperComponent implements OnInit, AfterViewInit {
   objDim;
 
   ngAfterViewInit() {
-    this.obj.nativeElement.addEventListener('mouseenter', this.checkDelay.bind(this));
+    this.objDim = this.obj.nativeElement.getBoundingClientRect();
+    this.renderer.setStyle(this.wrapper.nativeElement, 'width', this.objDim['width']+'px');
+    this.renderer.setStyle(this.wrapper.nativeElement, 'height', this.objDim['height']+'px');
+
+    this.wrapper.nativeElement.addEventListener('mouseenter', this.checkDelay.bind(this));
     this.wrapper.nativeElement.addEventListener('mouseleave', this.closeTooltip.bind(this));
+    this.wrapper.nativeElement.addEventListener('click', this.onClick.bind(this));
+  }
+
+  onClick() {
+    clearTimeout(this.time);
+    this.clicked.emit(this.params.user._id);
   }
 
   checkDelay() {
-    this.objDim = this.obj.nativeElement.getBoundingClientRect();
-    
-    const properties = (({width, height}) => ({width, height}))(this.objDim);
-    for (const style in properties) {
-      this.renderer.setStyle(this.wrapper.nativeElement, style, properties[style]+'px');
-    }
-    this.renderer.setStyle(this.wrapper.nativeElement, 'z-index', 3);
-
-    this.status.emit(true);
+    this.animation.nativeElement.className = 'loading-avatar';
     clearTimeout(this.time);
     this.time = setTimeout(() => this.openTooltip(), 1500);
   }
 
-  @ViewChild('wrapper') wrapper: ElementRef;
   openTooltip() {
-    // // Close other tooltips if exist
+    // Close other tooltips if exist
     this.modalService.closeByType('tooltip');
 
     const content = [
@@ -61,14 +64,13 @@ export class TooltipWrapperComponent implements OnInit, AfterViewInit {
     const params = {objDimensions: this.objDim};
     const modal = {type: 'tooltip', content, params, keepOpened:true};
     const location = {action: 'set', stack: ['@'+this.params.user.username]};
-    this.modalService.open(modal, location, (status) => {
-      this.status.emit(status)
+    this.modalService.open(modal, location, _ => {
+      this.closeTooltip();
     });
   }
 
   closeTooltip() {
-    this.renderer.setStyle(this.wrapper.nativeElement, 'z-index', -1);
-    this.status.emit(false);
+    this.renderer.removeClass(this.animation.nativeElement, 'loading-avatar');
     clearTimeout(this.time);
   }
 

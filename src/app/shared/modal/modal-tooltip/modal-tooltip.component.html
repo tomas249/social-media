@@ -7,7 +7,8 @@
   [style.left]="maskLeft + 'px'">
   </div>
 
-  <div #tooltip class="tooltip"
+  <div (mouseleave)="onClose()"
+    #tooltip class="tooltip"
     [style.width]="tltpWidth + 'px'"
     [style.min-height]="tltpHeigthMin + 'px'"
     [style.left]="tltpLeft + 'px'">
