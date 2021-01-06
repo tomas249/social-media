@@ -130,7 +130,6 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.post('save', async function (doc) {
   if (!this._wasNew) {
-    console.log('is not new, returning');
     return;
   };
   
@@ -138,7 +137,6 @@ UserSchema.post('save', async function (doc) {
   await this.model('Follow').create({
     user: doc._id
   });
-  console.log('created');
 
 });
 

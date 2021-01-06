@@ -98,7 +98,7 @@ export class TokenService {
     const payload = {
       refreshToken: this.getRefreshToken()
     }
-    return this.api.post('tokens/refresh', payload).pipe(
+    return this.api.post('/tokens/refresh', payload).pipe(
       map(res => res.message),
       tap(res => {
         localStorage.setItem('accessToken', res.accessToken);

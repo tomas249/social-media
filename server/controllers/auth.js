@@ -115,7 +115,7 @@ const sendTokenResponse = async (req, user, statusCode, res) => {
     title: newTitle
   });
   const refreshTokenDB = await newRefreshToken.save();
-  const refreshToken = refreshTokenDB._id;
+  const refreshToken = refreshTokenDB.token;
 
   // Create new AccesshToken
   const accessToken = user.getSignedJwtToken();

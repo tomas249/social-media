@@ -72,7 +72,6 @@ exports.replyPost = asyncHandler(async (req, res, next) => {
 // @route     GET /api/posts
 // @access    Public
 exports.getPosts = asyncHandler(async (req, res, next) => {
-  console.log(req.query)
   // Parent select fields
   const parentSelect = req.query.parentSelect ? req.query.parentSelect.split(',').join(' ') : '';
   // Check for population level parameters

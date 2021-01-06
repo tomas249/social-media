@@ -18,12 +18,16 @@ exports.verifyToken = asyncHandler(async (req, res, next) => {
     const token = rawHeader.split('Bearer ')[1];
   
     // Verify token
-    const verified = await jwt.verify(token, process.env.JWT_SECRET);
-    if (!verified) throw new ErrorResponse(401, 'Invalid Token');
-  
-    // Get user
-    req.user = await User.findById(verified.id);
-    next();
+    const verified = await jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) throw new ErrorResponse(401, 'Invalid Token');
+      else {
+        // Get user
+        req.user = await User.findById(decoded.id);
+        next();
+      }
+    });
+    
+
   }
 });
 

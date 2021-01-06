@@ -167,7 +167,6 @@ export class PostPublishComponent implements OnInit {
         if (res.progress) {
           this.uploadProgress = res.progress;
           this.modalService.emitResponse(false, {progress: res.progress});
-          console.log(this.uploadProgress);
         }
         else if (res.completed) {
           this.uploadProgress = 'Uploaded';
@@ -178,7 +177,4 @@ export class PostPublishComponent implements OnInit {
     );
   }
 
-  test() {
-    console.log(this.selectedMedia)
-  }
 }

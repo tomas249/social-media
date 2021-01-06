@@ -38,6 +38,7 @@ export class ApiHttpInterceptor implements HttpInterceptor {
       
       return next.handle(req).pipe(
         catchError(err => {
+
           // if (!navigator.onLine) {
           //   return throwError({error: 'Could not get response. Check your connection.'});
           // }
@@ -80,14 +81,14 @@ export class ApiHttpInterceptor implements HttpInterceptor {
               return next.handle(this.addToken(request, res.accessToken));
             }));
             
-          } else {
-            return this.refreshTokenSubject.pipe(
-              filter(res => res != null),
-              take(1),
-              switchMap(res => {
-                return next.handle(this.addToken(request, res.accessToken));
-              }));
-          }
+        } else {
+          return this.refreshTokenSubject.pipe(
+            filter(res => res != null),
+            take(1),
+            switchMap(res => {
+              return next.handle(this.addToken(request, res.accessToken));
+            }));
+        }
       }
           
 }

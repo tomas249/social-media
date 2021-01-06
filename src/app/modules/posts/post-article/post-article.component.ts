@@ -83,7 +83,6 @@ export class PostArticleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes) {
-    console.warn(changes)
   }
 
   ngOnDestroy(): void {
