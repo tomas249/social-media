@@ -15,14 +15,33 @@ const routes: Routes = [
     component: PostArticleComponent,
   },
   { 
-    path: ':page', 
-    component: PostsPageComponent
+    path: 'explore', 
+    component: PostsPageComponent,
+    data: {
+      page: 'explore',
+      query: '/posts?parent[size]=0&childLevel=0&[limit]=10',
+      auth: false
+    }
+  },
+  { 
+    path: 'home', 
+    component: PostsPageComponent,
+    data: {
+      path: 'home',
+      query: '/posts/user',
+      auth: true
+    }
   },
   {
     path: '',
     redirectTo: '/explore',
     pathMatch: 'full'
   },
+  {
+    path: '**',
+    redirectTo: '/explore',
+    pathMatch: 'full'
+  }
 ];
 
 @NgModule({

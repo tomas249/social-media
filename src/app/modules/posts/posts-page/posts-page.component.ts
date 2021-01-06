@@ -31,16 +31,16 @@ export class PostsPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const pages = {
-      explore: {
-        query: '/posts?parent[size]=0&childLevel=0&[limit]=10',
-        auth: false
-      },
-      home: {
-        query: '/posts/user',
-        auth: true
-      }
-    };
+    // const pages = {
+    //   explore: {
+    //     query: '/posts?parent[size]=0&childLevel=0&[limit]=10',
+    //     auth: false
+    //   },
+    //   home: {
+    //     query: '/posts/user',
+    //     auth: true
+    //   }
+    // };
     this.token.user$.pipe(
       concatMap((value, index) => (index !== 0 && index !== 1)
         ? of(value).pipe(
@@ -51,10 +51,14 @@ export class PostsPageComponent implements OnInit {
     ).subscribe(isLogged => {
       this.isLogged = isLogged;
     });
-    this.route.params.subscribe(p => {
-      this.needsLogin = pages[p.page].auth;
-      this.queryUrl = pages[p.page].query;
-    });
+
+    const routeData = this.route.snapshot.data;
+    this.needsLogin = routeData['auth'];
+    this.queryUrl = routeData['query']
+    // this.route.params.subscribe(p => {
+    //   this.needsLogin = pages[p.page].auth;
+    //   this.queryUrl = pages[p.page].query;
+    // });
   }
 
   auth(component) {
